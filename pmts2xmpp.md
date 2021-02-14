@@ -102,25 +102,27 @@ field accessors . Typical rule looks like:
 etc. Currently supported functions, with required number of
 arguments:
 
-**true**: 0 returns true
-**false**: 0 returns false
-**eq**: 2 converts arguments to numbers, returns true if they are equal
-**ne**: 2 same as **eq** , returns true if different
-**lt**: 2 same as **eq**, returns if first argument is numerically less than second
-**le**: 2 same as **lt**, but less or equal
-**gt**: 2 same as **lt**, strictly greater
-**ge**: 2 same as **gt**, greater or equal
-**and**: 2 true if both arguments evaluate to true
-**or**: 2 true if either argument is true
-**not**: 1 evaluates arg as bool and returns negated value
-**regex**: 2 both arguments are strings, first is a pattern, second is a field or result of a function to match pattern against . Returns true if pattern matches
-**has**: 2 first argument is a string, second is a field or function result interpreted as an array. Returns true if any element of the array is equal (as string) to the first argument.
-**hasany**: 2 both arguments are interpreted as arrays, returns true if any element of the first argument is present in the second array
-**hasall**: 2 same as **hasany**, but returns true if all elements are present. Order is irrelevant
-**since**: 1 returns number of seconds between current time and argument interpreted as date
-**join**: 2 first argument is a string, second is an array (field or function result) with elements interpreted as strings. Returns single string - all elements of an array merged with first argument as a delimiter
+function|# of args|description
+-------|------|------
+**true**|0| returns true
+**false**|0|returns false
+**eq** |2| converts arguments to numbers, returns true if they are equal
+**ne** |2| same as **eq** , returns true if different
+**lt** |2| same as **eq**, returns if first argument is numerically less than second
+**le** |2| same as **lt**, but less or equal
+**gt** |2| same as **lt**, strictly greater
+**ge** |2|same as **gt**, greater or equal
+**and**|2|true if both arguments evaluate to true
+**or**|2|true if either argument is true
+**not**|1|evaluates arg as bool and returns negated value
+**regex**|2|both arguments are strings, first is a pattern, second is a field or result of a function to match pattern against . Returns true if pattern matches
+**has**|2|first argument is a string, second is a field or function result interpreted as an array. Returns true if any element of the array is equal (as string) to the  * first argument.
+**hasany**|2|both arguments are interpreted as arrays, returns true if any element of the first argument is present in the second array
+**hasall**|2|same as **hasany**, but returns true if all elements are present, order is irrelevant
+**since**|1|returns number of seconds between current time and argument interpreted as date
+**join**|2|first argument is a string, second is an array (field or function result) with elements interpreted as strings. Returns single string - all elements of an array merged with first argument as a delimiter
 
-Fields are specified using Golang template notation, using dots as context pointers , with leading dot meaning the whole alert is a context. For example, if the following message is picked up from **alerts** list in Redis:
+Fields are specified using Golang template notation, using dots as context pointers , with leading dot meaning the whole alert is a context. For example, if the following message is picked up from the **alerts** list in Redis:
 
     {
 	    "received": 1613262923,
@@ -183,9 +185,8 @@ Fields are specified using Golang template notation, using dots as context point
 	    }
     }
 
-, then rules defined in channel \#0 will be applied for every item in the **alerts** list, and, if any of them will return true, then this item will run against rules in every channel using channel \#0 as it’s source. Rule to compare value of `labels.severity` field will look like
-`regex “\^critical\$” .labels.severity` 
+, then rules defined in channel \#0 will be applied for every item in the **alerts** list in the picked up message, and, if any of them will return true, then this item will run against rules in every channel using channel \#0 as it’s source. Rule to compare value of `labels.severity` field will look like `regex "^critical$" .labels.severity`
 **eq** works with numbers, so string comparison here is done using **regex**. 
-**has**/**hasall**/**hasany** compare strings using Golang “==” operator
+**has**/**hasall**/**hasany** compare strings using Golang "==" operator
 
 
