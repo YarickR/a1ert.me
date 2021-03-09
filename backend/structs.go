@@ -70,8 +70,10 @@ type RulePart struct {
 }
 
 type ChannelRule struct {
-    SrcChId      uint32 `json:"src"`
+    RuleId       uint32 `json:"id"`
+    SrcChId      interface{} `json:"src"`
     RuleStr      string `json:"cond"`
+    CondLink     string `json:"condfrom"`
     Root         RulePart
 }
 

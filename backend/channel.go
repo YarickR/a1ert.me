@@ -744,15 +744,18 @@ func channelParseSet(setStr string) []RulePartArg {
 	return ret
 }
 
-func channelAddSinkId(srcChDef *ChannelDef, sinkId uint32) (error) {
+func channelAddSinkId(srcChDef *ChannelDef, sinkIds []uint32) (error) {
     var err error
     if srcChDef.Sinks == nil {
         srcChDef.Sinks = make([]uint32, 0, 2)
     }
-    if (srcChDef.Id == sinkId) {
-        log.Printf("Channel %d can't be a sink for itself", srcChDef.Id) 
-    } else {
-        srcChDef.Sinks = append(srcChDef.Sinks , sinkId)
+    var sinkId uint32
+    for _, sinkId = range sinkIds {
+        if (srcChDef.Id == sinkId) {
+            log.Printf("Channel %d can't be a sink for itself", srcChDef.Id) 
+        } else {
+            srcChDef.Sinks = append(srcChDef.Sinks , sinkId)
+        }
     }
     return err
 }
