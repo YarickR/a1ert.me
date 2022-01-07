@@ -1,3 +1,5 @@
+logs
+admin/logs
 pmts2xmpp
 *.json*
 data

@@ -1,0 +1,23 @@
+#body {
+  display:  flex;
+}
+#sidebar {
+  width:  30%;
+}
+#sidebar_header {
+  width: 100%;
+  text-align: center;
+}
+#main {
+  width:  70%;
+}
+#main_header {
+  width: 100%;
+  text-align: center;
+}
+.sidebar_level_0 {
+  margin-left: 10%;
+}
+.sidebar_level_1 {
+  margin-left: 20%;
+}
