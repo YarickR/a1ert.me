@@ -1,0 +1,376 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"call_user",
+				"call_user_func_array()"
+			],
+			[
+				"array_me",
+				"array_combine()"
+			],
+			[
+				"displa",
+				"displaySidebarEntry"
+			],
+			[
+				"etcd",
+				"etcdHBPath"
+			],
+			[
+				"target",
+				"targetPort"
+			],
+			[
+				"ingre",
+				"ingress_controller"
+			],
+			[
+				"egress",
+				"egress_controller"
+			],
+			[
+				"update",
+				"updateIPVSEps"
+			],
+			[
+				"ipvs",
+				"ipvsC"
+			],
+			[
+				"ve",
+				"verbose"
+			],
+			[
+				"load",
+				"loadBalancerIP"
+			],
+			[
+				"svc",
+				"svc_controller"
+			],
+			[
+				"onl",
+				"only_local"
+			],
+			[
+				"iproute",
+				"iproute_table"
+			],
+			[
+				"sto",
+				"stopTheLoop"
+			],
+			[
+				"incr",
+				"incrMsgID"
+			],
+			[
+				"next",
+				"nextAlert"
+			],
+			[
+				"my",
+				"mysqlConfig"
+			],
+			[
+				"table",
+				"tableNo"
+			],
+			[
+				"cluster",
+				"clusterIP"
+			],
+			[
+				"ro",
+				"routes"
+			],
+			[
+				"chats-",
+				"chats-list-refresh-btn"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "backend/channel.go",
+			"settings":
+			{
+				"buffer_size": 31123,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: ls",
+				"Package Control: Install Package"
+			],
+			[
+				"",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 162.0,
+		"history":
+		[
+			"help"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/yarick/Work/a1ert.me/backend"
+	],
+	"file_history":
+	[
+		"/home/yarick/Work/a1ert.me/backend/structs.go",
+		"/home/yarick/Work/a1ert.me/backend/channel.go",
+		"/home/yarick/Work/a1ert.me/backend/prod/push_daemon.go",
+		"/home/yarick/Work/a1ert.me/backend/prod/channel.go",
+		"/home/yarick/Work/a1ert.me/backend/push_daemon.go",
+		"/home/yarick/.config/sublime-text-3/Packages/User/Go.sublime-build",
+		"/home/yarick/Work/a1ert.me/admin/src/Router.php",
+		"/home/yarick/Work/a1ert.me/admin/public/main.css",
+		"/home/yarick/Work/a1ert.me/admin/src/Sidebar.php",
+		"/home/yarick/Work/a1ert.me/admin/src/Logger.php",
+		"/home/yarick/Work/a1ert.me/admin/composer.json",
+		"/home/yarick/Work/a1ert.me/admin/src/A1ertme/Logger.php",
+		"/home/yarick/Work/a1ert.me/admin/src/A1ertme/Config.php",
+		"/home/yarick/Work/a1ert.me/admin/src/logger.php",
+		"/home/yarick/Work/a1ert.me/admin/src/config.php",
+		"/home/yarick/Work/gtwwtools/k8sl3d/etc/k8sl3d.gress.yml.j2",
+		"/home/yarick/Work/gtwwtools/k8sl3d/bin/k8sl3d.py",
+		"/home/yarick/Work/gtwwtools/k8sl3d/etc/k8sl3d.host.yml.j2",
+		"/home/yarick/Work/gtwwtools/k8sl3d/bin/k8sl3d.new.py",
+		"/home/yarick/Work/gtwwtools/jabber_pusher/push_daemon.go",
+		"/home/yarick/Work/gtwwtools/jabber_pusher/c.json",
+		"/home/yarick/Work/gtwwtools/k8sl3d.remote/bin/k8sl3d.py",
+		"/home/yarick/Work/gtwwtools/k8sl3d.remote/etc/k8sl3d.yml",
+		"/home/yarick/Work/gtwwtools/k8sl3d/etc/k8sl3d.svc.yml",
+		"/home/yarick/Work/gtwwtools/k8sl3d/etc/k8sl3d.master.yml",
+		"/home/yarick/Work/gtwwtools/k8sl3d/etc/k8sl3d.node.yml",
+		"/home/yarick/Work/gtwwtools/k8sl3d/etc/k8sl3d.gress.yml",
+		"/home/yarick/Work/k8sl3d/k8sl3d.py",
+		"/home/yarick/Work/k8sl3d/k8sl3d.yml",
+		"/home/yarick/Work/tgchat/js/common_new.js",
+		"/home/yarick/Work/tgchat/js/common.js",
+		"/home/yarick/Work/tgchat/config.js",
+		"/home/yarick/Work/tgchat/index.html"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "backend/channel.go",
+					"selected": true,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 31123,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": "<",
+									"selector": "text.html, text.xml"
+								},
+								{
+									"rhs_empty": true,
+									"selector": "punctuation.accessor"
+								},
+								{
+									"characters": ".",
+									"selector": "meta.tag, source - comment - string.quoted.double.block - string.quoted.single.block - string.unquoted.heredoc",
+									"server": "gopls"
+								}
+							],
+							"lsp_active": true,
+							"lsp_hover_provider_count": 1,
+							"lsp_uri": "file:///home/yarick/Work/a1ert.me/backend/channel.go",
+							"show_definitions": false,
+							"syntax": "Packages/Go/Go.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"stack_multiselect": false,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 35.0
+	},
+	"input":
+	{
+		"height": 53.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.diagnostics":
+	{
+		"height": 162.0
+	},
+	"output.exec":
+	{
+		"height": 156.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.language servers":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "Packages/User/Go.sublime-build",
+	"project": "backend.sublime-project",
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 330.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

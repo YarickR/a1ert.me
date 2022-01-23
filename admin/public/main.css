@@ -4,6 +4,12 @@
 #sidebar {
   width:  30%;
 }
+#separator {
+  width:   0px;
+  margin-top:  0px;
+  margin-bottom:  0px;
+  border:  thin dashed #C0C0C0;
+}
 #sidebar_header {
   width: 100%;
   text-align: center;

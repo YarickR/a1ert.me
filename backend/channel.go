@@ -582,7 +582,7 @@ func channelParseRules(chDef *ChannelDef ) error {
     var chRule ChannelRule
     var chRuleIdx int
   
-    for chRuleIdx, chRule = range chDef.Rules {  
+    for chRuleIdx, chRule = range chDef.Rules {
         var rRule, partBuf []rune
         var currRuleParserState, newRuleParserState RuleParserStateType
         var rPos, partBufIdx int
@@ -744,22 +744,60 @@ func channelParseSet(setStr string) []RulePartArg {
 	return ret
 }
 
-func channelAddSinkId(srcChDef *ChannelDef, sinkIds []uint32) (error) {
+func channelAddSinkId(srcChDef *ChannelDef, sinkId uint32) (error) {
     var err error
     if srcChDef.Sinks == nil {
         srcChDef.Sinks = make([]uint32, 0, 2)
     }
-    var sinkId uint32
-    for _, sinkId = range sinkIds {
-        if (srcChDef.Id == sinkId) {
-            log.Printf("Channel %d can't be a sink for itself", srcChDef.Id) 
-        } else {
-            srcChDef.Sinks = append(srcChDef.Sinks , sinkId)
-        }
+    if (srcChDef.Id == sinkId) {
+        log.Printf("Channel %d can't be a sink for itself", srcChDef.Id) 
+    } else {
+        srcChDef.Sinks = append(srcChDef.Sinks , sinkId)
     }
     return err
 }
 
+func channelParseSrcChIds(srcChIds interface{}) ([]uint32) {
+    var ret []uint32;
+    switch  srcChIds.(type) {
+        case float64: // single number
+            ret = make([]uint32, 0, 1)
+            ret[0] = srcChIds.(uint32)
+        case []interface{}:
+            ret = make([]uint32, 0, len(srcChIds.([]interface{})))
+            for _, chId := range srcChIds.([]interface{}) {
+                if (chId.(uint32) != 0) {
+                    ret = append(ret, chId.(uint32))
+                } else {
+                    log.Printf("Invalid source channel id %v", chId);
+                }
+            }
+        default:
+            log.Printf("Invalid source channel ids %v", srcChIds);
+    }
+    return ret
+}
+
+func channelPipeSrcsToSinks(channelDefs []*ChannelDef, lastChannelId uint32) {
+    var chDef *ChannelDef;
+    var chRule ChannelRule
+    for _, chDef = range channelDefs {
+        for _, chRule = range chDef.Rules {
+            if (chRule.Root.function != nil) { // Rule was successfully parsed
+                var srcChIds []uint32
+                srcChIds = channelParseSrcChIds(chRule.SrcChId);
+                for _, srcChId := range(srcChIds) {
+                    if ((srcChId <= lastChannelId) && (channelDefs[srcChId] != nil)) {
+                        channelAddSinkId(channelDefs[srcChId], chDef.Id)// almost placeholder at this point 
+                                                                        // will check for acyclicity later
+                    } else {
+                        log.Printf("Unknown channel id %d", srcChId)
+                    }
+                }
+            }
+        }
+    }
+}
 
 
 func channelMatchAlert(channel *ChannelDef, srcChId uint32, alert Alert) bool {

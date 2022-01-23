@@ -38,11 +38,12 @@
 <div id='sidebar'><div id='sidebar_header'>Sidebar</div>
 <?php echo Sidebar::displaySidebar($routes, Router::getPath($routes, $_SERVER["REQUEST_URI"]));?>
 </div>
-  <div id='main'><div id='main_header'>Main</div>
+<div id='separator'></div>
+<div id='main'><div id='main_header'>Main</div>
 <?php 
   $route = Router::getRoute($routes, $_SERVER["REQUEST_URI"]);
   if ($route) {
-    call_user_func_array($route, array($cfg));
+    call_user_func_array($route, array(&$cfg));
   }
   ?>
 </div>

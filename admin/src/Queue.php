@@ -3,13 +3,41 @@
   class Queue {
     function __construct() {
     }
-    static function handleDefault($cfg) {
+    public static function handleDefault($cfg) {
+      $dr = $cfg->dataRedis();
+      if ($dr) {
+        ?>
+        <div><?php echo $dr->lLen("alerts");?> pending alerts </div>
+        <div><?php echo $dr->lLen("undelivered");?> undelivered alerts </div>
+        <div><?php echo $dr->lLen("alerts_backup");?> in backup queue </div>
+        <?php
+      } else {
+        ?>
 
+        <?php
+      }
     }
-    static function handleUndelivered($cfg) {
-
+    public static function handleUndelivered($cfg) {
+      $dr = $cfg->dataRedis();
+      if ($dr) {
+        $amt = min($dr->lLen("undelivered"), 10);
+        $alerts = $dr->lRange("undelivered", 0, $amt > 0 ? $amt - 1 : 0);
+        ?>
+        <select name="Undelivered" size="<?=$amt;?>">  
+          <?php
+            for ($i = 0;$i < count($alerts) ; $i++) {
+              Logger::log(DEBUG, $alerts[$i]);
+              ?>
+              <option><?=$alerts[$i];?></option>
+              <?php
+            }
+          ?>
+        </select>  
+        <input type="button" label="deliver"/>Try to deliver selected
+        <?php
+      }
     }
-    static function handleUnmatched($cfg) {
+    public static function handleUnmatched($cfg) {
 
     }
 

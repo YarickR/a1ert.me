@@ -11,21 +11,17 @@ class Config {
 		if (strlen(trim($this->cfgURI)) == 0) {
 			Logger::log("ERROR", "Empty config Redis URI");
 			return false;
-		}
+		};
 		$cuParts = explode(":", $this->cfgURI);
 		try {
-			if (sizeof($cuParts) == 2) {
-				// assuming host:port
-				$this->redO->connect($cuParts[0], intval($cuParts[1]));
-			} else {
-				// this could be unix socket
-				$this->redO->connect($cuParts[0]);
-			}
-		} catch (Exception $e) {
-			Logger::log(ERR, "Exception ".var_export($e, true)." connecting to ".$this->cfgURI);
-			return false;
-		}
-		return true;
+			$_r = sizeof($cuParts) == 2 ? $this->redO->connect($cuParts[0], intval($cuParts[1])) : $this->redO->connect($cuParts[0]);
+		} catch (RedisException $e) {
+			$_r = false;
+		};
+		if ($_r == false) {
+			Logger::log(ERR, "Failed to connect to config Redis at " . $this->cfgURI);
+		};
+		return $_r;
 	}
 	function load() {
 		$newCfg = [];
@@ -38,14 +34,14 @@ class Config {
 			};
 			Logger::log(ERR, "Loaded empty configuration");
 			$this->redO->close();
-	 		return false;
-		}
+		};
+		return false;
 	}
 	function save() {
 		if ($this->connect()) {
-			$ret = $this->redO->hMSet("settings", $this->cfg);
+			$_r = $this->redO->hMSet("settings", $this->cfg);
 			$this->redO->close();
-			return $ret;
+			return $_r;
 		};
 		return false;
 	}
@@ -55,28 +51,36 @@ class Config {
 	function set($key, $value) {
 		$this->cfg[$key] = $value;
 	}
-	function getDataRedis() {
-		$redisURI = $this->get("redisURI");
-		if ($redisURI) {
-			$hps = preg_split("redis://(.*)", $redisURI);
-			if ($hps[1]) {
-				
-			}
-			$drc = new \Redis();
+	function dataRedis() {
+		# ru - redis URI
+		# hps - host+port or socket
+		# hp = host+port
+		$ru = $this->get("redisURI");
+		$hps = false;
+		if (!$ru || (preg_match('/^redis:\/\/(.*)$/', $ru, $hps) !== 1 )) {
+			return false;
+		};
+		$ret = new \Redis();
+		$hp = false;
+		if (preg_match("/([^:]+):(.*)/", $hps[1], $hp) === 1) {
 			try {
-				if (sizeof($cuParts) == 2) {
-					// assuming host:port
-					$this->redO->connect($cuParts[0], intval($cuParts[1]));
-				} else {
-					// this could be unix socket
-					$this->redO->connect($cuParts[0]);
-				}
+				Logger::log(DEBUG, $hp[1], intval($hp[2]));
+				$_r = $ret->connect($hp[1], intval($hp[2]));
 			} catch (Exception $e) {
-				Logger::log(ERR, "Exception ".var_export($e, true)." connecting to ".$this->cfgURI);
-				return false;
+				$_r = false;
 			}
-			return true;
-		}
+		} else {
+			try {
+				$_r = $ret->connect($hps[1]);
+			} catch (Exception $e) {
+				$_r = false;
+			}		
+		};
+		if (!$_r) {
+			Logger::log(ERR, "Failed to connect to data Redis at " . $hps[1]);
+			return false;
+		};
+		return $ret;
 	}
 }
 ?>

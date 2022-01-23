@@ -74,20 +74,14 @@ func redisLoadChannelDefs(rc redis.Conn, lastChannelId uint32) ([]*ChannelDef, u
 						chDef.MsgTemplate, err = template.New("root").Parse("{{.}}")
 					}
 					channelDefs[chDef.Id] = chDef
-					var chRule ChannelRule
-					for _, chRule = range chDef.Rules {
-						if (chRule.Root.function != nil) { // Rule was successfully parsed
-							channelAddSinkId(channelDefs[chRule.SrcChId], chDef.Id) // almost placeholder at this point 
-																				  // will check for acyclicity later
-						}
-					}
 				}
 			}
-			if chDef.Id > lastChannelId {
+			if (chDef.Id > lastChannelId) {
 				lastChannelId = chDef.Id
 			}
 		}
 	}
+	channelPipeSrcsToSinks(channelDefs, lastChannelId) // doing it late so we can use forward channel ids as sources
 	return channelDefs, lastChannelId, err
 }
 
@@ -156,10 +150,10 @@ func redisWorker(config Config, alertChannel chan XmppMsg, wg *sync.WaitGroup) {
 				var receivedTS uint64
 				receivedTS = uint64(parsedMsg.ReceivedTS)
 				log.Printf("Message received at %d\n", receivedTS)
-				for _, alert := range parsedMsg.Message.Alerts {
+				for _, parsedAlert := range parsedMsg.Message.Alerts {
 					var groupsToDeliver map[string]string
 					groupsToDeliver = make(map[string]string)
-					parsedMsg.Matches = channelRunTheGauntlet(channelDefs, 0, 0, alert.(map[string]interface{}), groupsToDeliver, 0)
+					parsedMsg.Matches = channelRunTheGauntlet(channelDefs, 0, 0, parsedAlert.(map[string]interface{}), groupsToDeliver, 0)
 					if (len(groupsToDeliver) > 0) {
 						var groupName, groupMsg string
 						for groupName, groupMsg = range groupsToDeliver {
@@ -167,11 +161,11 @@ func redisWorker(config Config, alertChannel chan XmppMsg, wg *sync.WaitGroup) {
 							alertChannel <- XmppMsg{XmppGroup: groupName, Message: groupMsg }
 						}
 					} else {
-						log.Printf("Undeliverable alert: %+v", alert)
+						log.Printf("Undeliverable alert: %+v", parsedAlert)
 						rc.Do("RPUSH", "undelivered", alert)
 					}
 					if (parsedMsg.Matches <= 1 ) {
-						log.Printf("Message %+v didn't match anything", alert)
+						log.Printf("Message %+v didn't match anything", parsedAlert)
 						rc.Do("RPUSH", "unmatched", alert)
 					}
 				}
