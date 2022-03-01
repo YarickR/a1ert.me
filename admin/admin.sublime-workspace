@@ -4,6 +4,38 @@
 		"selected_items":
 		[
 			[
+				"V",
+				"void"
+			],
+			[
+				"sin",
+				"sin_port"
+			],
+			[
+				"sn",
+				"sin_family"
+			],
+			[
+				"mem",
+				"memcacheStr"
+			],
+			[
+				"sc",
+				"scEnvVarStr"
+			],
+			[
+				"pare",
+				"parentPIDStr"
+			],
+			[
+				"scE",
+				"scEnvVarStr"
+			],
+			[
+				"fro",
+				"fromEnvVar"
+			],
+			[
 				"user",
 				"usernameStr"
 			],
@@ -100,38 +132,22 @@
 	"buffers":
 	[
 	],
-	"build_system": "Packages/Golang Build/Go.sublime-build",
+	"build_system": "",
 	"build_system_choices":
 	[
 		[
 			[
 				[
-					"Packages/Golang Build/Go.sublime-build",
+					"Packages/Makefile/Make.sublime-build",
 					""
 				],
 				[
-					"Packages/Golang Build/Go.sublime-build",
-					"Run"
-				],
-				[
-					"Packages/Golang Build/Go.sublime-build",
-					"Test"
-				],
-				[
-					"Packages/Golang Build/Go.sublime-build",
-					"Install"
-				],
-				[
-					"Packages/Golang Build/Go.sublime-build",
-					"Cross-Compile (Interactive)"
-				],
-				[
-					"Packages/Golang Build/Go.sublime-build",
+					"Packages/Makefile/Make.sublime-build",
 					"Clean"
 				]
 			],
 			[
-				"Packages/Golang Build/Go.sublime-build",
+				"Packages/Makefile/Make.sublime-build",
 				""
 			]
 		]
@@ -172,21 +188,26 @@
 	},
 	"expanded_folders":
 	[
-		"/home/yarick/Work/a1ert.me/backend"
+		"/home/yarick/Work/a1ert.me/admin/src"
 	],
 	"file_history":
 	[
-		"/home/yarick/Work/a1ert.me/backend/structs.go",
-		"/home/yarick/Work/a1ert.me/backend/channel.go",
-		"/home/yarick/Work/a1ert.me/backend/push_daemon.go",
-		"/home/yarick/Work/a1ert.me/backend.sublime-project",
+		"/home/yarick/Documents/jira-stats.txt",
+		"/tmp/mozilla_yarick0/spawner.out",
 		"/home/yarick/Work/gtwwtools/sshpc/sshpc.c",
+		"/home/yarick/Work/gtwwtools/sshpc/sshpcc.c",
+		"/home/yarick/Downloads/prod-vpn-radius-tcp.ovpn",
+		"/home/yarick/Downloads/Work/JC-57064_allProjects.csv",
+		"/home/yarick/Work/jira-stats.txt",
+		"/home/yarick/Downloads/blast.yml",
+		"/home/yarick/Downloads/33.eps",
+		"/tmp/mozilla_yarick0/JC-57064_allProjects.csv",
+		"/tmp/mozilla_yarick0/jira_project_list.txt",
+		"/tmp/mozilla_yarick0/MNT-371514.lua",
 		"/home/yarick/Downloads/mrgs-apps.csv",
 		"/tmp/fips-iso-map.csv",
 		"/tmp/mozilla_yarick0/drive_61_version_74150.diff",
-		"/home/yarick/Downloads/blast.yml",
 		"/home/yarick/Downloads/access.txt",
-		"/home/yarick/Downloads/33.eps",
 		"/home/yarick/Downloads/2.txt",
 		"/home/yarick/Downloads/1.txt",
 		"/home/yarick/Downloads/FB DPA HC/pt9doc1.txt",
@@ -247,7 +268,7 @@
 	],
 	"find":
 	{
-		"height": 23.0
+		"height": 29.0
 	},
 	"find_in_files":
 	{
@@ -287,7 +308,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 23.0
+		"height": 29.0
 	},
 	"input":
 	{
@@ -316,19 +337,19 @@
 		]
 	},
 	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 317.0
+	},
 	"output.find_results":
 	{
 		"height": 0.0
 	},
-	"output.golang_build":
-	{
-		"height": 102.0
-	},
-	"pinned_build_system": "",
-	"project": "backend.sublime-project",
+	"pinned_build_system": "Packages/Makefile/Make.sublime-build",
+	"project": "admin.sublime-project",
 	"replace":
 	{
-		"height": 42.0
+		"height": 54.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -363,7 +384,7 @@
 	{
 	},
 	"show_minimap": false,
-	"show_open_files": false,
+	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
 	"side_bar_width": 330.0,
