@@ -5,7 +5,7 @@
 
     }
     static function displaySidebarEntry($pre, $path, $routes, $key, $level, $fullPath, $onPath) {
-      if ($key == "default") {
+      if ($key == "default" || (substr($key, 0, 1) == "_")) {
         return $pre;
       };
       $path = sprintf("%s/%s", $path, $key); 

@@ -1,6 +1,6 @@
 <?php
   namespace Yjr\A1ertme;
-  class Queue {
+  class Queues {
     function __construct() {
     }
     public static function handleDefault($cfg) {

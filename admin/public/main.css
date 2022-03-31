@@ -1,6 +1,13 @@
 #body {
   display:  flex;
 }
+#errorbar {
+  width:  100%;
+  text-align: center;
+  color: white;
+  background-color: darkred;
+}
+
 #sidebar {
   width:  30%;
 }
@@ -21,9 +28,59 @@
   width: 100%;
   text-align: center;
 }
+#main_body {
+  width: 100%;
+  text-align: center;
+  flex-direction: column;
+}
+.config_entry {
+  display: flex;
+  flex-direction: row;
+}
+.config_key {
+  text-align: left;
+  margin-left: 5%;
+  width: 25%;
+}
+.config_value {
+  margin-right: 5%;
+  width: 75%;
+}
+.config_value > input {
+  width: 100%;
+}
+
 .sidebar_level_0 {
   margin-left: 10%;
 }
 .sidebar_level_1 {
   margin-left: 20%;
+}
+
+.channel_list {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.channel_id {
+  margin-left: 10%;
+  width: 10%;
+  margin-right: 10%;
+  text-align: left;
+}
+.channel_descr {
+  margin-left: 10%;
+  width: 90%;
+  margin-right: 10%;
+  text-align: left;
+}
+
+.channel_label {
+  text-align: left;
+}
+
+.channel_sinks {
+  font-size: smaller;
+  text-align: left;
 }

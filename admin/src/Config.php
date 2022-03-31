@@ -1,10 +1,11 @@
 <?php 
 namespace Yjr\A1ertme;
 class Config {
-	private $cfg, $cfgURI, $redO;
-	function __construct($uri) {
+	private $cfg, $cfgURI, $cfgKey, $redO;
+	function __construct($uri, $key) {
 		$this->cfg = array();
 		$this->cfgURI = $uri;
+		$this->cfgKey = $key;
 		$this->redO = new \Redis();
 	}
 	function connect() {
@@ -21,32 +22,37 @@ class Config {
 		if ($_r == false) {
 			Logger::log(ERR, "Failed to connect to config Redis at " . $this->cfgURI);
 		};
-		return $_r;
+		return $_r ? $this->redO : false;
 	}
 	function load() {
 		$newCfg = [];
-		if ($this->connect()) {
-			$newCfg = $this->redO->hGetAll("settings");
+		$rc = $this->connect(); 
+		if ($rc != false) {
+			$newCfg = $rc->hGetAll($this->cfgKey);
 			if (count($newCfg) > 0) {
 				$this->cfg = $newCfg;
-				$this->redO->close();
+				$rc->close();
 				return true;
 			};
 			Logger::log(ERR, "Loaded empty configuration");
-			$this->redO->close();
+			$rc->close();
 		};
 		return false;
 	}
 	function save() {
-		if ($this->connect()) {
-			$_r = $this->redO->hMSet("settings", $this->cfg);
-			$this->redO->close();
+		$rc = $this->connect();
+		if ($rc != false) {
+			$_r = $rc->hMSet($this->cfgKey, $this->cfg);
+			$rc->close();
 			return $_r;
 		};
 		return false;
 	}
 	function get($key) {
 		return isset($this->cfg[$key]) ? $this->cfg[$key] : false;
+	}
+	function keys() {
+		return array_keys($this->cfg);
 	}
 	function set($key, $value) {
 		$this->cfg[$key] = $value;
@@ -55,7 +61,7 @@ class Config {
 		# ru - redis URI
 		# hps - host+port or socket
 		# hp = host+port
-		$ru = $this->get("redisURI");
+		$ru = $this->get("data_redis");
 		$hps = false;
 		if (!$ru || (preg_match('/^redis:\/\/(.*)$/', $ru, $hps) !== 1 )) {
 			return false;
@@ -82,5 +88,31 @@ class Config {
 		};
 		return $ret;
 	}
+	public static function handleSave($cfg) {
+		$cfg->save();
+		Config::handleDefault($cfg);
+	}
+	public static function handleDefault($cfg) {
+		if (isset($_POST['save'])) {
+			foreach ($_POST as $k => $v) {
+				if (preg_match('/^value_(.+)$/', $k, $m) === 1) {
+					$cfg->set($m[1], $v);
+				};
+			};
+			$cfg->save();
+		};
+		?>Config
+		<form name="config" method="post" action="#"><?php
+		foreach ($cfg->keys() as $k) {
+			?>
+        		<div class="config_entry"><div class="config_key"><?=$k;?></div><div class="config_value"><input type="text" name="value_<?=$k?>" value="<?=$cfg->get($k);?>"></div></div>
+			<?php
+		}
+		?>
+		<input type="submit" name="save" value="Save">
+		</form>
+		<?php
+    }
+
 }
 ?>

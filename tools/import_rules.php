@@ -13,7 +13,7 @@
   $red = new Redis();
 
   if (isset($opts['h'])) {
-    $port = isset($opts['p']) ? int($opts['p']) : 6379;
+    $port = isset($opts['p']) ? intval($opts['p']) : 6379;
     if ($red->connect($opts['h'], $port) == FALSE) {
       fwrite(STDERR, "Error connecting to Redis at ".$opts['h'].":".$port."\n");
       exit(3);
@@ -43,12 +43,12 @@
   usort($rules, "idcmp");
   $lastChId = 0;
   $rm = $red->multi();
-  $rm->lTrim("channel_defs", 1, 0);
+  $rm->del("channel_defs", 1, 0);
   foreach($rules as $rule) {
     if ($rule['id'] > $lastChId) {
       $lastChId = $rule['id'];
     };
-    $rm->rPush("channel_defs", json_encode($rule, JSON_NUMERIC_CHECK|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
+    $rm->hSet("channel_defs", $rule["id"], json_encode($rule, JSON_NUMERIC_CHECK|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
     fwrite(STDOUT, json_encode($rule, JSON_NUMERIC_CHECK|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n");
   };
   $rm->hSet("settings", "channel_version", $currChVer + 1);
