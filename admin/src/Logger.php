@@ -25,5 +25,8 @@ class Logger {
 			error_log($out);
 		}
 	}
+	public static function showError($out) {
+		echo "<script>error(\"$out\");</script>\n";
+	}
 }	
  ?>

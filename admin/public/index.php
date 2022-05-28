@@ -1,14 +1,15 @@
 <?php
+  namespace Yjr\A1ertme;
   define("CONFIG_REDIS_URI", getenv("CONFIG_REDIS_URI"));
   define("CONFIG_KEY", getenv("CONFIG_KEY") ? getenv("CONFIG_KEY") : "settings");
   require __DIR__ . '/../vendor/autoload.php';
-  use Yjr\A1ertme\Logger;
-  use Yjr\A1ertme\Config;
-  use Yjr\A1ertme\Router;
-  use Yjr\A1ertme\Sidebar;
-  use Yjr\A1ertme\Main;
-  use Yjr\A1ertme\Channels;
-  use Yjr\A1ertme\Queue;
+  use Logger;
+  use Config;
+  use Router;
+  use Sidebar;
+  use Main;
+  use Channels;
+  use Queue;
   Logger::level(DEBUG);
   Logger::log(INFO, "Starting");
   $cfg = new Config(CONFIG_REDIS_URI, CONFIG_KEY);
@@ -19,24 +20,12 @@
   Logger::log(DEBUG, var_export($_SERVER, true));
   $routes = 
   [
-    "default" => "Yjr\A1ertme\Main::handleDefault",
-    "config"  => [
-      "default" => "Yjr\A1ertme\Config::handleDefault",
-      "_save"    => "Yjr\A1ertme\Config::handleSave"
-    ],
-    "queues" => 
-    [  
-      "default" => "Yjr\A1ertme\Queues::handleDefault", 
-      "unmatched" => "Yjr\A1ertme\Queues::handleUnmatched", 
-      "undelivered" => "Yjr\A1ertme\Queues::handleUndelivered"
-    ],
-    "channels" => 
-    [
-      "default" => "Yjr\A1ertme\Channels::handleDefault",
-      "modify" => "Yjr\A1ertme\Channel::handleModify", 
-      "tests" => "Yjr\A1ertme\Channels::handleTests"
-    ]
+    "default"   => "\Main::handleDefault",
+    "config"    => Sidebar::Submenu("\Config::getMenu", $cfg),
+    "queues"    => Sidebar::Submenu("\Queues::getMenu", $cfg),
+    "channels"  => Sidebar::Submenu("\Channels::getMenu", $cfg),
   ];
+  $uriPath = Router::getPath($routes, $_SERVER["REQUEST_URI"])
 ?>
 <html><head><title>a1ert.me management interface</title><link href="/main.css?c=<?=rand();?>" rel="stylesheet"/></head>
 <script>function error(e) { document.getElementById('errorbar').innerText = e; }</script>
@@ -44,7 +33,7 @@
 <div id='errorbar'></div>
 <div id='workarea'>
   <div id='sidebar'><div id='sidebar_header'>Sidebar</div>
-    <?php echo Sidebar::displaySidebar($routes, Router::getPath($routes, $_SERVER["REQUEST_URI"]));?>
+    <?php echo Sidebar::displaySidebar($routes, $uriPath);?>
   </div>
   <div id='separator'></div>
   <div id='main'>
@@ -53,7 +42,7 @@
 <?php 
   $route = Router::getRoute($routes, $_SERVER["REQUEST_URI"]);
   if ($route) {
-    call_user_func_array($route, array(&$cfg));
+    call_user_func_array(__NAMESPACE__.$route, array(&$cfg, $uriPath));
   }
   ?>
     </div> <!--main_body-->

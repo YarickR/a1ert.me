@@ -3,6 +3,14 @@
   class Queues {
     function __construct() {
     }
+    public static function getMenu($cfg) {
+      $ret = [  
+        "default" => "Yjr\A1ertme\Queues::handleDefault", 
+        "unmatched" => "Yjr\A1ertme\Queues::handleUnmatched", 
+        "undelivered" => "Yjr\A1ertme\Queues::handleUndelivered"
+      ];
+      return $ret;
+    }
     public static function handleDefault($cfg) {
       $dr = $cfg->dataRedis();
       if ($dr) {

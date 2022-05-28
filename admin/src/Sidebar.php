@@ -12,6 +12,7 @@
       $onPath = $onPath & ((count($fullPath) > $level) && ($fullPath[$level] == $key));
       $pathMark = $onPath ? "*" : "";
       $pre = $pre . sprintf("<div><div class='sidebar_level_%d'><a href='%s'>%s%s</a></div></div>\n", $level, $path, $pathMark, $key);
+      
       if (is_array($routes[$key])) {
         foreach ($routes[$key] as $chK => $chR) {
           $pre = self::displaySidebarEntry($pre, $path, $routes[$key], $chK, $level + 1, $fullPath, $onPath);
@@ -25,6 +26,9 @@
         array_push($ret, self::displaySidebarEntry("", "", $routes, $rK, 0, $currPath, true));
       };
       return implode("\n", $ret);
+    }
+    static function Submenu($funcName, $cfg) {
+      return call_user_func_array(__NAMESPACE__.$route, array(&$cfg));
     }
   }
 ?>

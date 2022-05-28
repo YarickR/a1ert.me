@@ -109,19 +109,6 @@
 		},
 		{
 			"file": "backend/push_daemon.go",
-			"redo_stack":
-			[
-				[
-					19,
-					1,
-					"insert",
-					{
-						"characters": "ccccbcececievdjuvltuitbcfdhgdcgcdtehkethegfi"
-					},
-					"LAAAAIc7AAAAAAAAhzsAAAAAAAABAAAAaYY7AAAAAAAAhjsAAAAAAAABAAAAZoU7AAAAAAAAhTsAAAAAAAABAAAAZ4Q7AAAAAAAAhDsAAAAAAAABAAAAZYM7AAAAAAAAgzsAAAAAAAABAAAAaII7AAAAAAAAgjsAAAAAAAABAAAAdIE7AAAAAAAAgTsAAAAAAAABAAAAZYA7AAAAAAAAgDsAAAAAAAABAAAAa387AAAAAAAAfzsAAAAAAAABAAAAaH47AAAAAAAAfjsAAAAAAAABAAAAZX07AAAAAAAAfTsAAAAAAAABAAAAdHw7AAAAAAAAfDsAAAAAAAABAAAAZHs7AAAAAAAAezsAAAAAAAABAAAAY3o7AAAAAAAAejsAAAAAAAABAAAAZ3k7AAAAAAAAeTsAAAAAAAABAAAAY3g7AAAAAAAAeDsAAAAAAAABAAAAZHc7AAAAAAAAdzsAAAAAAAABAAAAZ3Y7AAAAAAAAdjsAAAAAAAABAAAAaHU7AAAAAAAAdTsAAAAAAAABAAAAZHQ7AAAAAAAAdDsAAAAAAAABAAAAZnM7AAAAAAAAczsAAAAAAAABAAAAY3I7AAAAAAAAcjsAAAAAAAABAAAAYnE7AAAAAAAAcTsAAAAAAAABAAAAdHA7AAAAAAAAcDsAAAAAAAABAAAAaW87AAAAAAAAbzsAAAAAAAABAAAAdW47AAAAAAAAbjsAAAAAAAABAAAAdG07AAAAAAAAbTsAAAAAAAABAAAAbGw7AAAAAAAAbDsAAAAAAAABAAAAdms7AAAAAAAAazsAAAAAAAABAAAAdWo7AAAAAAAAajsAAAAAAAABAAAAamk7AAAAAAAAaTsAAAAAAAABAAAAZGg7AAAAAAAAaDsAAAAAAAABAAAAdmc7AAAAAAAAZzsAAAAAAAABAAAAZWY7AAAAAAAAZjsAAAAAAAABAAAAaWU7AAAAAAAAZTsAAAAAAAABAAAAY2Q7AAAAAAAAZDsAAAAAAAABAAAAZWM7AAAAAAAAYzsAAAAAAAABAAAAY2I7AAAAAAAAYjsAAAAAAAABAAAAZWE7AAAAAAAAYTsAAAAAAAABAAAAY2A7AAAAAAAAYDsAAAAAAAABAAAAYl87AAAAAAAAXzsAAAAAAAABAAAAY147AAAAAAAAXjsAAAAAAAABAAAAY107AAAAAAAAXTsAAAAAAAABAAAAY1w7AAAAAAAAXDsAAAAAAAABAAAAYw",
-					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAACIOwAAAAAAAIg7AAAAAAAAAAAAAAAA8L8"
-				]
-			],
 			"settings":
 			{
 				"buffer_size": 15199,
@@ -193,7 +180,7 @@
 	},
 	"console":
 	{
-		"height": 0.0,
+		"height": 112.0,
 		"history":
 		[
 		]
@@ -209,12 +196,12 @@
 	},
 	"expanded_folders":
 	[
-		"/home/yarick/Work/a1ert.me/backend",
-		"/home/yarick/Work/a1ert.me/backend/plugins"
+		"/home/yarick/Work/a1ert.me/backend"
 	],
 	"file_history":
 	[
-		"/home/yarick/Work/a1ert.me/backend/go.mod",
+		"/home/yarick/Downloads/Kleo_Matsuki.json",
+		"/home/yarick/Work/a1ert.me/backend/go.sum",
 		"/home/yarick/Work/a1ert.me/backend/structs.go",
 		"/home/yarick/Work/a1ert.me/backend/channel.go",
 		"/home/yarick/Work/a1ert.me/backend/push_daemon.go",
@@ -286,7 +273,7 @@
 	],
 	"find":
 	{
-		"height": 32.0
+		"height": 29.0
 	},
 	"find_in_files":
 	{
@@ -300,7 +287,7 @@
 		"case_sensitive": true,
 		"find_history":
 		[
-			"XMPP"
+			"redisLoadServiceConfig"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -325,6 +312,7 @@
 				{
 					"buffer": 0,
 					"file": "backend/channel.go",
+					"selected": true,
 					"semi_transient": false,
 					"settings":
 					{
@@ -335,48 +323,27 @@
 						"selection":
 						[
 							[
-								10400,
-								10400
+								25768,
+								25768
 							]
 						],
 						"settings":
 						{
-							"auto_complete_triggers":
-							[
-								{
-									"characters": "<",
-									"selector": "text.html, text.xml"
-								},
-								{
-									"rhs_empty": true,
-									"selector": "punctuation.accessor"
-								},
-								{
-									"characters": ".",
-									"selector": "meta.tag, source - comment - string.quoted.double.block - string.quoted.single.block - string.unquoted.heredoc",
-									"server": "gopls"
-								}
-							],
-							"lsp_active": true,
-							"lsp_hover_provider_count": 1,
-							"lsp_uri": "file:///home/yarick/Work/a1ert.me/backend/channel.go",
-							"show_definitions": false,
 							"syntax": "Packages/Go/Go.sublime-syntax",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 6562.0,
+						"translation.y": 12966.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 0,
 					"stack_multiselect": false,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
 					"file": "backend/push_daemon.go",
-					"selected": true,
 					"semi_transient": false,
 					"settings":
 					{
@@ -387,41 +354,21 @@
 						"selection":
 						[
 							[
-								15196,
-								15196
+								456,
+								456
 							]
 						],
 						"settings":
 						{
-							"auto_complete_triggers":
-							[
-								{
-									"characters": "<",
-									"selector": "text.html, text.xml"
-								},
-								{
-									"rhs_empty": true,
-									"selector": "punctuation.accessor"
-								},
-								{
-									"characters": ".",
-									"selector": "meta.tag, source - comment - string.quoted.double.block - string.quoted.single.block - string.unquoted.heredoc",
-									"server": "gopls"
-								}
-							],
-							"lsp_active": true,
-							"lsp_hover_provider_count": 2,
-							"lsp_uri": "file:///home/yarick/Work/a1ert.me/backend/push_daemon.go",
-							"show_definitions": false,
 							"syntax": "Packages/Go/Go.sublime-syntax",
-							"tab_size": 2,
+							"tab_size": 4,
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 2,
 					"stack_multiselect": false,
 					"type": "text"
 				},
@@ -438,38 +385,18 @@
 						"selection":
 						[
 							[
-								326,
-								326
+								786,
+								786
 							]
 						],
 						"settings":
 						{
-							"auto_complete_triggers":
-							[
-								{
-									"characters": "<",
-									"selector": "text.html, text.xml"
-								},
-								{
-									"rhs_empty": true,
-									"selector": "punctuation.accessor"
-								},
-								{
-									"characters": ".",
-									"selector": "meta.tag, source - comment - string.quoted.double.block - string.quoted.single.block - string.unquoted.heredoc",
-									"server": "gopls"
-								}
-							],
-							"lsp_active": true,
-							"lsp_hover_provider_count": 1,
-							"lsp_uri": "file:///home/yarick/Work/a1ert.me/backend/structs.go",
-							"show_definitions": false,
 							"syntax": "Packages/Go/Go.sublime-syntax",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1183.0,
+						"translation.y": 312.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
@@ -481,11 +408,11 @@
 	],
 	"incremental_find":
 	{
-		"height": 32.0
+		"height": 29.0
 	},
 	"input":
 	{
-		"height": 44.0
+		"height": 0.0
 	},
 	"layout":
 	{
@@ -510,10 +437,6 @@
 		]
 	},
 	"menu_visible": true,
-	"output.diagnostics":
-	{
-		"height": 0.0
-	},
 	"output.find_results":
 	{
 		"height": 0.0
@@ -522,19 +445,11 @@
 	{
 		"height": 102.0
 	},
-	"output.language servers":
-	{
-		"height": 0.0
-	},
-	"output.mdpopups":
-	{
-		"height": 0.0
-	},
-	"pinned_build_system": "",
+	"pinned_build_system": "Packages/Golang Build/Go.sublime-build",
 	"project": "backend.sublime-project",
 	"replace":
 	{
-		"height": 60.0
+		"height": 54.0
 	},
 	"save_all_on_build": true,
 	"select_file":

@@ -30,6 +30,15 @@
       };
       return $channels; 
     }
+    public static function getMenu($cfg) {
+      $ret =     
+        [
+          "default" => "Yjr\A1ertme\Channels::handleDefault",
+          "modify" => "Yjr\A1ertme\Channel::handleModify", 
+          "tests" => "Yjr\A1ertme\Channels::handleTests"
+        ];
+        return $ret;
+    }
     static function handleDefault($cfg) {
       ?>
         Channels
