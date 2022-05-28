@@ -1,4 +1,4 @@
-module main
+module dagproc
 
 go 1.17
 

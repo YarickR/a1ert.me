@@ -1,11 +1,16 @@
 #body {
-  display:  flex;
+  display: flex;
+  flex-direction:  column;
 }
 #errorbar {
   width:  100%;
   text-align: center;
   color: white;
   background-color: darkred;
+}
+#workarea {
+  width:  100%;
+  display:  flex;
 }
 
 #sidebar {

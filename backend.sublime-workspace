@@ -99,6 +99,43 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "backend/channel.go",
+			"settings":
+			{
+				"buffer_size": 32674,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "backend/push_daemon.go",
+			"redo_stack":
+			[
+				[
+					19,
+					1,
+					"insert",
+					{
+						"characters": "ccccbcececievdjuvltuitbcfdhgdcgcdtehkethegfi"
+					},
+					"LAAAAIc7AAAAAAAAhzsAAAAAAAABAAAAaYY7AAAAAAAAhjsAAAAAAAABAAAAZoU7AAAAAAAAhTsAAAAAAAABAAAAZ4Q7AAAAAAAAhDsAAAAAAAABAAAAZYM7AAAAAAAAgzsAAAAAAAABAAAAaII7AAAAAAAAgjsAAAAAAAABAAAAdIE7AAAAAAAAgTsAAAAAAAABAAAAZYA7AAAAAAAAgDsAAAAAAAABAAAAa387AAAAAAAAfzsAAAAAAAABAAAAaH47AAAAAAAAfjsAAAAAAAABAAAAZX07AAAAAAAAfTsAAAAAAAABAAAAdHw7AAAAAAAAfDsAAAAAAAABAAAAZHs7AAAAAAAAezsAAAAAAAABAAAAY3o7AAAAAAAAejsAAAAAAAABAAAAZ3k7AAAAAAAAeTsAAAAAAAABAAAAY3g7AAAAAAAAeDsAAAAAAAABAAAAZHc7AAAAAAAAdzsAAAAAAAABAAAAZ3Y7AAAAAAAAdjsAAAAAAAABAAAAaHU7AAAAAAAAdTsAAAAAAAABAAAAZHQ7AAAAAAAAdDsAAAAAAAABAAAAZnM7AAAAAAAAczsAAAAAAAABAAAAY3I7AAAAAAAAcjsAAAAAAAABAAAAYnE7AAAAAAAAcTsAAAAAAAABAAAAdHA7AAAAAAAAcDsAAAAAAAABAAAAaW87AAAAAAAAbzsAAAAAAAABAAAAdW47AAAAAAAAbjsAAAAAAAABAAAAdG07AAAAAAAAbTsAAAAAAAABAAAAbGw7AAAAAAAAbDsAAAAAAAABAAAAdms7AAAAAAAAazsAAAAAAAABAAAAdWo7AAAAAAAAajsAAAAAAAABAAAAamk7AAAAAAAAaTsAAAAAAAABAAAAZGg7AAAAAAAAaDsAAAAAAAABAAAAdmc7AAAAAAAAZzsAAAAAAAABAAAAZWY7AAAAAAAAZjsAAAAAAAABAAAAaWU7AAAAAAAAZTsAAAAAAAABAAAAY2Q7AAAAAAAAZDsAAAAAAAABAAAAZWM7AAAAAAAAYzsAAAAAAAABAAAAY2I7AAAAAAAAYjsAAAAAAAABAAAAZWE7AAAAAAAAYTsAAAAAAAABAAAAY2A7AAAAAAAAYDsAAAAAAAABAAAAYl87AAAAAAAAXzsAAAAAAAABAAAAY147AAAAAAAAXjsAAAAAAAABAAAAY107AAAAAAAAXTsAAAAAAAABAAAAY1w7AAAAAAAAXDsAAAAAAAABAAAAYw",
+					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAACIOwAAAAAAAIg7AAAAAAAAAAAAAAAA8L8"
+				]
+			],
+			"settings":
+			{
+				"buffer_size": 15199,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "backend/structs.go",
+			"settings":
+			{
+				"buffer_size": 2815,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "Packages/Golang Build/Go.sublime-build",
 	"build_system_choices":
@@ -172,10 +209,12 @@
 	},
 	"expanded_folders":
 	[
-		"/home/yarick/Work/a1ert.me/backend"
+		"/home/yarick/Work/a1ert.me/backend",
+		"/home/yarick/Work/a1ert.me/backend/plugins"
 	],
 	"file_history":
 	[
+		"/home/yarick/Work/a1ert.me/backend/go.mod",
 		"/home/yarick/Work/a1ert.me/backend/structs.go",
 		"/home/yarick/Work/a1ert.me/backend/channel.go",
 		"/home/yarick/Work/a1ert.me/backend/push_daemon.go",
@@ -247,7 +286,7 @@
 	],
 	"find":
 	{
-		"height": 35.0
+		"height": 32.0
 	},
 	"find_in_files":
 	{
@@ -261,6 +300,7 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"XMPP"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -282,16 +322,170 @@
 		{
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "backend/channel.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 32674,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								10400,
+								10400
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": "<",
+									"selector": "text.html, text.xml"
+								},
+								{
+									"rhs_empty": true,
+									"selector": "punctuation.accessor"
+								},
+								{
+									"characters": ".",
+									"selector": "meta.tag, source - comment - string.quoted.double.block - string.quoted.single.block - string.unquoted.heredoc",
+									"server": "gopls"
+								}
+							],
+							"lsp_active": true,
+							"lsp_hover_provider_count": 1,
+							"lsp_uri": "file:///home/yarick/Work/a1ert.me/backend/channel.go",
+							"show_definitions": false,
+							"syntax": "Packages/Go/Go.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 6562.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "backend/push_daemon.go",
+					"selected": true,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 15199,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								15196,
+								15196
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": "<",
+									"selector": "text.html, text.xml"
+								},
+								{
+									"rhs_empty": true,
+									"selector": "punctuation.accessor"
+								},
+								{
+									"characters": ".",
+									"selector": "meta.tag, source - comment - string.quoted.double.block - string.quoted.single.block - string.unquoted.heredoc",
+									"server": "gopls"
+								}
+							],
+							"lsp_active": true,
+							"lsp_hover_provider_count": 2,
+							"lsp_uri": "file:///home/yarick/Work/a1ert.me/backend/push_daemon.go",
+							"show_definitions": false,
+							"syntax": "Packages/Go/Go.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "backend/structs.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2815,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								326,
+								326
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": "<",
+									"selector": "text.html, text.xml"
+								},
+								{
+									"rhs_empty": true,
+									"selector": "punctuation.accessor"
+								},
+								{
+									"characters": ".",
+									"selector": "meta.tag, source - comment - string.quoted.double.block - string.quoted.single.block - string.unquoted.heredoc",
+									"server": "gopls"
+								}
+							],
+							"lsp_active": true,
+							"lsp_hover_provider_count": 1,
+							"lsp_uri": "file:///home/yarick/Work/a1ert.me/backend/structs.go",
+							"show_definitions": false,
+							"syntax": "Packages/Go/Go.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1183.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"stack_multiselect": false,
+					"type": "text"
+				}
 			]
 		}
 	],
 	"incremental_find":
 	{
-		"height": 35.0
+		"height": 32.0
 	},
 	"input":
 	{
-		"height": 0.0
+		"height": 44.0
 	},
 	"layout":
 	{
@@ -328,11 +522,19 @@
 	{
 		"height": 102.0
 	},
+	"output.language servers":
+	{
+		"height": 0.0
+	},
+	"output.mdpopups":
+	{
+		"height": 0.0
+	},
 	"pinned_build_system": "",
 	"project": "backend.sublime-project",
 	"replace":
 	{
-		"height": 64.0
+		"height": 60.0
 	},
 	"save_all_on_build": true,
 	"select_file":

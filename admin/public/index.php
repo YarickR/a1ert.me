@@ -42,20 +42,23 @@
 <script>function error(e) { document.getElementById('errorbar').innerText = e; }</script>
 <body id='body'>
 <div id='errorbar'></div>
-<div id='sidebar'><div id='sidebar_header'>Sidebar</div>
-<?php echo Sidebar::displaySidebar($routes, Router::getPath($routes, $_SERVER["REQUEST_URI"]));?>
-</div>
-<div id='separator'></div>
-<div id='main'><div id='main_header'>Main</div>
-  <div id='main_body'>
+<div id='workarea'>
+  <div id='sidebar'><div id='sidebar_header'>Sidebar</div>
+    <?php echo Sidebar::displaySidebar($routes, Router::getPath($routes, $_SERVER["REQUEST_URI"]));?>
+  </div>
+  <div id='separator'></div>
+  <div id='main'>
+    <div id='main_header'>Main</div>
+    <div id='main_body'>
 <?php 
   $route = Router::getRoute($routes, $_SERVER["REQUEST_URI"]);
   if ($route) {
     call_user_func_array($route, array(&$cfg));
   }
   ?>
-  </div>
-</div>
+    </div> <!--main_body-->
+  </div> <!--main-->
+</div> <!--workarea-->
 </body>
 </html>
 
