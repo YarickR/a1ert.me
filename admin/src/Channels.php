@@ -44,7 +44,10 @@
             <div class='channel_sinks'>[ <?php foreach ($ch->sinks as $sink) { printf(" %d ", $sink); };?>]</div>
           </div>
         </div>
-        <form name="new_channel" method="POST" action="/channels/modify/"><input type="hidden" name="create_channel" value="1"><input type="submit" value="Create channel"></form>
+        <form name="new_channel" method="POST" action="/channels/modify/">
+            <input type="hidden" name="create_channel" value="1">
+            <input type="submit" value="Create channel">
+        </form>
         <?php
       }
     }

@@ -247,7 +247,7 @@
 	],
 	"find":
 	{
-		"height": 23.0
+		"height": 35.0
 	},
 	"find_in_files":
 	{
@@ -287,7 +287,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 23.0
+		"height": 35.0
 	},
 	"input":
 	{
@@ -316,6 +316,10 @@
 		]
 	},
 	"menu_visible": true,
+	"output.diagnostics":
+	{
+		"height": 0.0
+	},
 	"output.find_results":
 	{
 		"height": 0.0
@@ -328,7 +332,7 @@
 	"project": "backend.sublime-project",
 	"replace":
 	{
-		"height": 42.0
+		"height": 64.0
 	},
 	"save_all_on_build": true,
 	"select_file":

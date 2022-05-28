@@ -59,9 +59,10 @@ namespace Yjr\A1ertme;
       if (intval($_GET["channel_id"]) >= 0) {
         $ch->load(intval($_GET["channel_id"]), $rc)
       };
+
       if (isset($_POST["save"])) {
         if ($rc->hSetNx(CHANNELS, MLOCK, "locked") == true) {
-          
+          $ch->save($rc);
           $rc->hDel(CHANNELS, MLOCK);
         }
 
@@ -71,16 +72,16 @@ namespace Yjr\A1ertme;
         Channel
 
         <form name="modify_channel" action="#" method="POST">
-          <div class='channel_prop'><input type="text" name="<?=$chId;?>_label"></div>
-          <div class='channel_prop'><input type="text" name="<?=$chId;?>_group"></div>
+          <div class='channel_prop'><input type="text" name="<?=$chId;?>_label" value=""></div>
+          <div class='channel_prop'><input type="text" name="<?=$chId;?>_group" value=""></div>
         <?php
         foreach ($ch->rules as $rule) {
           $chrId = sprintf("channel_%d_rule_%d", $ch->id, $rule["id"]);
           ?>
-          <div class='rule_prop'><input type="text" name="<?=$chrId;?>_src"></div>
-          <div class='rule_prop'><input type="text" name="<?=$chrId;?>_cond"></div>
-          <div class='rule_prop'><input type="text" name="<?=$chrId;?>_link"></div>
-          <input type="submit" value="add_rule"><input type="submit" value="save">
+          <div class='rule_prop'><input type="text" name="<?=$chrId;?>_src"   value=""></div>
+          <div class='rule_prop'><input type="text" name="<?=$chrId;?>_cond"  value=""></div>
+          <div class='rule_prop'><input type="text" name="<?=$chrId;?>_link"  value=""></div>
+          <input type="submit" value="add_rule"><input type="submit" value="save_channel">
         <?php
         };
         ?>
