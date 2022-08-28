@@ -3,13 +3,13 @@
   define("CONFIG_REDIS_URI", getenv("CONFIG_REDIS_URI"));
   define("CONFIG_KEY", getenv("CONFIG_KEY") ? getenv("CONFIG_KEY") : "settings");
   require __DIR__ . '/../vendor/autoload.php';
-  use Logger;
-  use Config;
-  use Router;
-  use Sidebar;
-  use Main;
-  use Channels;
-  use Queue;
+  use Yjr\A1ertme\Logger;
+  use Yjr\A1ertme\Config;
+  use Yjr\A1ertme\Router;
+  use Yjr\A1ertme\Sidebar;
+  use Yjr\A1ertme\Main;
+  use Yjr\A1ertme\Channels;
+  use Yjr\A1ertme\Queue;
   Logger::level(DEBUG);
   Logger::log(INFO, "Starting");
   $cfg = new Config(CONFIG_REDIS_URI, CONFIG_KEY);
@@ -22,7 +22,7 @@
   [
     "default"   => "\Main::handleDefault",
     "config"    => Sidebar::Submenu("\Config::getMenu", $cfg),
-    "queues"    => Sidebar::Submenu("\Queues::getMenu", $cfg),
+//    "queues"    => Sidebar::Submenu("\Queues::getMenu", $cfg),
     "channels"  => Sidebar::Submenu("\Channels::getMenu", $cfg),
   ];
   $uriPath = Router::getPath($routes, $_SERVER["REQUEST_URI"])
@@ -42,7 +42,7 @@
 <?php 
   $route = Router::getRoute($routes, $_SERVER["REQUEST_URI"]);
   if ($route) {
-    call_user_func_array(__NAMESPACE__.$route, array(&$cfg, $uriPath));
+    call_user_func_array(__NAMESPACE__."\\".$route, array(&$cfg, $uriPath));
   }
   ?>
     </div> <!--main_body-->

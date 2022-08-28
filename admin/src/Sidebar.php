@@ -28,7 +28,7 @@
       return implode("\n", $ret);
     }
     static function Submenu($funcName, $cfg) {
-      return call_user_func_array(__NAMESPACE__.$route, array(&$cfg));
+      return call_user_func_array(__NAMESPACE__.$funcName, array(&$cfg));
     }
   }
 ?>

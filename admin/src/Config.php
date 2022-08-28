@@ -60,7 +60,7 @@ class Config {
 
 	function getPlugins() {
 		$ps = $this->get("plugins");
-		return $ps && (strlen($ps) > 0) ? preg_split("/[\ ,:/]+/", $ps, -1, PREG_SPLIT_NO_EMPTY) : array();
+		return $ps && (strlen($ps) > 0) ? preg_split("/[\ ,:\/]+/", $ps, -1, PREG_SPLIT_NO_EMPTY) : array();
 	}
 	function loadPluginConfig($plugin) {
 		$newCfg = [];
@@ -80,7 +80,7 @@ class Config {
 		$newCfg = [];
 		$rc = $this->connect(); 
 		if ($rc != false) {
-			$s = $rc->hSetAll($this->cfgKey."_".$plugin, $pluginCfg);
+			$s = $rc->hMSet($this->cfgKey."_".$plugin, $pluginCfg);
 			$rc->close();
 		};
 		return false;
@@ -130,16 +130,24 @@ class Config {
     	];
     	$plugins = $cfg->getPlugins();
 		foreach ($plugins as $p) {
-			$ret[$p] = "Config::handlePluginConfig"
-    	}
+			$ret[$p] = "Config::handlePluginConfig";
+    	};
     	return $ret;
 	}
 	public static function handlePluginConfig($cfg, $uriPath) {
+		$plugin = $uriPath[sizeof($uriPath) - 1]; // last entry
+		$plugCfg = $cfg->loadPluginConfig($plugin);
+		if (isset($_POST['save'])) {
+			foreach ($_POST as $k => $v) {
+				if (preg_match('/^value_(.+)$/', $k, $m) === 1) {
+					$plugCfg[$m[1]] = $v;
+				};
+			};
+			$cfg->savePluginConfig($plugin, $plugCfg);
+		};
 		?>Config
 		<form name="config" method="post" action="#"><?php
-		$plugin = $uriPath[sizeof($uriPath) - 1]; // last entry
-		$plugCfg = $cfg->getPluginConfig($plugin);
-		foreach ($plugCfg as $k -> $v) {
+		foreach ($plugCfg as $k => $v) {
 			?>
         		<div class="config_entry"><div class="config_key"><?=$k;?></div><div class="config_value"><input type="text" name="value_<?=$k?>" value="<?=$v;?>"></div></div>
 			<?php

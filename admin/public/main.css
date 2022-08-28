@@ -64,10 +64,16 @@
 
 .channel_list {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
 }
 
+.channel {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+
+}
 .channel_id {
   margin-left: 10%;
   width: 10%;
@@ -79,6 +85,8 @@
   width: 90%;
   margin-right: 10%;
   text-align: left;
+  display: flex;
+  flex-direction: row;
 }
 
 .channel_label {
