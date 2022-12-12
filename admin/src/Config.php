@@ -10,7 +10,7 @@ class Config {
 	}
 	function connect() {
 		if (strlen(trim($this->cfgURI)) == 0) {
-			Logger::log("ERROR", "Empty config Redis URI");
+			Logger::log(ERR, "Empty config Redis URI");
 			return false;
 		};
 		$cuParts = explode(":", $this->cfgURI);
@@ -128,11 +128,11 @@ class Config {
       		"default" => "Config::handleDefault",
       		"_save"   => "Config::handleSave"
     	];
-    	$plugins = $cfg->getPlugins();
+    $plugins = $cfg->getPlugins();
 		foreach ($plugins as $p) {
 			$ret[$p] = "Config::handlePluginConfig";
-    	};
-    	return $ret;
+    };
+    return $ret;
 	}
 	public static function handlePluginConfig($cfg, $uriPath) {
 		$plugin = $uriPath[sizeof($uriPath) - 1]; // last entry
@@ -144,16 +144,51 @@ class Config {
 				};
 			};
 			$cfg->savePluginConfig($plugin, $plugCfg);
-		};
+		} else
+		if (isset($_POST["new"])) {
+			$rc = $cfg->connect(); 
+			if ($rc != false) {
+		  	$nf = trim($_POST["new_key"]);
+				if ((strlen($nf) > 0) && !isset($plugCfg[$nf]) && (strlen(trim($_POST["new_value"])) > 0)) {
+					$plugCfg[$nf] = trim($_POST["new_value"]);
+					$s = $rc->hSet($cfg->cfgKey."_".$plugin, $nf, $plugCfg[$nf]);
+					$rc->close();
+				};
+			};
+		} else 
+		if (isset($_POST["delete"])) {
+			$rc = $cfg->connect(); 
+			if ($rc != false) {
+				foreach ($_POST as $pk => $pv) {
+					if (preg_match('/delete_(.*)$/', $pk, $pkm) === 1) {
+						unset($plugCfg[$pkm[1]]);
+						$rc->hDel($cfg->cfgKey."_".$plugin, $pkm[1]);
+					};
+				};
+				$rc->close();
+			}
+		}
 		?>Config
 		<form name="config" method="post" action="#"><?php
 		foreach ($plugCfg as $k => $v) {
 			?>
-        		<div class="config_entry"><div class="config_key"><?=$k;?></div><div class="config_value"><input type="text" name="value_<?=$k?>" value="<?=$v;?>"></div></div>
+        		<div class="config_entry">
+        			<input type="checkbox" name="delete_<?=$k?>" value="0">
+        			<div class="config_key"><?=$k;?></div>
+        			<div class="config_value"><input type="text" name="value_<?=$k?>" value="<?=$v;?>"></div>
+        		</div>
 			<?php
 		}
 		?>
-		<input type="submit" name="save" value="Save">
+    <div class="save_delete">		
+    	<input type="submit" name="delete" value="Delete Selected">
+			<input type="submit" name="save" value="Save">
+		</div>
+		<div class="config_entry">
+				<div class="config_new_key">New key:<input type="text" name="new_key"></div>
+		    <div class="config_new_value">New value:<input type="text" name="new_value" value=""></div>
+		    <input type="submit" name="new" value="New">
+		</div>
 		</form>
 
 		<?php

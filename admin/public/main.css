@@ -51,10 +51,30 @@
   margin-right: 5%;
   width: 75%;
 }
+.config_new_key {
+  margin-left: 5%;
+  text-align: left;
+  width: 30%;
+}
+.config_new_value {
+  margin-right: 5%;
+  text-align: left;
+  width: 60%;
+}
+.config_new_key > input {
+  width: 50%;
+}
+.config_new_value > input {
+  width: 80%;
+}
 .config_value > input {
   width: 100%;
 }
-
+.config_save_delete {
+  display: flex;
+  flex-direction: row;
+  width:  100%;
+}
 .sidebar_level_0 {
   margin-left: 10%;
 }

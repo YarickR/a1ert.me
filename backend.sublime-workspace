@@ -105,15 +105,10 @@
 			{
 				"buffer_size": 32674,
 				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "backend/push_daemon.go",
-			"settings":
-			{
-				"buffer_size": 15199,
-				"line_ending": "Unix"
-			}
+			},
+			"undo_stack":
+			[
+			]
 		},
 		{
 			"file": "backend/structs.go",
@@ -200,11 +195,11 @@
 	],
 	"file_history":
 	[
+		"/home/yarick/Work/a1ert.me/backend/push_daemon.go",
 		"/home/yarick/Downloads/Kleo_Matsuki.json",
 		"/home/yarick/Work/a1ert.me/backend/go.sum",
 		"/home/yarick/Work/a1ert.me/backend/structs.go",
 		"/home/yarick/Work/a1ert.me/backend/channel.go",
-		"/home/yarick/Work/a1ert.me/backend/push_daemon.go",
 		"/home/yarick/Work/a1ert.me/backend.sublime-project",
 		"/home/yarick/Work/gtwwtools/sshpc/sshpc.c",
 		"/home/yarick/Downloads/mrgs-apps.csv",
@@ -323,18 +318,38 @@
 						"selection":
 						[
 							[
-								25768,
-								25768
+								22507,
+								22507
 							]
 						],
 						"settings":
 						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": "<",
+									"selector": "text.html, text.xml"
+								},
+								{
+									"rhs_empty": true,
+									"selector": "punctuation.accessor"
+								},
+								{
+									"characters": ".",
+									"selector": "meta.tag, source - comment - string.quoted.double.block - string.quoted.single.block - string.unquoted.heredoc",
+									"server": "gopls"
+								}
+							],
+							"lsp_active": true,
+							"lsp_hover_provider_count": 3,
+							"lsp_uri": "file:///home/yarick/Work/a1ert.me/backend/channel.go",
+							"show_definitions": false,
 							"syntax": "Packages/Go/Go.sublime-syntax",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 12966.0,
+						"translation.y": 11730.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -343,37 +358,6 @@
 				},
 				{
 					"buffer": 1,
-					"file": "backend/push_daemon.go",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 15199,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								456,
-								456
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Go/Go.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"stack_multiselect": false,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
 					"file": "backend/structs.go",
 					"semi_transient": false,
 					"settings":
@@ -391,6 +375,26 @@
 						],
 						"settings":
 						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": "<",
+									"selector": "text.html, text.xml"
+								},
+								{
+									"rhs_empty": true,
+									"selector": "punctuation.accessor"
+								},
+								{
+									"characters": ".",
+									"selector": "meta.tag, source - comment - string.quoted.double.block - string.quoted.single.block - string.unquoted.heredoc",
+									"server": "gopls"
+								}
+							],
+							"lsp_active": true,
+							"lsp_hover_provider_count": 1,
+							"lsp_uri": "file:///home/yarick/Work/a1ert.me/backend/structs.go",
+							"show_definitions": false,
 							"syntax": "Packages/Go/Go.sublime-syntax",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
@@ -437,6 +441,14 @@
 		]
 	},
 	"menu_visible": true,
+	"output.LSP Log Panel":
+	{
+		"height": 0.0
+	},
+	"output.diagnostics":
+	{
+		"height": 0.0
+	},
 	"output.find_results":
 	{
 		"height": 0.0
