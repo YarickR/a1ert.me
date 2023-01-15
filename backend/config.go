@@ -10,6 +10,7 @@ import(
 func configConnect(configDSN string) (redis.Conn, error) {
 	var err error
 	var ret redis.Conn
+	ret =
 }
 func configLoadMainConfig(rc redis.Conn) (ServiceConfig, error) {
 	var err error
