@@ -18,6 +18,7 @@ type Config struct {
 type ServiceConfig struct {
     ChannelDefVer   uint32 `redis:"channel_version"`
     LastChannelId   uint32 `redis:"last_channel_id"`
+    ModList         string `redis:"modules"`
     IsShutdown      bool   `redis:"shutdown"`
 }
 

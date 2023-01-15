@@ -14,9 +14,12 @@ import (
 	"sync"
 	"time"
 	"text/template"
+	"dagproc/internal/redis"
+	"dagproc/internal/xmpp"
+
 )
 
-func redisLoadServiceConfig(rc redis.Conn) (ServiceConfig, error) {
+func loadMainConfig(rc redis.Conn) (ServiceConfig, error) {
 	var err error
 	var svcCfg ServiceConfig
 
@@ -480,8 +483,8 @@ func main() {
 	var alertChannel chan XmppMsg
 	flag.StringVar(&configDSN, "c", "", "config DSN, redis://<host[:port]>/[database id]")
 	flag.Parse()
-	if configFile == "" {
-		log.Printf("Usage: %s -c <config file>", os.Args[0])
+	if configDSN == "" {
+		log.Printf("Usage: %s -c <config DSN>", os.Args[0])
 		os.Exit(1)
 	}
 	config, err = loadConfig(configDSN)
