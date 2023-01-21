@@ -5,6 +5,7 @@ import (
     "text/template"
 )
 
+
 type Config struct {
     XmppServer  string `json:"xmppServer"`
     JidLogin    string `json:"jidLogin"`
@@ -14,8 +15,17 @@ type Config struct {
     GroupsURI   string `json:"groupsURI"`
 }
 
+type ModuleConfig struct {
+    Version uint32
+    Settings map[string]inteface
+}
 
-type ServiceConfig struct {
+type Module struct {
+    Name    string
+    Config  ModuleConfig
+}
+
+type MainConfig struct {
     ChannelDefVer   uint32 `redis:"channel_version"`
     LastChannelId   uint32 `redis:"last_channel_id"`
     ModList         string `redis:"modules"`

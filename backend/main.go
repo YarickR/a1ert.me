@@ -9,6 +9,7 @@ import (
 	"gosrc.io/xmpp/stanza"
 	"io/ioutil"
 	"log"
+	"log/syslog"
 	"os"
 	"regexp"
 	"sync"
@@ -16,8 +17,15 @@ import (
 	"text/template"
 	"dagproc/internal/redis"
 	"dagproc/internal/xmpp"
-
 )
+
+var (
+	DebugLogger	  *log.Logger
+	WarningLogger *log.Logger
+    InfoLogger    *log.Logger
+    ErrorLogger   *log.Logger
+)
+
 
 func loadMainConfig(rc redis.Conn) (ServiceConfig, error) {
 	var err error
@@ -477,15 +485,34 @@ func loadConfig(configFile string) (Config, error) {
 
 func main() {
 	var configDSN string
-	var config Config
+	var logLevel uint32
+	var config MainConfig
 	var err error
+	var moduleNames []string
+	var loadedModules map[string]Module
+
+	DebugLogger = log.New(os.Stderr, "DEBUG: ", log.Ldate|log.Ltime|log.Lshortfile)
+	InfoLogger = log.New(os.Stderr, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+	WarnLogger = log.New(os.Stderr, "WARN: ", log.Ldate|log.Ltime|log.Lshortfile)
+	CritLogger = log.New(os.Stderr, "CRIT: ", log.Ldate|log.Ltime|log.Lshortfile)
 	var wg sync.WaitGroup
 	var alertChannel chan XmppMsg
 	flag.StringVar(&configDSN, "c", "", "config DSN, redis://<host[:port]>/[database id]")
+	flag.StringVar(&logLevel, "l", "INFO", "Log level, DEBUG/INFO/WARN/CRIT")
 	flag.Parse()
 	if configDSN == "" {
 		log.Printf("Usage: %s -c <config DSN>", os.Args[0])
 		os.Exit(1)
+	}
+
+	while (err == nil) {
+		config, err = configLoadMainConfig(configDSN)
+		if (err == nil) {
+			moduleNames = strings.Split(config.Modules, ",")
+			if (len(moduleNames) < 1) {
+				log.Printf()
+			}
+		}
 	}
 	config, err = loadConfig(configDSN)
 	if err != nil { // Actual error description is in the loadConfig func
