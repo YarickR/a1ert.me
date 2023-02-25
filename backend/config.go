@@ -1,34 +1,41 @@
-package "main"
+package main
 import(
-	"encoding/json"
-	"flag"
-	"fmt"
+    "github.com/rs/zerolog/log"
+    "dagproc/internal/dm_core"
 	"github.com/gomodule/redigo/redis"
 )
 
+type MainConfig struct {
+    ModList         string `redis:"modules"`
+    IsShutdown      bool   `redis:"shutdown"`
+}
 
 func configConnect(configDSN string) (redis.Conn, error) {
 	var err error
 	var ret redis.Conn
 	ret, err = redis.DialURL(configDSN)
-	if err != nil
+	if (err == nil) {
+        log.Debug().Str("DSN", configDSN).Msg("Connected to config DSN")
+    }
+    return ret, err
 }
-func configLoadMainConfig(rc redis.Conn) (ServiceConfig, error) {
+func loadMainConfig(rc redis.Conn) (MainConfig, error) {
 	var err error
-	var svcCfg ServiceConfig
-
+	var mCfg MainConfig
 	reply, err := redis.Values(rc.Do("HGETALL", "settings"))
-	if err != nil {
-		log.Printf("Error %s getting settings from Redis", err)
-	} else {
-		err = redis.ScanStruct(reply, &svcCfg)
-		if err != nil {
-			log.Printf("Error %s parsing settings in Redis", err)
-		} else {
-			log.Printf("Settings in Redis: %+v\n", svcCfg)
-		}
+	if err == nil {
+		err = redis.ScanStruct(reply, &mCfg)
 	}
-	return svcCfg, err
+	return mCfg, err
 }
 
-func configLoadPluginConfig(rc redis.Conn)
+func loadModuleConfig(rc redis.Conn, modName string) (dm_core.ModConfig, error) {
+	var err error
+	var mCfg dm_core.ModConfig
+	log.Debug().Str("module", modName).Msg("Loading config from settings" + "_" + modName + " hash")
+	mCfg, err = redis.Values(rc.Do("HGETALL", "settings" + "_" + modName))
+	log.Debug().Str("module", modName).Msgf("Loaded config: %s", mCfg)
+	return mCfg, err
+
+}
+

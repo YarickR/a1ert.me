@@ -1,6 +1,7 @@
 logs
 admin/logs
 pmts2xmpp
+dagproc
 *.json*
 data
 *.kate-swp
