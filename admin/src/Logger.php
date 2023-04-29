@@ -19,10 +19,11 @@ class Logger {
 	public static function log($level, ...$args) {
 		if (($level <= self::$currLevel) && ($level >= CRIT)) {
 			$out = "";
+            $bt = \debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
 			foreach ($args as $arg) {
 				$out = $out . "\n" . self::$pfxs[$level].":".var_export($arg, true) ;
 			};
-			error_log($out);
+			error_log($bt[0]["file"].":".$bt[0]["line"]." - ".$out);
 		}
 	}
 	public static function showError($out) {

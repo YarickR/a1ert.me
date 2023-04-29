@@ -44,9 +44,9 @@
     public static function getMenu($cfg) {
       $ret =     
         [
-          "default" => "Channels::handleDefault",
-          "_modify" => "Channel::handleModify", 
-          "test" => "Channels::handleTest"
+          "default" => "\Channels::handleDefault",
+          "_modify" => "\Channel::handleModify",
+          "test" => "\Channels::handleTest"
         ];
         return $ret;
     }

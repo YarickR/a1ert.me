@@ -6,6 +6,7 @@ class Config {
 		$this->cfg = array();
 		$this->cfgURI = $uri;
 		$this->cfgKey = $key;
+        $this->plugins = array();
 		$this->redO = new \Redis();
 	}
 	function connect() {
@@ -24,7 +25,7 @@ class Config {
 		};
 		return $_r ? $this->redO : false;
 	}
-	function load() {
+	function loadMainConfig() {
 		$newCfg = [];
 		$rc = $this->connect(); 
 		if ($rc != false) {
@@ -39,7 +40,7 @@ class Config {
 		};
 		return false;
 	}
-	function save() {
+	function saveMainConfig() {
 		$rc = $this->connect();
 		if ($rc != false) {
 			$_r = $rc->hMSet($this->cfgKey, $this->cfg);
@@ -48,20 +49,32 @@ class Config {
 		};
 		return false;
 	}
-	function get($key) {
+	function mGet($key) {
 		return isset($this->cfg[$key]) ? $this->cfg[$key] : false;
 	}
-	function keys() {
+	function mKeys() {
 		return array_keys($this->cfg);
 	}
-	function set($key, $value) {
+	function mSet($key, $value) {
 		$this->cfg[$key] = $value;
 	}
 
 	function getPlugins() {
-		$ps = $this->get("plugins");
-		return $ps && (strlen($ps) > 0) ? preg_split("/[\ ,:\/]+/", $ps, -1, PREG_SPLIT_NO_EMPTY) : array();
+		$ps = $this->mGet("plugins");
+        $plugList = array();
+        if ( $ps && (strlen($ps) > 0)) {
+            $plugList = preg_split("/[\ ,:\/]+/", $ps, -1, PREG_SPLIT_NO_EMPTY);
+        };
+        array_unshift($plugList, "core");
+        $plugList = array_unique($plugList);
+        foreach ($plugList as $plugName) {
+            if (!isset($this->plugins[$plugName])) {
+                $this->plugins[$plugName] = array();
+            };
+        };
+        return $plugList;
 	}
+
 	function loadPluginConfig($plugin) {
 		$newCfg = [];
 		$rc = $this->connect(); 
@@ -69,6 +82,7 @@ class Config {
 			$newCfg = $rc->hGetAll($this->cfgKey."_".$plugin);
 			if (count($newCfg) > 0) {
 				$rc->close();
+                $this->plugins[$plugin] = $newCfg;
 				return $newCfg;
 			};
 			Logger::log(ERR, "Loaded empty configuration for ".$plugin." plugin");
@@ -76,17 +90,30 @@ class Config {
 		};
 		return false;
 	}
-	function savePluginConfig($plugin, $pluginCfg) {
-		$newCfg = [];
+	function savePluginConfig($plugin) {
 		$rc = $this->connect(); 
 		if ($rc != false) {
-			$s = $rc->hMSet($this->cfgKey."_".$plugin, $pluginCfg);
+			$s = $rc->hMSet($this->cfgKey."_".$plugin, $this->plugins[$plugin]);
 			$rc->close();
 		};
-		return false;
+		return $rc != false;
 	}
 
-	function dataRedis() {
+    function pGet($plugin, $key) {
+        return isset($this->plugins[$plugin]) && isset($this->plugins[$plugin][$key]) ? $this->plugins[$plugin][$key] : false;
+    }
+    function pSet($plugin, $key, $value) {
+        if (isset($this->plugins[$plugin])) {
+            $this->plugins[$plugin][$key] = $value;
+            return true;
+        };
+        return false;
+    }
+    function pKeys($plugin) {
+		return isset($this->plugins[$plugin]) ? array_keys($this->plugins[$plugin]) : false;
+	}
+
+    function dataRedis() {
 		# ru - redis URI
 		# hps - host+port or socket
 		# hp = host+port
@@ -125,14 +152,14 @@ class Config {
 	public static function getMenu($cfg) {
 		$ret = 
 		[
-      		"default" => "Config::handleDefault",
-      		"_save"   => "Config::handleSave"
+      		"default" => "\Config::handleDefault",
+      		"_save"   => "\Config::handleSave"
     	];
-    $plugins = $cfg->getPlugins();
+        $plugins = $cfg->getPlugins();
 		foreach ($plugins as $p) {
-			$ret[$p] = "Config::handlePluginConfig";
-    };
-    return $ret;
+			$ret[$p] = "\Config::handlePluginConfig";
+        };
+        return $ret;
 	}
 	public static function handlePluginConfig($cfg, $uriPath) {
 		$plugin = $uriPath[sizeof($uriPath) - 1]; // last entry

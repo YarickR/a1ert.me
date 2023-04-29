@@ -5,9 +5,9 @@
     }
     public static function getMenu($cfg) {
       $ret = [  
-        "default" => "Queues::handleDefault", 
-        "unmatched" => "Queues::handleUnmatched", 
-        "undelivered" => "Queues::handleUndelivered"
+        "default" => "\Queues::handleDefault",
+        "unmatched" => "\Queues::handleUnmatched",
+        "undelivered" => "\Queues::handleUndelivered"
       ];
       return $ret;
     }

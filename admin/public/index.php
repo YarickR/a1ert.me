@@ -13,7 +13,7 @@
   Logger::level(DEBUG);
   Logger::log(INFO, "Starting");
   $cfg = new Config(CONFIG_REDIS_URI, CONFIG_KEY);
-  if (!$cfg->load()) {
+  if (!$cfg->loadMainConfig()) {
     Logger::log(CRIT, "Failed to load settings from ".CONFIG_REDIS_URI);
     exit();
   };
@@ -23,7 +23,7 @@
     "default"   => "\Main::handleDefault",
     "config"    => Sidebar::Submenu("\Config::getMenu", $cfg),
 //    "queues"    => Sidebar::Submenu("\Queues::getMenu", $cfg),
-    "channels"  => Sidebar::Submenu("\Channels::getMenu", $cfg),
+//    "channels"  => Sidebar::Submenu("\Channels::getMenu", $cfg),
   ];
   $uriPath = Router::getPath($routes, $_SERVER["REQUEST_URI"])
 ?>
@@ -42,7 +42,8 @@
 <?php 
   $route = Router::getRoute($routes, $_SERVER["REQUEST_URI"]);
   if ($route) {
-    call_user_func_array(__NAMESPACE__."\\".$route, array(&$cfg, $uriPath));
+    Logger::log(DEBUG, $route);
+    call_user_func_array(__NAMESPACE__.$route, array(&$cfg, $uriPath));
   }
   ?>
     </div> <!--main_body-->
