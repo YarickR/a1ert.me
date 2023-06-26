@@ -1,0 +1,589 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"V",
+				"void"
+			],
+			[
+				"sin",
+				"sin_port"
+			],
+			[
+				"sn",
+				"sin_family"
+			],
+			[
+				"mem",
+				"memcacheStr"
+			],
+			[
+				"sc",
+				"scEnvVarStr"
+			],
+			[
+				"pare",
+				"parentPIDStr"
+			],
+			[
+				"scE",
+				"scEnvVarStr"
+			],
+			[
+				"fro",
+				"fromEnvVar"
+			],
+			[
+				"user",
+				"usernameStr"
+			],
+			[
+				"matched",
+				"matchedRules"
+			],
+			[
+				"dele",
+				"delete_rule"
+			],
+			[
+				"match",
+				"matchedRules"
+			],
+			[
+				"replace",
+				"replace_rule"
+			],
+			[
+				"target",
+				"targetPort"
+			],
+			[
+				"ingre",
+				"ingress_controller"
+			],
+			[
+				"egress",
+				"egress_controller"
+			],
+			[
+				"update",
+				"updateIPVSEps"
+			],
+			[
+				"ipvs",
+				"ipvsC"
+			],
+			[
+				"ve",
+				"verbose"
+			],
+			[
+				"load",
+				"loadBalancerIP"
+			],
+			[
+				"svc",
+				"svc_controller"
+			],
+			[
+				"onl",
+				"only_local"
+			],
+			[
+				"iproute",
+				"iproute_table"
+			],
+			[
+				"sto",
+				"stopTheLoop"
+			],
+			[
+				"incr",
+				"incrMsgID"
+			],
+			[
+				"next",
+				"nextAlert"
+			],
+			[
+				"my",
+				"mysqlConfig"
+			],
+			[
+				"table",
+				"tableNo"
+			],
+			[
+				"cluster",
+				"clusterIP"
+			],
+			[
+				"ro",
+				"routes"
+			],
+			[
+				"chats-",
+				"chats-list-refresh-btn"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "backend/config.go",
+			"settings":
+			{
+				"buffer_size": 1109,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "backend/internal/dm_core/core.go",
+			"settings":
+			{
+				"buffer_size": 33517,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "backend/internal/dm_core/types.go",
+			"settings":
+			{
+				"buffer_size": 2450,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/yarick/Work/a1ert.me/backend",
+		"/home/yarick/Work/a1ert.me/backend/internal",
+		"/home/yarick/Work/a1ert.me/backend/internal/dm_core",
+		"/home/yarick/Work/a1ert.me/backend/internal/dm_redis",
+		"/home/yarick/Work/a1ert.me/backend/internal/dm_xmpp"
+	],
+	"file_history":
+	[
+		"/home/yarick/Work/testrail/cases-schema-mg.sql",
+		"/home/yarick/Work/testrail/cases-schema-vk.sql",
+		"/home/yarick/Work/testrail/tests-schema-vk.sql",
+		"/home/yarick/Work/testrail/tests-schema-mg.sql",
+		"/home/yarick/Work/testrail/suites-schema-vk.sql",
+		"/home/yarick/Work/testrail/suites-schema-mg.sql",
+		"/home/yarick/Work/testrail/sections-schema-vk.sql",
+		"/home/yarick/Work/testrail/sections-schema-mg.sql",
+		"/home/yarick/Work/testrail/runs-schema-vk.sql",
+		"/home/yarick/Work/testrail/runs-schema-mg.sql",
+		"/home/yarick/Work/testrail/reports-schema-vk.sql",
+		"/home/yarick/Work/testrail/reports-schema-mg.sql",
+		"/home/yarick/Work/testrail/refs-schema-vk.sql",
+		"/home/yarick/Work/testrail/refs-schema-mg.sql",
+		"/home/yarick/Work/testrail/projects-schema-vk.sql",
+		"/home/yarick/Work/testrail/projects-schema-mg.sql",
+		"/home/yarick/Work/testrail/project_history-schema-mg.sql",
+		"/home/yarick/Work/testrail/project_history-schema-vk.sql",
+		"/home/yarick/Work/testrail/milestones-schema-mg.sql",
+		"/home/yarick/Work/testrail/milestones-schema-vk.sql",
+		"/home/yarick/Work/testrail/milestones_refs-schema-mg.sql",
+		"/home/yarick/Work/testrail/milestones_refs-schema-vk.sql",
+		"/home/yarick/Work/testrail/case_changes-schema-vk.sql",
+		"/home/yarick/Work/testrail/case_changes-schema-mg.sql",
+		"/home/yarick/Work/testrail/case_assocs-schema-vk.sql",
+		"/home/yarick/Work/testrail/case_assocs-schema-mg.sql",
+		"/home/yarick/Downloads/rmvpn.ams1.nl.leaseweb.net.ovpn",
+		"/home/yarick/Work/gtwwtools/sshpc/sshpc.c",
+		"/home/yarick/Work/a1ert.me/admin/public/main.css",
+		"/home/yarick/Documents/jira-stats.txt",
+		"/tmp/mozilla_yarick0/spawner.out",
+		"/home/yarick/Work/gtwwtools/sshpc/sshpcc.c",
+		"/home/yarick/Downloads/prod-vpn-radius-tcp.ovpn",
+		"/home/yarick/Downloads/Work/JC-57064_allProjects.csv",
+		"/home/yarick/Work/jira-stats.txt",
+		"/home/yarick/Downloads/blast.yml",
+		"/home/yarick/Downloads/33.eps",
+		"/tmp/mozilla_yarick0/JC-57064_allProjects.csv",
+		"/tmp/mozilla_yarick0/jira_project_list.txt",
+		"/tmp/mozilla_yarick0/MNT-371514.lua",
+		"/home/yarick/Downloads/mrgs-apps.csv",
+		"/tmp/fips-iso-map.csv",
+		"/tmp/mozilla_yarick0/drive_61_version_74150.diff",
+		"/home/yarick/Downloads/access.txt",
+		"/home/yarick/Downloads/2.txt",
+		"/home/yarick/Downloads/1.txt",
+		"/home/yarick/Downloads/FB DPA HC/pt9doc1.txt",
+		"/home/yarick/Downloads/FB DPA HC/pt5doc1.txt",
+		"/home/yarick/Downloads/FB DPA HC/pt4doc3.txt",
+		"/home/yarick/Downloads/FB DPA HC/pt3doc1.txt",
+		"/home/yarick/Downloads/FB DPA HC/pt10doc1.txt",
+		"//home/yarick/Downloads/itt-tcp (1) Log.txt",
+		"/home/yarick/Downloads/itt-tcp (1) Log.txt",
+		"/tmp/barbos-100.ovpn",
+		"/home/yarick/Downloads/20210715.log",
+		"/tmp/mozilla_yarick0/LOG2.txt",
+		"/home/yarick/Work/gtwwtools/k8sl3d/bin/k8sl3d.py",
+		"//home/yarick/Downloads/log.txt",
+		"/tmp/mozilla_yarick0/patch.diff",
+		"/home/yarick/Work/gtwwtools/pmts2xmpp/channel_rules.json",
+		"/home/yarick/Work/gtwwtools/pmts2xmpp/import_rules.php",
+		"/tmp/mozilla_yarick0/info.php",
+		"/home/yarick/Downloads/Tunnelblick.log",
+		"/tmp/mozilla_yarick0/093980D5134AE7B60E3FBE994240830F.txt",
+		"/home/yarick/Work/configs/services/mrgs-api.my.games/rootfs/etc/nginx/vhosts.d/01_mrgs-api.my.games.conf",
+		"/home/yarick/Work/configs/services/mrgs-api.my.games/rootfs/etc/nginx/lua/apigw.lua",
+		"/home/yarick/Work/configs/services/mrgs-api.my.games/rootfs/etc/nginx/vhosts.d/01_apigw.inc",
+		"/home/yarick/temp.txt",
+		"/home/yarick/Downloads/logs3.txt",
+		"/home/yarick/Downloads/public",
+		"//home/yarick/Downloads/public",
+		"/home/yarick/Downloads/1.log",
+		"/home/yarick/Work/configs/services/mrgs-api.my.games/rootfs/etc/nginx/vhosts.d/apigw.inc",
+		"/home/yarick/Work/configs/services/mrgs-dev-api.my.games/rootfs/etc/nginx/vhosts.d/01_mrgs-dev-api.my.games.conf",
+		"/home/yarick/Work/configs/services/mrgs-dev-api.my.games/rootfs/etc/nginx/nginx.conf",
+		"/home/yarick/Work/configs/services/mrgs-api.my.games/rootfs/etc/nginx/nginx.conf",
+		"/home/yarick/Work/configs/services/mrgs-api.my.games/rootfs/etc/nginx/vhosts.d/01_mrgs-dev-api.my.games.conf",
+		"//home/yarick/Downloads/itt-new (1).ovpn",
+		"/home/yarick/Downloads/game_entity (1).sql",
+		"//home/yarick/Downloads/check_backend.py",
+		"/home/yarick/Downloads/itt-new(2).ovpn",
+		"/home/yarick/Downloads/itt-new-linux-systemd(1).ovpn",
+		"/home/yarick/Downloads/itt-new(1).ovpn",
+		"/home/yarick/Downloads/2_5440624421771413214.log",
+		"/home/yarick/Work/gtwwtools/k8sl3d/bin/k8sl3d.new.py",
+		"/home/yarick/Work/gtwwtools/jabber_pusher/push_daemon.go",
+		"/home/yarick/Work/gtwwtools/jabber_pusher/c.json",
+		"/home/yarick/Work/gtwwtools/k8sl3d/etc/k8sl3d.gress.yml.j2",
+		"/home/yarick/Work/gtwwtools/k8sl3d.remote/bin/k8sl3d.py",
+		"/home/yarick/Work/gtwwtools/k8sl3d.remote/etc/k8sl3d.yml",
+		"/home/yarick/Work/gtwwtools/k8sl3d/etc/k8sl3d.host.yml.j2",
+		"/home/yarick/Work/gtwwtools/k8sl3d/etc/k8sl3d.svc.yml",
+		"/home/yarick/Work/gtwwtools/k8sl3d/etc/k8sl3d.master.yml",
+		"/home/yarick/Work/gtwwtools/k8sl3d/etc/k8sl3d.node.yml",
+		"/home/yarick/Work/gtwwtools/k8sl3d/etc/k8sl3d.gress.yml",
+		"/home/yarick/Work/k8sl3d/k8sl3d.py",
+		"/home/yarick/Work/k8sl3d/k8sl3d.yml",
+		"/home/yarick/Work/tgchat/js/common_new.js",
+		"/home/yarick/Work/tgchat/js/common.js",
+		"/home/yarick/Work/tgchat/config.js",
+		"/home/yarick/Work/tgchat/index.html"
+	],
+	"find":
+	{
+		"height": 32.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"ENGINE=InnoDB AUTO_INCREMENT=3429 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "backend/config.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1109,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								487,
+								487
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": "<",
+									"selector": "text.html, text.xml"
+								},
+								{
+									"rhs_empty": true,
+									"selector": "punctuation.accessor"
+								}
+							],
+							"lsp_active": true,
+							"lsp_hover_provider_count": 1,
+							"lsp_uri": "file:///home/yarick/Work/a1ert.me/backend/config.go",
+							"show_definitions": false,
+							"syntax": "Packages/Go/Go.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 3.0,
+						"translation.y": 152.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "backend/internal/dm_core/core.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 33517,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								692,
+								692
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": "<",
+									"selector": "text.html, text.xml"
+								},
+								{
+									"rhs_empty": true,
+									"selector": "punctuation.accessor"
+								},
+								{
+									"characters": ".",
+									"selector": "meta.tag, source - comment - string.quoted.double.block - string.quoted.single.block - string.unquoted.heredoc",
+									"server": "gopls"
+								}
+							],
+							"lsp_active": true,
+							"lsp_hover_provider_count": 8,
+							"lsp_uri": "file:///home/yarick/Work/a1ert.me/backend/internal/dm_core/core.go",
+							"show_definitions": false,
+							"syntax": "Packages/Go/Go.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 414.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "backend/internal/dm_core/types.go",
+					"selected": true,
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 2450,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": "<",
+									"selector": "text.html, text.xml"
+								},
+								{
+									"rhs_empty": true,
+									"selector": "punctuation.accessor"
+								},
+								{
+									"characters": ".",
+									"selector": "meta.tag, source - comment - string.quoted.double.block - string.quoted.single.block - string.unquoted.heredoc",
+									"server": "gopls"
+								}
+							],
+							"lsp_active": true,
+							"lsp_hover_provider_count": 4,
+							"lsp_uri": "file:///home/yarick/Work/a1ert.me/backend/internal/dm_core/types.go",
+							"show_definitions": false,
+							"syntax": "Packages/Go/Go.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"stack_multiselect": false,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 32.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.LSP Log Panel":
+	{
+		"height": 0.0
+	},
+	"output.diagnostics":
+	{
+		"height": 0.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "Packages/Makefile/Make.sublime-build",
+	"project": "backend.sublime-project",
+	"replace":
+	{
+		"height": 60.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 309.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 592.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 330.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
