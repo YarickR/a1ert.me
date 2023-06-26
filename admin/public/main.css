@@ -16,7 +16,7 @@
 #sidebar {
   width:  30%;
 }
-#separator {
+.separator {
   width:   0px;
   margin-top:  0px;
   margin-bottom:  0px;
@@ -42,6 +42,11 @@
   display: flex;
   flex-direction: row;
 }
+.config_select {
+  text-align: left;
+  margin-left: 5%;
+  width: 5%;
+}
 .config_key {
   text-align: left;
   margin-left: 5%;
@@ -49,32 +54,223 @@
 }
 .config_value {
   margin-right: 5%;
-  width: 75%;
+  width: 70%;
 }
-.config_new_key {
-  margin-left: 5%;
+.config_channels_header {
+}
+.config_add_channel {  
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.config_channel_def_id_div {  
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  border-bottom: thin dashed #C0C0C0;
+}
+
+.config_channel_def_id_label {  
+  width: 15%;
+  font-weight: 500;
   text-align: left;
+}
+.config_channel_def_id_value {  
   width: 30%;
-}
-.config_new_value {
-  margin-right: 5%;
+  font-size: smaller;
   text-align: left;
-  width: 60%;
 }
-.config_new_key > input {
-  width: 50%;
+
+.config_edit_channel {
+  width: 35%;
+  text-align: center;
+  font-size: smaller;
 }
-.config_new_value > input {
-  width: 80%;
+
+.config_delete_channel {
+  width: 35%;
+  text-align: center;
+  font-size: smaller;
 }
+
+.config_channel_def_label_div {  
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  border-bottom: thin dashed #C0C0C0;
+}
+
+.config_channel_def_label_label {  
+  width: 15%;
+  font-weight: 500;
+  text-align: left;
+}
+.config_channel_def_label_value {  
+  width: 100%;
+  font-size: smaller;
+  text-align: left;
+}
+
+.config_channel_def_format_div {  
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  border-bottom: thin dashed #C0C0C0;
+}
+
+.config_channel_def_format_label {  
+  width: 15%;
+  font-weight: 500;
+  text-align: left;
+}
+.config_channel_def_format_value {  
+  width: 100%;
+  font-size: small;
+  font-family: monospace;
+  text-align: left;
+}
+
+.config_channel_def_rules_div {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.config_channel_def_rules_label {  
+  width: 15%;
+  font-weight: 500;
+  text-align: left;
+}
+.config_channel_def_rules_rule_list {  
+  width: 100%;
+  text-align: left;
+}
+
+.config_channel_def_rule {
+  display: flex;
+  flex-direction: row;  
+  border-bottom: thin dashed #C0C0C0;
+}
+.config_channel_def_rule_src {
+  width: 20%;
+  font-size: smaller;
+  text-align: left;
+
+}
+.config_channel_def_rule_cond {
+  width: 100%;
+  font-size: small;
+  font-family: monospace;
+  text-align: left;
+}
+
+.config_new_channel {
+  margin-left:  5%;
+  margin-right: 5%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+.config_new_channel_label {
+  white-space: nowrap;
+  margin: 1px;
+  padding: 1px;
+}
+.config_new_channel_def {
+  width: 100%;
+  margin: 1px;
+  padding: 1px;
+}
+.config_new_channel_submit {
+/*  width: 20%; */
+  margin: 1px;
+  padding: 1px;
+}
+
+.config_channel_edit_form {
+  width: 100%;
+  display: flex;
+  white-space: nowrap;
+  flex-direction: row;
+}
+.config_channel_edit_label_div {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.config_channel_edit_label_label {
+  text-align: left;
+  width: 20%;
+}
+.config_channel_edit_label_value {
+  margin-left: 5px;
+  width: 100%;
+}
+.config_channel_edit_format_div {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.config_channel_edit_format_label {
+  text-align: left;
+  width: 20%;
+}
+.config_channel_edit_format_value {
+  margin-left: 5px;
+  width: 100%;
+}
+
+.config_add_entry {  
+  width: 100%;
+  display: flex;
+  white-space: nowrap;
+  flex-direction: row;
+  justify-content: justify;
+}
+
+.config_new_key_label {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.config_new_key_input {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.config_new_value_label {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.config_new_value_input {
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 100%;
+}
+.config_new_value_submit {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .config_value > input {
   width: 100%;
 }
 .config_save_delete {
   display: flex;
   flex-direction: row;
+  justify-content: justify;
   width:  100%;
 }
+.config_save_delete_delete {
+  margin-left: 5px;
+}
+.config_save_delete_save {
+  margin-left: 50%;
+  margin-right: 5px;
+}
+
 .sidebar_level_0 {
   margin-left: 10%;
 }
@@ -116,4 +312,8 @@
 .channel_sinks {
   font-size: smaller;
   text-align: left;
+}
+
+.new_entry {
+  width: 100%;
 }

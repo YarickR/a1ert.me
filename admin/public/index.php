@@ -10,6 +10,7 @@
   use Yjr\A1ertme\Main;
   use Yjr\A1ertme\Channels;
   use Yjr\A1ertme\Queue;
+  use Yjr\A1ertme\Plugin_core;
   Logger::level(DEBUG);
   Logger::log(INFO, "Starting");
   $cfg = new Config(CONFIG_REDIS_URI, CONFIG_KEY);
@@ -35,14 +36,13 @@
   <div id='sidebar'><div id='sidebar_header'>Sidebar</div>
     <?php echo Sidebar::displaySidebar($routes, $uriPath);?>
   </div>
-  <div id='separator'></div>
+  <div class='separator'></div>
   <div id='main'>
     <div id='main_header'>Main</div>
     <div id='main_body'>
 <?php 
   $route = Router::getRoute($routes, $_SERVER["REQUEST_URI"]);
   if ($route) {
-    Logger::log(DEBUG, $route);
     call_user_func_array(__NAMESPACE__.$route, array(&$cfg, $uriPath));
   }
   ?>

@@ -24,9 +24,7 @@
       $uriParts = \explode("/", $uri);
       $ret = false;
       $currLevel = &$routes;
-      Logger::log(DEBUG, $uri);
       while (count($uriParts) > 0) {
-        Logger::log(DEBUG, var_export($uriParts,true));
         $part = trim(array_shift($uriParts));
         if (strlen($part) == 0) {
           if (isset($currLevel["default"])) {
@@ -46,7 +44,6 @@
           $ret = $currLevel["default"];
         };
       };
-      Logger::log(DEBUG, $ret);
       return $ret;
     }
   }

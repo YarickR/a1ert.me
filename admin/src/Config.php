@@ -1,5 +1,6 @@
 <?php 
 namespace Yjr\A1ertme;
+define("CORE_PLUGIN", "core");
 class Config {
 	private $cfg, $cfgURI, $cfgKey, $redO;
 	function __construct($uri, $key) {
@@ -65,7 +66,7 @@ class Config {
         if ( $ps && (strlen($ps) > 0)) {
             $plugList = preg_split("/[\ ,:\/]+/", $ps, -1, PREG_SPLIT_NO_EMPTY);
         };
-        array_unshift($plugList, "core");
+        array_unshift($plugList, CORE_PLUGIN);
         $plugList = array_unique($plugList);
         foreach ($plugList as $plugName) {
             if (!isset($this->plugins[$plugName])) {
@@ -157,7 +158,11 @@ class Config {
     	];
         $plugins = $cfg->getPlugins();
 		foreach ($plugins as $p) {
-			$ret[$p] = "\Config::handlePluginConfig";
+			if (method_exists(__NAMESPACE__."\Plugin_".$p, "getMenu")) {
+				$ret[$p] = call_user_func(__NAMESPACE__."\Plugin_".$p."::getMenu", $cfg);
+			} else {
+				$ret[$p] = "\Config::handlePluginConfig";
+        	}
         };
         return $ret;
 	}
@@ -197,24 +202,27 @@ class Config {
 		}
 		?>Config
 		<form name="config" method="post" action="#"><?php
-		foreach ($plugCfg as $k => $v) {
-			?>
-        		<div class="config_entry">
-        			<input type="checkbox" name="delete_<?=$k?>" value="0">
-        			<div class="config_key"><?=$k;?></div>
-        			<div class="config_value"><input type="text" name="value_<?=$k?>" value="<?=$v;?>"></div>
-        		</div>
-			<?php
-		}
+		if (is_array($plugCfg)  || is_object($plugCfg)) {
+			foreach ($plugCfg as $k => $v) {
+				?>
+	        		<div class="config_entry">
+	        			<input type="checkbox" class="config_select" name="delete_<?=$k?>" value="0">
+	        			<div class="config_key"><?=$k;?></div>
+	        			<div class="config_value"><input type="text" name="value_<?=$k?>" value="<?=$v;?>"></div>
+	        		</div>
+				<?php
+			};
+		};
 		?>
-    <div class="save_delete">		
-    	<input type="submit" name="delete" value="Delete Selected">
-			<input type="submit" name="save" value="Save">
+    	<div class="config_save_delete">
+    		<input type="submit" name="delete" class="config_save_delete_delete" value="Delete Selected">
+			<input type="submit" name="save" class="config_save_delete_save" value="Save Changes">
 		</div>
-		<div class="config_entry">
-				<div class="config_new_key">New key:<input type="text" name="new_key"></div>
-		    <div class="config_new_value">New value:<input type="text" name="new_value" value=""></div>
-		    <input type="submit" name="new" value="New">
+		<div class="new_entry separator"></div>
+		<div class="config_add_entry">
+			<div class="config_new_key_label">New key:</div><input type="text" class="config_new_key_input" name="new_key">
+		    <div class="config_new_value_label">New value:</div><input type="text" class="config_new_value_input" name="new_value" value="">
+		    <input type="submit" class="config_new_value_submit" name="new" value="Add">
 		</div>
 		</form>
 
