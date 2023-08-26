@@ -170,19 +170,33 @@
   margin-right: 5%;
   width: 100%;
   display: flex;
-  justify-content: center;
   flex-direction: row;
+  justify-content: start;
 }
 .config_new_channel_label {
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: 0;
+  margin-right: 0;
+  font-weight: bold;
+}
+
+.config_new_channel_def_label {
+  white-space: nowrap;
+  margin: 1px;
+  padding: 1px;
+  margin-top: auto;
+  margin-bottom: auto;
+
+}
+.config_new_channel_def_value {
+  margin-top: auto;
+  margin-bottom: auto;  
   white-space: nowrap;
   margin: 1px;
   padding: 1px;
 }
-.config_new_channel_def {
-  width: 100%;
-  margin: 1px;
-  padding: 1px;
-}
+
 .config_new_channel_submit {
 /*  width: 20%; */
   margin: 1px;

@@ -40,6 +40,8 @@ class Plugin_core {
             Logger::log(DEBUG, "URI path: {$uriPath}");
           };
           return $ret;
+        case "_new":
+          return $ret;
         default:
           $ret["prefix"] .= $ret["prefix"] == "/" ? $upe : "/".$upe;
           break;
@@ -66,18 +68,21 @@ class Plugin_core {
     return true;
   } 
   public static function handleNewChannel($cfg, $uriPath) {
-
-    $pathInfo = Plugin_core::parseUriPath($uriPath);
+    $ids = Plugin_core::parseUriPath($uriPath);
     if (isset($_POST["create_new_channel"]) && isset($_POST["new_label"])) {
       if (strlen(trim($_POST["new_label"])) > 0) {
         $label = substr(trim($_POST["new_label"]), 0, MAX_CHANNEL_LABEL_LEN);
-        $plugCfg = $cfg->loadPluginConfig(CORE_PLUGIN);
-        $newCh = Channels::createChannel($plugCfg, $label);
+        // We cannot use setupContext here, as we  don't have new channel id; duplicate it we must
+        $chDefs = $cfg->loadPluginConfig(CORE_PLUGIN); 
+        $chList = new Channels();
+        $chList->load($chDefs);
+        $newCh = $chList->createChannel($chDefs, $label);
         if ($newCh) {
-          $cfg->pSet(CORE_PLUGIN, $newCh->id, $plugCfg[$newCh->id]); // FIXME: wildly inefficient and will likely break on large configs
+          $cfg->pSet(CORE_PLUGIN, $newCh->id, $chList->getChannel($newCh->id)->save()); // FIXME: wildly inefficient and will likely break on large configs
           $cfg->savePluginConfig(CORE_PLUGIN);
-          $newUriPath = Router::getPath(sprintf("%s/_edit/%d", $pathInfo["prefix"], $newCh->id));
-          return handleEditChannel($cfg, $newUriPath);
+          $newUriPath = sprintf("%s/_edit/%d", $ids["prefix"], $newCh->id);
+          header("Location: {$newUriPath}");
+          return true;
         } else {
           echo "<script>error('Unable to create new channel, please try again');</script>"; 
         }
@@ -88,12 +93,11 @@ class Plugin_core {
     ?>
     <form name="new_channel" method="post" action="#">
       <div class="config_new_channel">
-        <div class="config_new_channel_label">New channel:</div>
-        <div class="config_channel_def">
-          <div class="config_channel_def_label">Label:<input type="text" name="new_label"></div>
-        </div>
+          <div class="config_new_channel_label">New channel:</div>
+          <div class="config_new_channel_def_label">Label:</div>
+          <div class="config_new_channel_def_value"><input type="text" name="new_label" size=32 maxlength="64"></div>
+          <input type='submit' name='create_new_channel' value='Create channel'>
       </div>
-      <input type='submit' name='create_new_channel' value='Create channel'>
     </form>
     <?php
   }

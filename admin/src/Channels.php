@@ -29,7 +29,14 @@
         };
         $chSrcs = array_unique($chSrcs, SORT_NUMERIC);
         asort($chSrcs, SORT_NUMERIC);
+        if (($chId == 0) && ($chSrcs[0] == 0)) { // special case, root channel
+          array_shift($chSrcs); // removing first channel , as it's 
+        };
+
         foreach ($chSrcs as $srcId) {
+          if (($srcId == 0) && ($chId == 0)) { // Special case, do not list root channel as a source for itself
+            continue;
+          }
           array_push($this->channels[$srcId]->sinks, intval($chId));
         };
         $this->channels[$chId]->sources = $chSrcs;
