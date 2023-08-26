@@ -191,9 +191,9 @@
 
 .config_channel_edit_form {
   width: 100%;
-  display: flex;
+/*  display: flex; */
   white-space: nowrap;
-  flex-direction: row;
+/*  flex-direction: row; */
 }
 .config_channel_edit_label_div {
   width: 100%;
@@ -223,6 +223,38 @@
   margin-left: 5px;
   width: 100%;
 }
+
+.config_channel_edit_rule_div {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+
+.config_channel_edit_rule_src_label {
+  text-align: left;
+  width: 20%;
+}
+.config_channel_edit_rule_src_value {
+  margin-left: 5px;
+  width: 20%;
+}
+.config_channel_edit_rule_cond_label {
+  text-align: left;
+  width: 20%;
+}
+.config_channel_edit_rule_cond_value {
+  margin-left: 5px;
+  width: 80%;
+}
+
+.config_channel_new_rule {
+  width: 100%;
+  display: flex;
+  white-space: nowrap;
+  flex-direction: row;
+}
+
 
 .config_add_entry {  
   width: 100%;
@@ -278,12 +310,72 @@
   margin-left: 20%;
 }
 
-.channel_list {
+.config_chlist {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   width: 100%;
 }
+.config_chlist_id {
+  display: flex;
+  flex-direction: row;
+  border: thin dashed #C0C0C0;
+  justify-content: left;
+  width: 10%;
+  padding-left: 10px;
+}
 
+.config_chlist_id_label {
+  font-weight: bold;
+}
+
+.config_chlist_id_value {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.config_chlist_label {
+  padding-left: 10px;
+  display: flex;
+  flex-direction: row;
+  border: thin dashed #C0C0C0;
+  justify-content: left;
+  width: 20%;
+}
+
+.config_chlist_label_label {
+  font-weight: bold;
+}
+.config_chlist_label_value {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.config_chlist_sources {
+  padding-left: 10px;
+  display: flex;
+  flex-direction: row;
+  border: thin dashed #C0C0C0;
+  justify-content: left;
+  width: 100%;
+}
+.config_chlist_sources_label {
+  font-weight: bold;
+}
+.config_chlist_sinks {
+  padding-left: 10px;
+  display: flex;
+  flex-direction: row;
+  border: thin dashed #C0C0C0;
+  justify-content: left;
+  width: 100%;
+}
+.config_chlist_sinks_label {
+  font-weight: bold;
+}
 .channel {
   display: flex;
   flex-direction: row;

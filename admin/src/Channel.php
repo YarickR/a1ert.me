@@ -2,94 +2,71 @@
 namespace Yjr\A1ertme;
   define("MLOCK", "mlock");
   class Channel {
-    public int $id = -1, $version = 0;
-    public string $label = "", $group = "";
-    public array $rules = [], $srcs = [], $sinks = [];
-    function __construct() {
+    public int $id ;
+    public string $label;
+    public mixed $format = false;
+    public array $rules = [];
+    public array $sources = [];
+    public array $sinks = [];
+    function __construct($id = -1, $label  = "", $format = false, $rules = []) {
+      $this->id = $id;
+      $this->label = $label;
+      $this->format = $format;
+      $this->rules = $rules;
     }
+    
     function init($ch) {
-      $props = ['id' => true, 'version' => true, 'label' => true, 'pdata' => false, 'rules' => false];
+      $props = ["id" => true, "label" => true, "rules" => false, "format" => false];
       foreach ($props as $p => $m) {
-        if (!isset($ch[$p]) || ($ch[$p] === false))  {
-          if ($m == true) { // Mandatory property 
-            error_log(var_export($ch, true));
-            error_log("Channel ".var_export($ch, true)." missing mandatory property ".$p); 
+        if (!isset($ch[$p])) {
+          if ($m) {
+            Logger::log(DEBUG, $ch);
+            Logger::log(ERR, "Channel ", $ch, " missing mandatory property ", $p); 
             $this->id = -1;
-            return $this;
-          };
+            break;
+          }
         } else {
-          $this->{$p} = $ch[$p];
+          $this->{$p} = $p == "id" ? intval($ch[$p]) : $ch[$p];
         };
       };
       return $this;
     }
 
-    function load($id, $rc) {
-      $ch = $rc->hGet(CHANNELS, $id);
-      if (strlen($ch) > 0) {
-        $this->init(json_decode($ch, true));
-        return $this->id >= 0;
-      };
-      return false;
-    }
-    function save($rc) {
-      if ($this->id < 0) {
-        error_log(var_export($this, true));
-        error_log("Unable to save uninitialised channel");
+    function load($cfgField) {
+      $chDef = json_decode($cfgField, true); 
+        if ($chDef == null || !is_array($chDef) || (count($chDef) < 1)) {
         return false;
       };
-      $props = ['id' => true, 'version' => true, 'label' => true, 'pdata' => false, 'rules' => false];
+      $this->init($chDef);
+      return $this->id >= 0 ;
+    }
+
+    function save() {
+      if ($this->id < 0) {
+        Logger::log(DEBUG, $this);
+        Logger::log(ERR, "Refusing to save uninitialised channel");
+        return false;
+      };
+      $props = ['id' => true, 'label' => true, 'format' => false, 'rules' => false];
       $he = [];
       foreach ($props as $p => $m) {
         $he[$p] = $this->{$p};
       };
-      $rc->hSet(CHANNELS, $this->id, json_encode($he));
+      return json_encode($he);
+    }
+    function createRule($rule) {
+      $newRid = is_array($this->rules) ? max(array_keys($this->rules)) + 1 : 0;
+      $rule["id"] = $newRid;
+      $this->rules[$newRid] = $rule;
       return true;
     }
-    public static function handleModify($cfg) {
-      if (!isset($_GET["channel_id"])) {
-        ?>
-          <script>err("Missing channel id");</script>
-          Channel 
-        <?php
-          return;
+
+    function deleteRule($ruleId) {
+      if (isset($this->rules[$ruleId])) {
+        unset($this->rules[$ruleId]);
+        return true;
       };
-      $ch = new Channel();
-      $rc = $cfg->connect();
-      if (intval($_GET["channel_id"]) >= 0) {
-        $ch->load(intval($_GET["channel_id"]), $rc);
-      };
-
-      if (isset($_POST["save"])) {
-        if ($rc->hSetNx(CHANNELS, MLOCK, "locked") == true) {
-          $ch->save($rc);
-          $rc->hDel(CHANNELS, MLOCK);
-        }
-
-      }
-        $chId = sprintf("channel_%d", $ch->id);
-      ?>
-        Channel
-
-        <form name="modify_channel" action="#" method="POST">
-          <div class='channel_descr'>
-            <div class><div class='channel_prop'>Label: <input type="text" name="<?=$chId;?>_label" value=""></div>
-            <div class='channel_prop'>Plugin data: <input type="text" name="<?=$chId;?>_pgdata" value=""></div>
-          <?php
-          foreach ($ch->rules as $rule) {
-            $chrId = sprintf("channel_%d_rule_%d", $ch->id, $rule["id"]);
-            ?>
-            <div class='rule_prop'>Sources: <input type="text" name="<?=$chrId;?>_src"   value=""></div>
-            <div class='rule_prop'>Conditions:<input type="text" name="<?=$chrId;?>_cond"  value=""></div>
-            <div class='rule_prop'>Link: <input type="text" name="<?=$chrId;?>_link"  value=""></div>
-        <?php
-        };
-        ?>
-          <input type="submit" value="add_rule"><input type="submit" value="save_channel">
-          </div>
-        </form>
-
-      <?php
+      return false;
     }
   }
 

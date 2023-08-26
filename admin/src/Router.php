@@ -3,10 +3,10 @@
   class Router {
     function __construct() {
     }
-    static function getPath($routes, $uri) {
+    static function getPath($uri) {
       $uriParts = \explode("/", $uri);
       $ret = array();
-      $currLevel = &$routes;
+      $currLevel = $GLOBALS["routes"];
       while (count($uriParts) > 0) {
         $part = trim(array_shift($uriParts));
         if (strlen($part) > 0) {
@@ -20,10 +20,10 @@
       };
       return $ret;
     }
-    static function getRoute($routes, $uri) {
+    static function getRoute($uri) {
       $uriParts = \explode("/", $uri);
       $ret = false;
-      $currLevel = &$routes;
+      $currLevel = $GLOBALS["routes"];
       while (count($uriParts) > 0) {
         $part = trim(array_shift($uriParts));
         if (strlen($part) == 0) {

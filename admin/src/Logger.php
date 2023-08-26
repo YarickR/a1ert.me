@@ -21,9 +21,9 @@ class Logger {
 			$out = "";
             $bt = \debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
 			foreach ($args as $arg) {
-				$out = $out . "\n" . self::$pfxs[$level].":".var_export($arg, true) ;
+				$out = $out . "\n" .":".var_export($arg, true) ;
 			};
-			error_log($bt[0]["file"].":".$bt[0]["line"]." - ".$out);
+			error_log(self::$pfxs[$level].":".$bt[0]["file"].":".$bt[0]["line"].$out);
 		}
 	}
 	public static function showError($out) {
