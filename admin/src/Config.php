@@ -84,18 +84,21 @@ class Config {
 			if (count($newCfg) > 0) {
 				$rc->close();
                 $this->plugins[$plugin] = $newCfg;
-				return $newCfg;
+ 				return $newCfg;
 			};
 			Logger::log(ERR, "Loaded empty configuration for ".$plugin." plugin");
 			$rc->close();
 		};
 		return false;
 	}
-	function savePluginConfig($plugin) {
+	function savePluginConfig($plugin) { // One bix FIXME, need to support robust concurrent modification of key value pairs
+		if (!isset($this->plugins[$plugin])) {
+			Logger::log(ERR, "Missing {$plugin} config in cached data");
+			return false;
+		};
 		$rc = $this->connect(); 
 		if ($rc != false) {
 			$s = $rc->hMSet($this->cfgKey."_".$plugin, $this->plugins[$plugin]);
-			$rc->close();
 		};
 		return $rc != false;
 	}

@@ -21,7 +21,10 @@
       return $pre;
     }
     static function displaySidebar($routes, $currPath) {
-      $ret = []; 
+      $ret = [];
+      if (!is_array($routes)) {
+        Logger::log(DEBUG, var_export($routes, true));
+      }; 
       foreach ($routes as $rK => $r) {
         array_push($ret, self::displaySidebarEntry("", "", $routes, $rK, 0, $currPath, true));
       };
