@@ -136,7 +136,7 @@ class Plugin_core {
         $chDef = json_decode($v, true);
         ?>
               <div class="config_entry">
-                <div class="config_channel_def">
+                <!--div class="config_channel_def">
                   <div class="config_channel_def_id_div">
                     <div class="config_channel_def_id_label">Id:</div>
                     <div class="config_channel_def_id_value"><?=$k;?></div>
@@ -167,7 +167,34 @@ class Plugin_core {
                   ?>
                     </div>
                   </div>
+                </div-->
+                <div class="config_channel_def">
+                  <div class="config_channel_def_id_div">
+                    <div class="config_channel_def_id_label">Id:</div>
+                    <div class="config_channel_def_id_value"><a href="<?=$editLinkBase.'/_edit/'.$k;?>"><?=$k;?></a></div>
+                    <div class="config_channel_def_label_label">Label:</div>
+                    <div class="config_channel_def_label_value"><?=$chDef["label"];?></div>
+                  </div>
+                  <div class="config_channel_def_ss_div">
+                    Sources: 
+                    <?php $srcs = foreach ($chDef["rules"] as $rule) { echo $rule["src"]; }; ?>
+
+                    Sinks:
+                  <?php
+                    foreach ($chDef["rules"] as $rule) {
+                      ?>
+                      <div class="config_channel_def_rule">
+                        <div class="config_channel_def_rule_src">Src:<?=$rule["src"];?></div>
+                        <div class="config_channel_def_rule_cond">Cond:<?=$rule["cond"];?></div>
+                      </div>
+                      <?php
+                    };
+                  ?>
+
+                    </div>
+                  </div>
                 </div>
+
               </div>
         <?php
       }
