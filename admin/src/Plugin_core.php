@@ -135,6 +135,8 @@ class Plugin_core {
             ?>
           </div>
         </div> 
+        <div class="config_channel_rules_list separator"></div>
+        <div class="config_channel_rules_list_label">Rules</div>
         <div class="config_channel_edit_rules_div">
           <?php
             foreach ($ch->rules as $rId => $rule) {
@@ -142,33 +144,35 @@ class Plugin_core {
               $chrulecond = "rule_{$rId}_cond";
               ?>
                 <div class="config_channel_edit_rule_div">
-                  <div class="config_channel_edit_rule_src_label">Source</div>
+                  <div class="config_channel_edit_rule_src_label">Src channel:</div>
                   <div class="config_channel_edit_rule_src_value">
                     <input type="text" name="<?=$chrulesrc;?>" size="2" maxlength="4" value="<?=$rule["src"];?>">
                   </div>
-                  <div class="config_channel_edit_rule_cond_label">Condition</div>
+                  <div class="config_channel_edit_rule_cond_label">Condition:</div>
                   <div class="config_channel_edit_rule_cond_value">
-                    <input type="text" name="<?=$chrulecond;?>" size="60" maxlength="1023" value="<?=$rule["cond"];?>">
+                    <input type="text" name="<?=$chrulecond;?>" 
+                      size="60" maxlength="1023" value='<?=htmlspecialchars($rule["cond"]);?>'>
                   </div>
                   <div class="config_channel_edit_rule_delete">
-                      <a  href="<?=sprintf("%s/_delrule/%d/%d", $pfx, $ch->id, $rId);?>" 
-                          onclick="cl('Do you want to delete rule <?=$rId;?> ?', this);">Delete rule</a>
+                      <a href="<?=sprintf("%s/_delrule/%d/%d", $pfx, $ch->id, $rId);?>" 
+                          onclick="cl('Do you want to delete rule <?=$rId;?> ?', this);">Delete</a>
                   </div>
                 </div>
               <?php
             };
           ?>
         </div>
+        <input type="submit" name="save_changes" value="Save changes">
         </form>
         <div class="new_entry separator"></div>
+        <div class="new_rule_label">New rule</div>
         <form name="new_rule_form" id="new_rule_form" action="<?=sprintf("%s/_newrule/%d", $pfx, $ch->id);?>" method="POST">
         <div class="config_channel_new_rule">
-          <div class="config_channel_new_rule_src_label">Source channel:</div><input type="text" name="new_rule_src" size="2" maxlength="4">
+          <div class="config_channel_new_rule_src_label">Src channel:</div><input type="text" name="new_rule_src" size="2" maxlength="4">
           <div class="config_channel_new_rule_src_label">Condition:</div><input type="text" name="new_rule_cond" size="60" maxlength="1023">
           <input type="button" name="add_rule_button" value="Add rule" onclick='document.forms["new_rule_form"].submit();'>
         </form>
         </div>
-        <input type="button" name="save_channel_button" value="Save changes" onclick='document.forms["channel_edit_form"].submit();'>
     </div>
     <?php
 
@@ -179,8 +183,7 @@ class Plugin_core {
       return -1;
     };
     $pfx = $ids["prefix"];
-    if (isset($_POST["save_channel"])) {
-      Logger::log(DEBUG, "Saving modified channel");
+    if (isset($_POST["save_changes"])) {
       if (strlen(trim($_POST["label"]) > 0)) {
         $ch->label = trim($_POST["label"]);
       } else {
@@ -188,13 +191,13 @@ class Plugin_core {
         echo "<script>error('Invalid label');</script>";
       };
       foreach ($ch->rules as $rId => $rule) {
-        $rSrcName = sprintf("rule_%d_src");
-        $rCondName = sprintf("rule_%d_cond");
-        $newRule = array(
+        $rSrcName = sprintf("rule_%d_src", $rId);
+        $rCondName = sprintf("rule_%d_cond", $rId);
+        $mRule = array(
             "src"   => intval($_POST["rule_{$rId}_src"]), 
             "cond"  => trim($_POST["rule_{$rId}_cond"])); 
-        if ($chList->verifyRule($newRule)) {
-          $ch->rule[$rId] = $newRule;
+        if ($chList->validateRule($mRule)) {
+          $ch->rules[$rId] = $mRule;
         } else {
           Logger::log(ERR, "Invalid rule form data: ", $_POST);
           echo "<script>error('Invalid rule {$rId}');</script>";
@@ -215,8 +218,9 @@ class Plugin_core {
       $cfg->pSet(CORE_PLUGIN, $ch->id, $ch->save());
       $cfg->savePluginConfig(CORE_PLUGIN); // FIXME: save only modified values  
     };
-    $newUriPath = Router::getPath(sprintf("%s/_edit/%d", $pfx, $ch->id));
-    return handleEditChannel($cfg, $newUriPath);
+    $newUriPath = sprintf("%s/_edit/%d", $pfx, $ch->id);
+    header("Location: {$newUriPath}");
+    return true;
   }
 
   public static function handleChannels($cfg, $uriPath) {
@@ -230,7 +234,7 @@ class Plugin_core {
     ?><div class="config_channels_header">Channels</div><?php
     $chIds = $chList->ids();
     foreach ($chIds as $chId) {
-      $chDef = &$chList->getChannel($chId);
+      $chDef = $chList->getChannel($chId);
       ?>
         <div class="config_entry">
           <div class="config_chlist">
@@ -263,7 +267,7 @@ class Plugin_core {
               <div class="config_chlist_sinks_value">
                 <?php 
                   foreach ($chDef->sinks as $sinkId) {
-                    $sinkCh = &$chList->getChannel($sinkId);
+                    $sinkCh = $chList->getChannel($sinkId);
                     if ($sinkCh) {
                       echo "<a href='#'>{$sinkId} - {$sinkCh->label}</a>";
                     };
@@ -292,6 +296,7 @@ class Plugin_core {
     $pfx = $ids["prefix"];
     if (isset($_POST["new_rule_src"]) && isset($_POST["new_rule_cond"])) {
       $newRule = array("src" => intval($_POST["new_rule_src"]), "cond" => trim($_POST["new_rule_cond"]));
+      Logger::log(DEBUG, "New rule contents", $newRule);
       if ($chList->validateRule($newRule) && $ch->createRule($newRule)) {
         $chList->setChannel($ch);
         $cfg->pSet(CORE_PLUGIN, $ch->id, $ch->save());
@@ -300,8 +305,9 @@ class Plugin_core {
         Logger::log(ERR, "Invalid rule data : ", $_POST);
       }
     };
-    $newUriPath = Router::getPath(sprintf("%s/_edit/%d", $pfx, $ch->id));
-    return handleEditChannel($cfg, $newUriPath);
+    $newUriPath = sprintf("%s/_edit/%d", $pfx, $ch->id);
+    header("Location: {$newUriPath}");
+    return true;
   }
 
   public static function handleDelRule($cfg, $uriPath) {
@@ -309,6 +315,7 @@ class Plugin_core {
       Logger::log(ERR, "Unable to set up channel modification context");
       return -1;
     };
+    $pfx = $ids["prefix"];
     if ($chList->canDeleteRule($ch->id, $ids["rId"]) && $ch->deleteRule($ids["rId"])) {
       $chList->setChannel($ch);
       $cfg->pSet(CORE_PLUGIN, $ch->id, $ch->save());
@@ -316,8 +323,9 @@ class Plugin_core {
     } else {
       Logger::log(ERR, "Unable to delete rule".$ids["rId"]." in channel ".$ch->id);
     };
-    $newUriPath = Router::getPath(sprintf("%s/_edit/%d", $pfx, $ch->id));
-    return handleEditChannel($cfg, $newUriPath);
+    $newUriPath = sprintf("%s/_edit/%d", $pfx, $ch->id);
+    header("Location: {$newUriPath}");
+    return true;
   }
 }
 ?>

@@ -141,17 +141,30 @@
 		},
 		{
 			"file": "backend/internal/dm_core/core.go",
+			"redo_stack":
+			[
+				[
+					2,
+					1,
+					"left_delete",
+					null,
+					"AwAAAIdUAAAAAAAAiFQAAAAAAAAAAAAAiFQAAAAAAACJVAAAAAAAAAAAAACJVAAAAAAAAIpUAAAAAAAAAAAAAA",
+					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAACHVAAAAAAAAIdUAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					1,
+					1,
+					"insert",
+					{
+						"characters": "vingO"
+					},
+					"BQAAAIlUAAAAAAAAiVQAAAAAAAABAAAAT4hUAAAAAAAAiFQAAAAAAAABAAAAZ4dUAAAAAAAAh1QAAAAAAAABAAAAboZUAAAAAAAAhlQAAAAAAAABAAAAaYVUAAAAAAAAhVQAAAAAAAABAAAAdg",
+					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAACKVAAAAAAAAIpUAAAAAAAAAAAAAAAA8L8"
+				]
+			],
 			"settings":
 			{
 				"buffer_size": 33517,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "backend/internal/dm_core/types.go",
-			"settings":
-			{
-				"buffer_size": 2450,
 				"line_ending": "Unix"
 			}
 		}
@@ -204,6 +217,9 @@
 	],
 	"file_history":
 	[
+		"/home/yarick/Downloads/SAML-tracer-export-2023-11-01T12_43_04.016Z.json",
+		"/home/yarick/Downloads/https___yandex.ru_.json",
+		"/home/yarick/Downloads/Yamaha#2806.txt",
 		"/home/yarick/Work/testrail/cases-schema-mg.sql",
 		"/home/yarick/Work/testrail/cases-schema-vk.sql",
 		"/home/yarick/Work/testrail/tests-schema-vk.sql",
@@ -308,7 +324,7 @@
 	],
 	"find":
 	{
-		"height": 32.0
+		"height": 36.0
 	},
 	"find_in_files":
 	{
@@ -382,17 +398,18 @@
 							"tab_size": 4,
 							"translate_tabs_to_spaces": false
 						},
-						"translation.x": 3.0,
+						"translation.x": 0.0,
 						"translation.y": 152.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 1,
 					"stack_multiselect": false,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
 					"file": "backend/internal/dm_core/core.go",
+					"selected": true,
 					"semi_transient": false,
 					"settings":
 					{
@@ -403,8 +420,8 @@
 						"selection":
 						[
 							[
-								692,
-								692
+								21637,
+								21637
 							]
 						],
 						"settings":
@@ -426,7 +443,7 @@
 								}
 							],
 							"lsp_active": true,
-							"lsp_hover_provider_count": 8,
+							"lsp_hover_provider_count": 11,
 							"lsp_uri": "file:///home/yarick/Work/a1ert.me/backend/internal/dm_core/core.go",
 							"show_definitions": false,
 							"syntax": "Packages/Go/Go.sublime-syntax",
@@ -434,59 +451,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 414.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"stack_multiselect": false,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "backend/internal/dm_core/types.go",
-					"selected": true,
-					"semi_transient": true,
-					"settings":
-					{
-						"buffer_size": 2450,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"auto_complete_triggers":
-							[
-								{
-									"characters": "<",
-									"selector": "text.html, text.xml"
-								},
-								{
-									"rhs_empty": true,
-									"selector": "punctuation.accessor"
-								},
-								{
-									"characters": ".",
-									"selector": "meta.tag, source - comment - string.quoted.double.block - string.quoted.single.block - string.unquoted.heredoc",
-									"server": "gopls"
-								}
-							],
-							"lsp_active": true,
-							"lsp_hover_provider_count": 4,
-							"lsp_uri": "file:///home/yarick/Work/a1ert.me/backend/internal/dm_core/types.go",
-							"show_definitions": false,
-							"syntax": "Packages/Go/Go.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 16088.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -498,7 +463,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 32.0
+		"height": 36.0
 	},
 	"input":
 	{
@@ -543,7 +508,7 @@
 	"project": "backend.sublime-project",
 	"replace":
 	{
-		"height": 60.0
+		"height": 68.0
 	},
 	"save_all_on_build": true,
 	"select_file":

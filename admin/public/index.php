@@ -28,7 +28,7 @@
   ];
   $uriPath = Router::getPath($_SERVER["REQUEST_URI"]);
   Logger::log(DEBUG, $uriPath);
-  Logger::log(DEBUG, $routes);
+//  Logger::log(DEBUG, $routes);
 
 ?>
 <html><head><title>a1ert.me management interface</title><link href="/main.css?c=<?=rand();?>" rel="stylesheet"/></head>

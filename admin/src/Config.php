@@ -96,11 +96,12 @@ class Config {
 			Logger::log(ERR, "Missing {$plugin} config in cached data");
 			return false;
 		};
-		$rc = $this->connect(); 
+		$rc = $this->connect();
 		if ($rc != false) {
 			$s = $rc->hMSet($this->cfgKey."_".$plugin, $this->plugins[$plugin]);
+			return $s;
 		};
-		return $rc != false;
+		return false;
 	}
 
     function pGet($plugin, $key) {

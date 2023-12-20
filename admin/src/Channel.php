@@ -55,7 +55,8 @@ namespace Yjr\A1ertme;
       return json_encode($he);
     }
     function createRule($rule) {
-      $newRid = is_array($this->rules) ? max(array_keys($this->rules)) + 1 : 0;
+      $rIds = is_array($this->rules) ? array_keys($this->rules) : [];
+      $newRid = sizeof($rIds) > 0 ? max($rIds) + 1 : 0;
       $rule["id"] = $newRid;
       $this->rules[$newRid] = $rule;
       return true;
