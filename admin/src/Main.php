@@ -4,7 +4,7 @@
     function __construct() {
     }
     static function handleDefault($cfg) {
-      
+      echo "Directed Acyclic Graph processor configuration interface";
     }
   }
 ?>

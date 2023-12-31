@@ -236,16 +236,16 @@ class Config {
 		if (isset($_POST['save'])) {
 			foreach ($_POST as $k => $v) {
 				if (preg_match('/^value_(.+)$/', $k, $m) === 1) {
-					$cfg->set($m[1], $v);
+					$cfg->mSet($m[1], $v);
 				};
 			};
-			$cfg->save();
+			$cfg->saveMainConfig();
 		};
 		?>Config
 		<form name="config" method="post" action="#"><?php
-		foreach ($cfg->keys() as $k) {
+		foreach ($cfg->mKeys() as $k) {
 			?>
-        		<div class="config_entry"><div class="config_key"><?=$k;?></div><div class="config_value"><input type="text" name="value_<?=$k?>" value="<?=$cfg->get($k);?>"></div></div>
+        		<div class="config_entry"><div class="config_key"><?=$k;?></div><div class="config_value"><input type="text" name="value_<?=$k?>" value="<?=$cfg->mGet($k);?>"></div></div>
 			<?php
 		}
 		?>
@@ -253,6 +253,5 @@ class Config {
 		</form>
 		<?php
     }
-
 }
 ?>
