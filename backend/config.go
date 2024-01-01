@@ -1,41 +1,22 @@
 package main
-import(
-    "github.com/rs/zerolog/log"
-    "dagproc/internal/dm_core"
-	"github.com/gomodule/redigo/redis"
+
+import (
+	"dagproc/modplug"
+	"io"
+	"os"
+	"github.com/rs/zerolog/log"
 )
 
-type MainConfig struct {
-    ModList         string `redis:"modules"`
-    IsShutdown      bool   `redis:"shutdown"`
+type GlobalConfig struct {
+	Plugins			map[string]interface{} 
+	Channels		map[string]interface{} 
+	Templates		map[string]interface{} 
 }
 
-func configConnect(configDSN string) (redis.Conn, error) {
+func loadConfig(confFilePath string) (GlobalConfig, error) {
 	var err error
-	var ret redis.Conn
-	ret, err = redis.DialURL(configDSN)
-	if (err == nil) {
-        log.Debug().Str("DSN", configDSN).Msg("Connected to config DSN")
-    }
-    return ret, err
-}
-func loadMainConfig(rc redis.Conn) (MainConfig, error) {
-	var err error
-	var mCfg MainConfig
-	reply, err := redis.Values(rc.Do("HGETALL", "settings"))
-	if err == nil {
-		err = redis.ScanStruct(reply, &mCfg)
-	}
-	return mCfg, err
-}
+	var gCfg GlobalConfig
+	var cfr io.Reader
 
-func loadModuleConfig(rc redis.Conn, modName string) (dm_core.ModConfig, error) {
-	var err error
-	var mCfg dm_core.ModConfig
-	log.Debug().Str("module", modName).Msg("Loading config from settings" + "_" + modName + " hash")
-	mCfg, err = redis.Values(rc.Do("HGETALL", "settings" + "_" + modName))
-	log.Debug().Str("module", modName).Msgf("Loaded config: %s", mCfg)
-	return mCfg, err
-
+	return gCfg, err
 }
-

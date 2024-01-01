@@ -4,31 +4,6 @@ import (
     "text/template"
 )
 
-type ModInitFunc func() (ModDispTable, error)
-type ModLoadConfigFunc      func(values []interface{}) error
-type ModReceiveEventFunc    func() event, error
-type ModSendEventFunc       func(event) error
-type ModProcessEventFunc    func(event) error
-type  ModDispTable struct {
-    LoadConfig      ModLoadConfigFunc
-    ReceiveEvent    ModReceiveEventFunc
-    SendEvent       ModSendEventFunc
-    ProcessEvent    ModProcessEventFunc
-}
-
-type ModConfig []interface{}
-
-type Module struct {
-    Name        string
-    Config      ModConfig
-    DispTable   ModDispTable
-}
-
-type CoreConfig struct {
-    ChannelDefVer   uint32 `redis:"channel_version"`
-    LastChannelId   uint32 `redis:"last_channel_id"`
-}
-
 type PnFunc struct {
   numArgs   int
   function  RulePartFunc

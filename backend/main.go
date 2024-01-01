@@ -1,6 +1,7 @@
 package main
 
 import (
+	"dagproc/modplug"
 	"dagproc/internal/dm_core" // dm stands for dagproc module
 	"dagproc/internal/dm_redis"
 	"dagproc/internal/dm_xmpp"
@@ -17,8 +18,8 @@ import (
 )
 
 var (
-    modInitDispatcher map[string]dm_core.ModInitFunc
-    modMap map[string]dm_core.Module
+    modInfoMap 	map[string]modplug.ModInfoFunc // modInfoMap is populated manually early in main()
+    modMap 		map[string]modplug.ModuleInfo  // modMap is populated by reading modInfoMap and calling ModInfoFunc's for each module
 )
 
 
@@ -59,30 +60,28 @@ func loadConfig(configFile string) (Config, error) {
 
 
 func main() {
-	var configDSN string
+	var confFilePath string
 	var logLevel string
 	var dryRun bool
 	var _ls2llc map[string]zerolog.Level
-	var config MainConfig
+	var config GlobalConfig
 	var err error
-	var moduleNames []string
-	//var loadedModules map[string]dm_core.Module
-	//var wg sync.WaitGroup
-	var configConn redis.Conn
-
+	var _mn string
+	var _mhf modplug.ModHooksFunc
     _ls2llc = map[string]zerolog.Level{"debug": zerolog.DebugLevel, "info": zerolog.InfoLevel, "warn": zerolog.WarnLevel, "fatal": zerolog.FatalLevel}
-    modInitDispatcher = map[string]dm_core.ModInitFunc{
-        "core":     dm_core.ModInit,
-        "xmpp":     dm_xmpp.ModInit,
-        "redis":    dm_redis.ModInit,
+
+    modInfoMap = map[string]modplug.ModInfoFunc {
+        "core": 	dm_core.ModInit,
+        "xmpp": 	dm_xmpp.ModInit,
+        "redis": 	dm_redis.ModInit,
     }
 
-	flag.StringVar(&configDSN, "c", "", "config DSN (redis://<host[:port]>/[database id])")
+	flag.StringVar(&confFilePath, "c", "", "config file location")
 	flag.StringVar(&logLevel, "l", "info", "Log level (debug|info|warn|fatal)")
 	flag.BoolVar(&dryRun, "n", false, "Dry run (check config and exit)")
 	flag.Parse()
-	if configDSN == "" {
-		log.Fatal().Msgf("Usage: %s -c <config DSN> [ -l <debug|info|warn|fatal>] [ -n for dry run]", os.Args[0])
+	if confFilePath == "" {
+		log.Fatal().Msgf("Usage: %s -c <config file> [ -l <debug|info|warn|fatal>] [ -n for dry run]", os.Args[0])
 		os.Exit(1)
 	}
 	zerolog.TimestampFieldName = "t"
@@ -96,53 +95,15 @@ func main() {
         zerolog.SetGlobalLevel(zerolog.InfoLevel)
         log.Info().Msgf("Unknown log level %s, actual log level set to info", logLevel)
     }
-    configConn, err = configConnect(configDSN)
-    if (err != nil) {
-        log.Fatal().Err(err).Msgf("Unable to load main config at %s", configDSN)
-        os.Exit(1)
+	modMap = make(map[string]modplug.ModuleInfo)
+    for _mn, _mhf = range modInfoMap {
+    	modMap[_mn] = modplug.ModuleInfo {
+	    	Name: 	_mn,
+	    	Config: make([]interface{}, 0),
+	    	Hooks:  _mhf(),
+    	}
     }
-    config, err = loadMainConfig(configConn)
-    if (err == nil) {
-        moduleNames = strings.Split(config.ModList, ",")
-        moduleNames  = append([]string{"core"}, moduleNames...)
-        modMap = make(map[string]dm_core.Module, len(moduleNames))
-        var modName string
-        for _, modName = range moduleNames {
-           log.Debug().Str("module", modName).Msg("Starting init")
-            if modInitFunc, ok := modInitDispatcher[modName]; ok {
-                var mc dm_core.ModConfig
-                mc, err = loadModuleConfig(configConn, modName)
-                if (err == nil) {
-                    var modDispTable dm_core.ModDispTable
-                    modDispTable, err = modInitFunc()
-                    if (err != nil) {
-                        log.Fatal().Err(err).Str("module", modName).Msg("Unable to init module")
-                        break
-                    } else {
-                        err = modDispTable.LoadConfig(mc)
-                    }
-                    if (err == nil) {
-                        modMap[modName] = dm_core.Module{ Name: modName, Config: nil, DispTable: modDispTable }
-                    } else {
-                        log.Fatal().Err(err).Msg("Unable to parse loaded config")
-                    }
-                } else {
-                    log.Fatal().Str("module", modName).Msg("Unable to load module config")
-                }
-            } else {
-                err = errors.New(fmt.Sprintf("Unknown module %s", modName))
-            }
-            if (err != nil) {
-                break
-            }
-        }
-        if (err != nil) {
-            os.Exit(3)
-        }
-    } else {
-        log.Fatal().Err(err).Msgf("Cannot load main config from %s", configDSN)
-        os.Exit(2)
-    }
+
     /*
 	config, err = loadConfig(configDSN)
 	if err != nil { // Actual error description is in the loadConfig func
