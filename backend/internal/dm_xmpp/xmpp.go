@@ -1,6 +1,5 @@
 package dm_xmpp
 import (
-    "dagproc/internal/dm_core"
 //	"encoding/json"
 //	"flag"
 //	"fmt"
@@ -14,19 +13,27 @@ import (
     "github.com/rs/zerolog/log"
 //	"gosrc.io/xmpp"
 //	"gosrc.io/xmpp/stanza"
+    "dagproc/internal/di"
+
 )
 var (
     mConfig XmppConfig
     mLog zerolog.Logger
 )
-func loadConfig(values []interface{}) error {
+func xmppLoadConfig(config di.CFConfig) (di.PluginConfig, error) {
     var ret error
-    return ret
+    ret = nil
+    return ret, nil
 }
-func ModInit() (dm_core.ModDispTable, error) {
+func ModInit() (di.ModHookTable, error) {
     mLog = log.With().Str("module", "xmpp").Logger()
     mLog.Debug().Msg("ModInit")
-    return dm_core.ModDispTable{ LoadConfig: loadConfig }, nil
+    return di.ModHookTable{ 
+   		LoadConfigHook:		xmppLoadConfig,
+    	ReceiveEventHook:	nil,
+    	SendEventHook:		nil,
+    	ProcessEventHook:	nil,
+    }, nil
 }
 
 /*
