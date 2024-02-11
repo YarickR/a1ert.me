@@ -1,4 +1,4 @@
-package dm_redis
+package dm_http
 import (
 	//"encoding/json"
 	//"flag"
@@ -15,26 +15,35 @@ import (
 )
 
 var (
-    mConfig RedisConfig
+    mConfig HttpConfig
     mLog zerolog.Logger
 )
 
 func ModInit() (di.ModHookTable, error) {
-    mLog = log.With().Str("module", "redis").Logger()
+    mLog = log.With().Str("module", "http").Logger()
     mLog.Debug().Msg("ModInit")
     return di.ModHookTable{ 
-   		LoadConfigHook:      redisLoadConfig,
-    	ReceiveEventHook:    redisReceiveEvent,
-    	SendEventHook:       nil,
-    	ProcessEventHook:    nil,
+   		LoadConfigHook:      httpLoadConfig,
+    	ReceiveEventHook:    httpReceiveEvent,
+    	SendEventHook:       httpSendEvent,
+    	ProcessEventHook:    httpProcessEvent,
     }, nil
 }
 
-func redisReceiveEvent() (di.Event, error) {
+func httpReceiveEvent() (di.Event, error) {
 	var ret di.Event
 	var err error
 	return ret, err
 }
+func httpSendEvent(ev di.Event) error {
+	var err error
+	return err
+}
+func httpProcessEvent(ev di.Event) error {
+	var err error
+	return err
+}
+
 /*
 func redisLoadChannelDefs(rc redis.Conn, lastChannelId uint32) ([]*ChannelDef, uint32, error) {
 	var err error

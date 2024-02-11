@@ -11,8 +11,8 @@ var (
 )
 
 
-func ValidateHooks(hooks []string, module string) error {
-    var v string 
+func ValidateHooks(hooks []interface{}, module string) error {
+    var v interface{} 
     var m di.Module
     var ok bool
     m, ok = ModMap[module]
@@ -21,7 +21,13 @@ func ValidateHooks(hooks []string, module string) error {
     }
     ok = true
     for _, v = range hooks {
-        switch strings.ToLower(v) {
+        switch t := v.(type) {
+            case string:
+                break
+            default:
+                return errors.New(fmt.Sprintf("wrong hook type, should be string {'in', 'out', 'process'}, not %T ", t))
+        }
+        switch strings.ToLower(v.(string)) {
             case "in":
                 if (m.Hooks.ReceiveEventHook == nil) {
                     ok = false;

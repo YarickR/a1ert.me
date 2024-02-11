@@ -9,14 +9,14 @@ import (
 	"github.com/rs/zerolog/log"
 	"dagproc/internal/di_modplug"
 	"dagproc/internal/di"
-	"dagproc/internal/dm_core"
+ 	"dagproc/internal/dm_core"
 )
 
 
 type gcjf struct {
-	PlugDescr       map[string]interface{} `json: "plugins"`
-	ChanDescr       map[string]interface{} `json: "channels"`
-	TmplDescr       map[string]interface{} `json: "templates"`
+	PlugDescr       map[string]interface{} `json:"plugins"`
+	ChanDescr       map[string]interface{} `json:"channels"`
+	TmplDescr       map[string]interface{} `json:"templates"`
 }
 
 func loadConfig(confFilePath string, modMap map[string]di.Module) (di.GlobalConfig, error) {
@@ -48,7 +48,7 @@ func loadConfig(confFilePath string, modMap map[string]di.Module) (di.GlobalConf
 	}
 	gCfg.Plugins, err = di_modplug.LoadPluginsConfig(gcj.PlugDescr, modMap)
 	if (err != nil) {
-		log.Error().Msg("Error loading plugins config")
+		log.Error().Err(err).Msg("Error loading plugins config")
 		return gCfg, err		
 	}
 	gCfg.Channels, err = dm_core.LoadChannelsConfig(gcj.ChanDescr, gCfg.Plugins)

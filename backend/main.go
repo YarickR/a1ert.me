@@ -6,6 +6,7 @@ import (
 	"dagproc/internal/dm_core" // dm stands for dagproc module
 	"dagproc/internal/dm_redis"
 	"dagproc/internal/dm_xmpp"
+	"dagproc/internal/dm_http"
 	"flag"
 	"fmt"
 	"os"
@@ -31,6 +32,7 @@ func main() {
         "core": 	dm_core.ModInit,
         "xmpp": 	dm_xmpp.ModInit,
         "redis": 	dm_redis.ModInit,
+        "http":		dm_http.ModInit,
     }
 
 	flag.StringVar(&confFilePath, "c", "", "config file location")

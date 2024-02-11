@@ -2,10 +2,14 @@ package dm_xmpp
 import (
     "sync"
 )
-
+type XmppConfigPtr *XmppConfig
 type XmppConfig struct {
-
+    server      string
+    login       string
+    password    string
+    groupsURI   string
 }
+
 type XmppMsg struct {
     XmppGroup   string
     Message     string
@@ -22,3 +26,4 @@ type XmppGroup struct {
     Deferred    []string
     GroupLock  sync.Mutex
 }
+type XmppConfigKWDF func (v interface{}, xcp XmppConfigPtr) error 

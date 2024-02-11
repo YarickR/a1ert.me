@@ -20,20 +20,29 @@ var (
     mConfig XmppConfig
     mLog zerolog.Logger
 )
-func xmppLoadConfig(config di.CFConfig) (di.PluginConfig, error) {
-    var ret error
-    ret = nil
-    return ret, nil
-}
+
 func ModInit() (di.ModHookTable, error) {
     mLog = log.With().Str("module", "xmpp").Logger()
     mLog.Debug().Msg("ModInit")
     return di.ModHookTable{ 
    		LoadConfigHook:		xmppLoadConfig,
-    	ReceiveEventHook:	nil,
-    	SendEventHook:		nil,
+    	ReceiveEventHook:	xmppReceive,
+    	SendEventHook:		xmppSend,
     	ProcessEventHook:	nil,
     }, nil
+}
+
+func xmppReceive() (di.Event, error) {
+	var ret di.Event
+	var err error
+	err = nil
+	return ret, err
+}
+
+func xmppSend(ev di.Event) error {
+	var err error
+	err = nil
+	return err
 }
 
 /*
