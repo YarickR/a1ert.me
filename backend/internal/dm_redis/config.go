@@ -61,6 +61,8 @@ func redisLoadConfig(config di.CFConfig) (di.PluginConfig, error) {
     var ret RedisConfig
     var k string
     var v interface{}
+    var f RedisConfigKWDF
+    var ok bool
     var kwdfm map[string]RedisConfigKWDF = map[string]RedisConfigKWDF {
     	"module":	redisConfigKWDF_module,
     	"hooks":	redisConfigKWDF_hooks,
@@ -68,7 +70,13 @@ func redisLoadConfig(config di.CFConfig) (di.PluginConfig, error) {
     	"list":		redisConfigKWDF_list,
     }
     for k, v = range config {
-    	err = kwdfm[k](v, &ret)
+    	f, ok = kwdfm[k]
+    	if (!ok) {
+    		err = fmt.Errorf("Unknown keyword '%s'", k);
+    		mLog.Error().Err(err).Send()
+    		return ret, err
+    	}
+    	err = f(v, &ret)
     	if (err != nil) {
     		mLog.Error().Str("keyword", k).Err(err).Send()
     		return ret, err

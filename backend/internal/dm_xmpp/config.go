@@ -8,6 +8,8 @@ import (
 
 func xmppLoadConfig(config di.CFConfig) (di.PluginConfig, error) {
     var err error
+    var f XmppConfigKWDF
+    var ok bool
     var ret XmppConfig
     var k string
     var v interface{}
@@ -18,10 +20,17 @@ func xmppLoadConfig(config di.CFConfig) (di.PluginConfig, error) {
         "login":		xmppConfigKWDF_login,
         "password":		xmppConfigKWDF_password,
         "groupsURI":	xmppConfigKWDF_groupsURI,
+        "template":		xmppConfigKWDF_template,
 
     }
     for k, v = range config {
-        err = kwdfm[k](v, &ret)
+    	f, ok = kwdfm[k]
+    	if (!ok) {
+    		err = fmt.Errorf("Unknown keyword '%s'", k);
+    		mLog.Error().Err(err).Send()
+    		return ret, err
+    	}
+        err = f(v, &ret)
         if (err != nil) {
             mLog.Error().Str("keyword", k).Err(err).Send()
             return ret, err

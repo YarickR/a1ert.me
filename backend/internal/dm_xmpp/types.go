@@ -1,13 +1,17 @@
 package dm_xmpp
+
 import (
-    "sync"
+	"sync"
+	"text/template"
+    "dagproc/internal/di"
 )
 type XmppConfigPtr *XmppConfig
 type XmppConfig struct {
     server      string
     login       string
     password    string
-    groupsURI   string
+    groupsURI   string, 
+    template    di.TemplatePtr
 }
 
 type XmppMsg struct {

@@ -46,6 +46,12 @@ func loadConfig(confFilePath string, modMap map[string]di.Module) (di.GlobalConf
 		log.Error().Err(err).Send()
 		return gCfg, err		
 	}
+	// Templates go first, as plugins may reference them
+	gCfg.Templates, err = dm_core.LoadTemplatesConfig(gcj.TmplDescr)
+	if (err != nil) {
+		log.Error().Msg("Error loading templates config")		
+		return gCfg, err
+	}
 	gCfg.Plugins, err = di_modplug.LoadPluginsConfig(gcj.PlugDescr, modMap)
 	if (err != nil) {
 		log.Error().Err(err).Msg("Error loading plugins config")
@@ -55,11 +61,6 @@ func loadConfig(confFilePath string, modMap map[string]di.Module) (di.GlobalConf
 	if (err != nil) {
 		log.Error().Msg("Error loading channels config")
 		return gCfg, err		
-	}
-	gCfg.Templates, err = dm_core.LoadTemplatesConfig(gcj.TmplDescr)
-	if (err != nil) {
-		log.Error().Msg("Error loading templates config")		
-		return gCfg, err
 	}
 	return gCfg, nil
 }

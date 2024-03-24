@@ -1,12 +1,31 @@
 package dm_core
+
 import (
 	"dagproc/internal/di"
+	"fmt"
 )
 
-func LoadTemplatesConfig(cfg di.CFConfig) (map[string]di.Template, error) {
-	var ret map[string]di.Template
+func LoadTemplatesConfig(config di.CFConfig) (map[string]di.TemplatePtr, error) {
+	var ret map[string]di.TemplatePtr
 	var err error
-	ret = make(map[string]di.Template)
+	ret = make(map[string]di.TemplatePtr)
+	for k, v := range config {
+		switch v.(type) {
+			case string: 
+				var tt di.TemplatePtr
+				var ok bool
+				if tt, ok = ret[k]; ok {
+					err = fmt.Errorf("Template '%s' already defined, contents: '%s'", k, tt.Contents)
+					return ret, err
+				}
+				var t di.TemplatePtr
+				t = &di.Template{ Contents: v.(string)}
+				ret[k] = t
+			default:
+				err = fmt.Errorf("Template '%s' should be a string", k)
+				return ret, err
+		}
+	}
 	err = nil
 	return ret, err
 }

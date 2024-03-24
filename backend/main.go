@@ -55,7 +55,7 @@ func main() {
         log.Info().Msgf("Unknown log level %s, actual log level set to info", logLevel)
     }
 	di_modplug.ModMap = make(map[string]di.Module)
-    for _mn, _ = range di_modplug.ModHookMap {
+    for _mn  = range di_modplug.ModHookMap {
     	var _mhm di.ModHookTable;
     	_mhm, err = di_modplug.ModHookMap[_mn]()
     	if (err == nil) {

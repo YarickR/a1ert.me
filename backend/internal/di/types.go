@@ -25,19 +25,32 @@ type PluginConfig interface{} // Opaque, module-dependent
 type PluginPtr *Plugin
 
 type Plugin struct {
-	Name string
+	Name   string
+    Type   int
 	Module Module
 	Config PluginConfig
 }
 
+const (
+    PT_IN       = 1 // Plugin type
+    PT_OUT      = 2
+    PT_PROC     = 4
+)
+
+type ChannelPluginCtx struct {
+    Plugin  PluginPtr
+    Config  PluginConfig
+}
+
 type ChannelPtr *Channel
 type Channel struct {
-    Id              string 
-    Descr           string 
-    MsgTemplate    	TemplatePtr
-    Rules         []RulePtr
-    Sinks         []ChannelPtr
-    Plugins       []PluginPtr
+    Name       string 
+    Descr      string 
+    Rules      []RulePtr
+    Sinks      []ChannelPtr
+    InPlugs    []ChannelPluginCtx
+    OutPlugs   []ChannelPluginCtx
+    ProcPlugs  []ChannelPluginCtx
 }
 type RulePtr *Rule
 type Rule struct {
@@ -112,7 +125,7 @@ type AlertMsg struct {
 }
 
 type GlobalConfig struct {
-	Plugins			map[string]Plugin 
-	Channels		map[string]Channel
-	Templates		map[string]Template
+	Plugins			map[string]PluginPtr 
+	Channels		map[string]ChannelPtr
+	Templates		map[string]TemplatePtr
 }
