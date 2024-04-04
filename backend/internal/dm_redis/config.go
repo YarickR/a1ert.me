@@ -56,7 +56,7 @@ func redisConfigKWDF_list (v interface{}, rcp RedisConfigPtr) error {
 	}
 }
 
-func redisLoadConfig(config di.CFConfig) (di.PluginConfig, error) {
+func redisLoadConfig(config di.CFConfig, isGlobal bool) (di.PluginConfig, error) {
     var err error
     var ret RedisConfig
     var k string

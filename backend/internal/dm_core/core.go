@@ -31,7 +31,7 @@ func ModInit() (di.ModHookTable, error) {
     }, nil
 }
 
-func coreLoadConfig(config di.CFConfig) (di.PluginConfig, error) {
+func coreLoadConfig(config di.CFConfig, isGlobal bool) (di.PluginConfig, error) {
     // No config for the core right now
     mLog.Debug().Msg("coreLoadConfig")
     return make(map[string]interface{}), nil

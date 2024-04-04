@@ -2,7 +2,7 @@ package di
 
 
 type Event map[string]interface{}
-type ModLoadConfigHook      func(config CFConfig) (PluginConfig, error)
+type ModLoadConfigHook      func(config CFConfig, isGlobal bool) (PluginConfig, error)
 type ModReceiveEventHook    func() (Event, error)
 type ModSendEventHook       func(Event) error
 type ModProcessEventHook    func(Event) error

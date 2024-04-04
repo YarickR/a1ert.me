@@ -6,7 +6,7 @@ import (
     "dagproc/internal/di_modplug"
 )
 
-func xmppLoadConfig(config di.CFConfig) (di.PluginConfig, error) {
+func xmppLoadConfig(config di.CFConfig, isGlobal bool) (di.PluginConfig, error) {
     var err error
     var f XmppConfigKWDF
     var ok bool
@@ -21,7 +21,6 @@ func xmppLoadConfig(config di.CFConfig) (di.PluginConfig, error) {
         "password":		xmppConfigKWDF_password,
         "groupsURI":	xmppConfigKWDF_groupsURI,
         "template":		xmppConfigKWDF_template,
-
     }
     for k, v = range config {
     	f, ok = kwdfm[k]
@@ -46,14 +45,14 @@ func xmppLoadConfig(config di.CFConfig) (di.PluginConfig, error) {
 }
 
 func xmppConfigKWDF_module (v interface{}, xcp XmppConfigPtr) error {
-	switch t := v.(type) {
+	switch v.(type) {
 		case string:
 			if (v.(string) != "xmpp") {
 				return errors.New(fmt.Sprintf("module should be 'xmpp' instead of %s", v.(string)))
 			}
 			return nil
 		default:
-			return errors.New(fmt.Sprintf("Wrong type for 'module' keyword: %T, should be 'string'", t))
+			return errors.New(fmt.Sprintf("'module' should be 'string'"))
 	}
 }
 func xmppConfigKWDF_hooks (v interface{}, xcp XmppConfigPtr) error {

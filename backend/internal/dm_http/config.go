@@ -52,7 +52,7 @@ func httpConfigKWDF_listen (v interface{}, hcp HttpConfigPtr) error {
 	}
 }
 
-func httpLoadConfig(config di.CFConfig) (di.PluginConfig, error) {
+func httpLoadConfig(config di.CFConfig, isGlobal bool) (di.PluginConfig, error) {
     var err error
     var ret HttpConfig
     var k string
