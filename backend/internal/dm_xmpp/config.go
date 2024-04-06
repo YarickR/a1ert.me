@@ -8,28 +8,40 @@ import (
 
 func xmppLoadConfig(config di.CFConfig, isGlobal bool) (di.PluginConfig, error) {
     var err error
-    var f XmppConfigKWDF
+    var f XmppConfigKWD
     var ok bool
     var ret XmppConfig
     var k string
     var v interface{}
-    var kwdfm map[string]XmppConfigKWDF = map[string]XmppConfigKWDF {
-        "module":		xmppConfigKWDF_module,
-        "hooks":		xmppConfigKWDF_hooks,
-        "server":		xmppConfigKWDF_server,
-        "login":		xmppConfigKWDF_login,
-        "password":		xmppConfigKWDF_password,
-        "groupsURI":	xmppConfigKWDF_groupsURI,
-        "template":		xmppConfigKWDF_template,
+    var kwdfm map[string]XmppConfigKWD = map[string]XmppConfigKWD {
+        "module":		{ dispFunc: xmppConfigKWDF_module, 		dispFlags: di.CKW_GLOBAL },
+        "hooks":		{ dispFunc: xmppConfigKWDF_hooks,		dispFlags: di.CKW_GLOBAL },
+        "server":		{ dispFunc: xmppConfigKWDF_server,		dispFlags: di.CKW_GLOBAL },
+        "login":		{ dispFunc: xmppConfigKWDF_login,		dispFlags: di.CKW_GLOBAL },
+        "password":		{ dispFunc: xmppConfigKWDF_password,	dispFlags: di.CKW_GLOBAL },
+        "groupsURI":	{ dispFunc: xmppConfigKWDF_groupsURI,	dispFlags: di.CKW_GLOBAL },
+        "template":		{ dispFunc: xmppConfigKWDF_template,	dispFlags: di.CKW_GLOBAL | di.CKW_CHANNEL },
+        "group":		{ dispFunc: xmppConfigKWDF_group,		dispFlags: di.CKW_CHANNEL },
     }
     for k, v = range config {
     	f, ok = kwdfm[k]
     	if (!ok) {
     		err = fmt.Errorf("Unknown keyword '%s'", k);
-    		mLog.Error().Err(err).Send()
+    		mLog.Error().Str("keyword", k).Err(err).Send()
     		return ret, err
     	}
-        err = f(v, &ret)
+    	if (isGlobal && ((f.dispFlags & di.CKW_GLOBAL) == 0 )) {
+    		err = fmt.Errorf("'%s' cannot be used in global config", k);
+    		mLog.Error().Str("keyword", k).Err(err).Send()
+    		return ret, err
+    	}
+    	if (!isGlobal && ((f.dispFlags & di.CKW_CHANNEL) == 0 )) {
+    		err = fmt.Errorf("'%s' cannot be used in per-channel config", k);
+    		mLog.Error().Str("keyword", k).Err(err).Send()
+    		return ret, err
+    	}
+
+        err = f.dispFunc(v, &ret)
         if (err != nil) {
             mLog.Error().Str("keyword", k).Err(err).Send()
             return ret, err
@@ -56,47 +68,72 @@ func xmppConfigKWDF_module (v interface{}, xcp XmppConfigPtr) error {
 	}
 }
 func xmppConfigKWDF_hooks (v interface{}, xcp XmppConfigPtr) error {
-	switch t := v.(type) {
+	switch v.(type) {
 		case []interface{}:
 			return di_modplug.ValidateHooks(v.([]interface{}), "xmpp")
 		default:
-			return errors.New(fmt.Sprintf("Wrong type for 'hooks' keyword: %T", t))
+			return errors.New(fmt.Sprintf("'hooks' should be a list of active hooks for this plugin"))
 	}
 }
 func xmppConfigKWDF_server (v interface{}, xcp XmppConfigPtr) error {
-	switch t := v.(type) {
+	switch v.(type) {
 		case string:
 			xcp.server = v.(string)
 			return nil
 		default:
-			return errors.New(fmt.Sprintf("Wrong type for 'server' keyword: %T, should be string ", t))
+			return errors.New(fmt.Sprintf("'server' should be string"))
 	}
 }
 func xmppConfigKWDF_login (v interface{}, xcp XmppConfigPtr) error {
-	switch t := v.(type) {
+	switch v.(type) {
 		case string:
 			xcp.login = v.(string)
 			return nil
 		default:
-			return errors.New(fmt.Sprintf("Wrong type for 'login' keyword: %T, should be string ", t))
+			return errors.New(fmt.Sprintf("'login' should be string "))
 	}
 }
 func xmppConfigKWDF_password (v interface{}, xcp XmppConfigPtr) error {
-	switch t := v.(type) {
+	switch v.(type) {
 		case string:
 			xcp.password = v.(string)
 			return nil
 		default:
-			return errors.New(fmt.Sprintf("Wrong type for 'password' keyword: %T, should be string ", t))
+			return errors.New(fmt.Sprintf("'password' should be string "))
 	}
 }
 
 func xmppConfigKWDF_groupsURI (v interface{}, xcp XmppConfigPtr) error {
-	switch t := v.(type) {
+	switch v.(type) {
 		case string:
 			xcp.groupsURI = v.(string)
 			return nil
 		default:
-			return errors.New(fmt.Sprintf("Wrong type for 'groupsURI' keyword: %T, should be string ", t))
+			return errors.New(fmt.Sprintf("'groupsURI' should be string "))
 	}
+}
+
+func xmppConfigKWDF_template (v interface{}, xcp XmppConfigPtr) error {
+	var ok bool
+	switch v.(type) {
+		case string:
+			xcp.template, ok = di.GCfg.Templates[v.(string)]
+			if !ok {
+				xcp.template = nil
+				return errors.New(fmt.Sprintf("Undefined template '%s'", v.(string)))
+			}
+			return nil
+		default:
+			return errors.New(fmt.Sprintf("'template' should be string "))
+	}
+}
+func xmppConfigKWDF_group (v interface{}, xcp XmppConfigPtr) error {
+	switch v.(type) {
+		case string:
+			xcp.group = v.(string)
+			return nil
+		default:
+			return errors.New(fmt.Sprintf("'groups' should be string "))
+	}
+
 }

@@ -21,7 +21,7 @@ import (
       },
 
 */
-func parseChannel(chConfig interface{}, chName string, plugins map[string]di.PluginPtr) (di.ChannelPtr, error) {
+func parseChannel(chConfig interface{}, chName string) (di.ChannelPtr, error) {
     var ret di.ChannelPtr
     var err error
     var ok bool
@@ -42,7 +42,7 @@ func parseChannel(chConfig interface{}, chName string, plugins map[string]di.Plu
     ret = &di.Channel{ Name: chName }
     for _, pn = range pl {
         var pCtx di.ChannelPluginCtx
-        pCtx.Plugin, ok = plugins[pn]
+        pCtx.Plugin, ok = di.GCfg.Plugins[pn]
         if !ok {
             return nil, fmt.Errorf("Unknown plugin '%s'", pn)
         }
@@ -52,7 +52,7 @@ func parseChannel(chConfig interface{}, chName string, plugins map[string]di.Plu
             // we have channel-level plugin config
             switch pc.(type) {
                 case map[string]interface{}:
-                    pCtx.Config, err = pCtx.Plugin.Module.Hooks.LoadConfigHook(pc.(di.CFConfig))
+                    pCtx.Config, err = pCtx.Plugin.Module.Hooks.LoadConfigHook(pc.(di.CFConfig), false)
                 default:
                     return nil, fmt.Errorf("Invalid plugin configuration '%v'", pc)
             }
@@ -72,7 +72,7 @@ func parseChannel(chConfig interface{}, chName string, plugins map[string]di.Plu
     return ret, err
 }
 
-func LoadChannelsConfig(jsc map[string]interface{}, plugins map[string]di.PluginPtr) (map[string]di.ChannelPtr, error) {
+func LoadChannelsConfig(jsc map[string]interface{}) (map[string]di.ChannelPtr, error) {
     var ret map[string]di.ChannelPtr
     var err error
     mLog.Debug().Msg("LoadChannelsConfig")
@@ -80,7 +80,7 @@ func LoadChannelsConfig(jsc map[string]interface{}, plugins map[string]di.Plugin
     err = nil
     for k, v := range jsc {
         var newC di.ChannelPtr;
-        newC, err = parseChannel(v, k,  plugins);
+        newC, err = parseChannel(v, k);
         if (err != nil) {
             mLog.Error().Str("channel", k).Err(err).Msg("Error parsing channel")
             return nil, err

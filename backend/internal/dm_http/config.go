@@ -57,14 +57,14 @@ func httpLoadConfig(config di.CFConfig, isGlobal bool) (di.PluginConfig, error) 
     var ret HttpConfig
     var k string
     var v interface{}
-    var kwdfm map[string]HttpConfigKWDF = map[string]HttpConfigKWDF {
-    	"module":	httpConfigKWDF_module,
-    	"hooks":	httpConfigKWDF_hooks,
-    	"uri":		httpConfigKWDF_uri,
-    	"listen":	httpConfigKWDF_listen,
+    var kwdfm map[string]HttpConfigKWD = map[string]HttpConfigKWD {
+    	"module":	HttpConfigKWD { dispFunc: httpConfigKWDF_module, 	dispFlags: di.CKW_GLOBAL },
+    	"hooks":	HttpConfigKWD { dispFunc: httpConfigKWDF_hooks, 	dispFlags: di.CKW_GLOBAL },
+    	"uri":		HttpConfigKWD { dispFunc: httpConfigKWDF_uri, 	dispFlags: di.CKW_GLOBAL },
+    	"listen":	HttpConfigKWD { dispFunc: httpConfigKWDF_listen, 	dispFlags: di.CKW_GLOBAL },
     }
     for k, v = range config {
-    	err = kwdfm[k](v, &ret)
+    	err = kwdfm[k].dispFunc(v, &ret)
     	if (err != nil) {
     		mLog.Error().Str("keyword", k).Err(err).Send()
     		return ret, err

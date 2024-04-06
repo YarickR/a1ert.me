@@ -5,17 +5,12 @@ import (
     "errors"
     "dagproc/internal/di"
 )
-var ( 
-    ModHookMap  map[string]di.ModHooksFunc // ModInfoMap is populated manually early in main()
-    ModMap      map[string]di.Module  // ModMap is populated by reading ModInfoMap and calling ModHooksFunc's for each module
-)
-
 
 func ValidateHooks(hooks []interface{}, module string) error {
     var v interface{} 
     var m di.Module
     var ok bool
-    m, ok = ModMap[module]
+    m, ok = di.ModMap[module]
     if !ok {
         return errors.New(fmt.Sprintf("Unknown module %s", module)) 
     }

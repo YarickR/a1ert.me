@@ -1,6 +1,5 @@
 package di
 
-
 type Event map[string]interface{}
 type ModLoadConfigHook      func(config CFConfig, isGlobal bool) (PluginConfig, error)
 type ModReceiveEventHook    func() (Event, error)
@@ -37,6 +36,10 @@ const (
     PT_PROC     = 4
 )
 
+const (
+    CKW_GLOBAL  = 1 // keyword allowed in global config
+    CKW_CHANNEL = 2 // keyword allowed in per channel config
+)
 type ChannelPluginCtx struct {
     Plugin  PluginPtr
     Config  PluginConfig

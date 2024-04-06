@@ -2,15 +2,16 @@ package dm_xmpp
 
 import (
 	"sync"
-	"text/template"
     "dagproc/internal/di"
 )
+
 type XmppConfigPtr *XmppConfig
 type XmppConfig struct {
     server      string
     login       string
     password    string
-    groupsURI   string, 
+    groupsURI   string
+    group       string
     template    di.TemplatePtr
 }
 
@@ -31,3 +32,7 @@ type XmppGroup struct {
     GroupLock  sync.Mutex
 }
 type XmppConfigKWDF func (v interface{}, xcp XmppConfigPtr) error 
+type XmppConfigKWD struct  {
+    dispFunc    XmppConfigKWDF
+    dispFlags   uint
+}

@@ -61,13 +61,13 @@ func redisLoadConfig(config di.CFConfig, isGlobal bool) (di.PluginConfig, error)
     var ret RedisConfig
     var k string
     var v interface{}
-    var f RedisConfigKWDF
+    var f RedisConfigKWD
     var ok bool
-    var kwdfm map[string]RedisConfigKWDF = map[string]RedisConfigKWDF {
-    	"module":	redisConfigKWDF_module,
-    	"hooks":	redisConfigKWDF_hooks,
-    	"uri":		redisConfigKWDF_uri,
-    	"list":		redisConfigKWDF_list,
+    var kwdfm map[string]RedisConfigKWD = map[string]RedisConfigKWD {
+    	"module":	{ dispFunc: redisConfigKWDF_module, dispFlags: di.CKW_GLOBAL },
+    	"hooks":	{ dispFunc: redisConfigKWDF_hooks,	dispFlags: di.CKW_GLOBAL },
+    	"uri":		{ dispFunc: redisConfigKWDF_uri,	dispFlags: di.CKW_GLOBAL },
+    	"list":		{ dispFunc: redisConfigKWDF_list,	dispFlags: di.CKW_GLOBAL },
     }
     for k, v = range config {
     	f, ok = kwdfm[k]
@@ -76,7 +76,7 @@ func redisLoadConfig(config di.CFConfig, isGlobal bool) (di.PluginConfig, error)
     		mLog.Error().Err(err).Send()
     		return ret, err
     	}
-    	err = f(v, &ret)
+    	err = f.dispFunc(v, &ret)
     	if (err != nil) {
     		mLog.Error().Str("keyword", k).Err(err).Send()
     		return ret, err

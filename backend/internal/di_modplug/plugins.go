@@ -7,7 +7,7 @@ import (
 // 	"github.com/rs/zerolog/log"
 )
 
-func LoadPluginsConfig(cfg di.CFConfig, mods map[string]di.Module) (map[string]di.PluginPtr, error) {
+func LoadPluginsConfig(cfg di.CFConfig) (map[string]di.PluginPtr, error) {
 	var err error // pcle == plugin config load error
 	var ok bool // generic ok
 	var pn, mn string //plugin name, module name
@@ -23,7 +23,7 @@ func LoadPluginsConfig(cfg di.CFConfig, mods map[string]di.Module) (map[string]d
 	ret["core"] = &di.Plugin {
 		Name: 	"core",
 		Type: 	di.PT_PROC,
-		Module: mods["core"],
+		Module: di.ModMap["core"],
 		Config: nil,
 	}
 	for pn, pcd = range cfg {
@@ -41,14 +41,14 @@ func LoadPluginsConfig(cfg di.CFConfig, mods map[string]di.Module) (map[string]d
 		if mn, ok = pc["module"].(string); !ok { //mn == module name
 			return nil, fmt.Errorf("Missing module name for plugin '%s'", pn)			
 		}
-		if mod, ok = mods[mn]; !ok {
+		if mod, ok = di.ModMap[mn]; !ok {
 			return nil, fmt.Errorf("Uknown module '%s' for plugin '%s'", mn, pn)
 		}
 		var rmi di.PluginPtr  // ret map item
 		rmi = &di.Plugin {
 			Module: mod,
 		} 
-		rmi.Config, err = mod.Hooks.LoadConfigHook(pc)
+		rmi.Config, err = mod.Hooks.LoadConfigHook(pc, true)
 		if (err != nil) {
 			return nil, err
 		}
