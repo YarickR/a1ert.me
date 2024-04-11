@@ -1,0 +1,81 @@
+{
+  "plugins": 
+    {
+      "xmpp_out": {
+        "module": "xmpp",
+        "hooks": [ "output" ],
+        "server": "xmpp.server",
+        "login": "alertbot@xmpp.server/alertbot",
+        "password": "<password>",
+        "groupsURI": "groups.xmpp.server",
+        "template": "default"
+      },
+      "redis_in": {
+        "module": "redis",
+        "hooks": [ "input" ],
+        "uri": "redis://redis.server:6379"
+      },
+      "http_proc": {
+        "module": "http", 
+        "hooks": [ "process" ],
+        "uri": "https://vms.server/serverinfo"
+      },
+      "http_out": {
+        "module": "http", 
+        "hooks": [ "output" ],
+        "uri": "https://ntfy.server/alert/{{.config.topic}}"
+      }
+    },
+  "channels": 
+    {
+      "root": {
+        "plugins": [ "redis_in" ]
+      },
+      "warn_all": {
+        "plugins": [ "core", "xmpp_out" ],
+        "core": { "rules": [ {  "id": 0, "src": "root", "cond": "eq .labels.severity 'warning'" } ] },
+        "xmpp_out": { "group": "Warnings" }
+      },
+      "crit_all": {
+        "plugins": [ "core", "http_out" ],
+        "core": { "rules": [ { "id": 0, "src": "root", "cond": "eq .labels.severity 'critical'" } ] },
+        "http_out": { "topic": "warning" }
+      },
+      "ceph_all": {
+        "plugins": [ "core" ],
+        "core": { "rules": [ { "src": "root", "cond": " eq .projects 'ceph'" } ] }
+      },
+      "ceph_warn": {
+        "plugins": [ "core" ],
+        "core": { "rules": [ { "src": "ceph_all", "cond": "link 'warn_all:0'" } ] }
+      },
+      "ceph_crit": {
+        "plugins": [ "core" ],
+        "core": { "rules": [ { "src": "ceph_all", "cond": "link 'crit_all:0'" } ] }
+      },
+      "backups_all": {
+        "plugins": [ "core", "xmpp_out" ],
+        "core": { "rules": [ { "src": "root", "cond": "or eq .labels.project 'bacula' eq labels.project 'bareos'" } ] },
+        "xmpp_out": { "group": "k8s_critical" }
+      },
+      "mrgs_all": {
+        "plugins": [ "core" ],
+        "core": { "rules": [ { "src": "root", "cond": "eq .labels.project 'mrgs'" } ] }
+      },
+      "mrgs_ru": {
+        "plugins": [ "core" ],
+        "core": { "rules": [ { "src": "mrgs_all", "cond": "eq .labels.region 'ru'" } ] }
+      },
+      "mrgs_ru_warn": {
+        "plugins": [ "core" ],
+        "core": { "rules": [ { "src": "mrgs_ru", "cond": "link 'warn_all.0" } ] }
+      },
+      "mrgs_ru_warn": {
+        "plugins": [ "core" ],
+        "core": { "rules": [ { "src": "mrgs_ru", "cond": "link 'warn_all.0" } ] }
+      }
+    },
+    "templates": {
+      "default": "{{ if (eq .status \"firing\") }}❌{{else}}✅{{end}}{{if (eq .labels.severity \"critical\")}}🔴{{else if (eq .labels.severity \"warning\") }}❗{{else}}🔷{{end}}{{.annotations.summary}}:{{.annotations.description}}\n{{with .labels}}Hosts: {{.hosts}}\nServices: {{.services}}\nProjects: {{.projects}}{{end}}"
+   }
+}

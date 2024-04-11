@@ -1,0 +1,73 @@
+{
+  "plugins": 
+    {
+      "xmpp_out": {
+        "module": "xmpp",
+        "hooks": [ "output" ],
+        "server": "xmpp.server",
+        "login": "alertbot@xmpp.server/alertbot",
+        "password": "<password>",
+        "groupsURI": "groups.xmpp.server" 
+      },
+      "redis_in": {
+        "module": "redis",
+        "hooks": [ "input" ],
+        "uri":  "redis://redis.server:6379",
+        "list": "alerts"
+      },
+      "http_mod": {
+        "module": "http", 
+        "hooks": [ "process" ],
+        "uri": "https://vms.server/serverinfo"
+      }
+    },
+  "channels": 
+    [
+      {
+        "id": "0",
+        "plugins": {
+          "input": { 
+            "redis_in": {
+              "scope": "here"
+            }
+          },
+          "process": {
+            "core": {
+              "scope": "follow"
+            }
+          },
+          "output": {
+            "xmpp_out": {
+              "scope": "follow",
+              "template": "default"
+            }
+          }
+        },
+        "rules": [
+          { "id": "0", "src": "0", "cond": "true" }    
+        ]
+      },
+      {
+        "id": "1",
+        "plugins": {
+          "process": {
+            "http_mod": {
+              "scope": "here"
+            }
+          },
+          "output": {
+            "xmpp_out": {
+              "scope": "here",
+              "group": "Warnings"
+            }
+          }
+        },
+        "rules": [
+          { "id": "0", "src": "0", "cond": "true" }    
+        ]
+      }
+    ],
+    "templates": {
+      "default": "{{ if (eq .status \"firing\") }}❌{{else}}✅{{end}}{{if (eq .labels.severity \"critical\")}}🔴{{else if (eq .labels.severity \"warning\") }}❗{{else}}🔷{{end}}{{.annotations.summary}}:{{.annotations.description}}\n{{with .labels}}Hosts: {{.hosts}}\nServices: {{.services}}\nProjects: {{.projects}}{{end}}"
+   }
+}
