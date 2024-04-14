@@ -8,24 +8,27 @@ import (
 func LoadTemplatesConfig(config di.CFConfig) (map[string]di.TemplatePtr, error) {
 	var ret map[string]di.TemplatePtr
 	var err error
+	mLog.Debug().Msg("loading templates")
 	ret = make(map[string]di.TemplatePtr)
 	for k, v := range config {
-		switch v.(type) {
-			case string: 
-				var tt di.TemplatePtr
-				var ok bool
-				if tt, ok = ret[k]; ok {
-					err = fmt.Errorf("Template '%s' already defined, contents: '%s'", k, tt.Contents)
-					return ret, err
-				}
-				var t di.TemplatePtr
-				t = &di.Template{ Contents: v.(string)}
-				ret[k] = t
-			default:
-				err = fmt.Errorf("Template '%s' should be a string", k)
+		switch v := v.(type) {
+		case string:
+			var tt di.TemplatePtr
+			var ok bool
+			if tt, ok = ret[k]; ok {
+				err = fmt.Errorf("template '%s' already defined, contents: '%s'", k, tt.Contents)
 				return ret, err
+			}
+			var t di.TemplatePtr
+			t = &di.Template{Contents: v}
+			ret[k] = t
+			mLog.Debug().Str("template", k).Msg("loaded template")
+		default:
+			err = fmt.Errorf("template '%s' should be a string", k)
+			return ret, err
 		}
 	}
 	err = nil
+	mLog.Debug().Msgf("loaded templates: %+v", ret)
 	return ret, err
 }

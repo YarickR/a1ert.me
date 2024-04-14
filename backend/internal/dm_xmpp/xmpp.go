@@ -1,35 +1,37 @@
 package dm_xmpp
-import (
-//	"encoding/json"
-//	"flag"
-//	"fmt"
-//	"io/ioutil"
-//	"os"
-//	"regexp"
-//	"sync"
-//	"text/template"
-//	"time"
-    "github.com/rs/zerolog"
-    "github.com/rs/zerolog/log"
-//	"gosrc.io/xmpp"
-//	"gosrc.io/xmpp/stanza"
-    "dagproc/internal/di"
 
+import (
+	//	"encoding/json"
+	//	"flag"
+	//	"fmt"
+	//	"io/ioutil"
+	//	"os"
+	//	"regexp"
+	//	"sync"
+	//	"text/template"
+	//	"time"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+
+	//	"gosrc.io/xmpp"
+	//	"gosrc.io/xmpp/stanza"
+	"dagproc/internal/di"
 )
+
 var (
-    mConfig XmppConfig
-    mLog zerolog.Logger
+	mConfig XmppConfig
+	mLog    zerolog.Logger
 )
 
 func ModInit() (di.ModHookTable, error) {
-    mLog = log.With().Str("module", "xmpp").Logger()
-    mLog.Debug().Msg("ModInit")
-    return di.ModHookTable{ 
-   		LoadConfigHook:		xmppLoadConfig,
-    	ReceiveEventHook:	xmppReceive,
-    	SendEventHook:		xmppSend,
-    	ProcessEventHook:	nil,
-    }, nil
+	mLog = log.With().Str("module", "xmpp").Caller().Logger()
+	mLog.Debug().Msg("ModInit")
+	return di.ModHookTable{
+		LoadConfigHook:   xmppLoadConfig,
+		ReceiveEventHook: xmppReceive,
+		SendEventHook:    xmppSend,
+		ProcessEventHook: nil,
+	}, nil
 }
 
 func xmppReceive() (di.Event, error) {

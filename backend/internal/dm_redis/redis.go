@@ -1,4 +1,5 @@
 package dm_redis
+
 import (
 	//"encoding/json"
 	//"flag"
@@ -9,25 +10,26 @@ import (
 	//"time"
 
 	//"github.com/gomodule/redigo/redis"
-    "github.com/rs/zerolog"
-    "github.com/rs/zerolog/log"
-    "dagproc/internal/di"
+	"dagproc/internal/di"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 var (
-    mConfig RedisConfig
-    mLog zerolog.Logger
+	mConfig RedisConfig
+	mLog    zerolog.Logger
 )
 
 func ModInit() (di.ModHookTable, error) {
-    mLog = log.With().Str("module", "redis").Logger()
-    mLog.Debug().Msg("ModInit")
-    return di.ModHookTable{ 
-   		LoadConfigHook:      redisLoadConfig,
-    	ReceiveEventHook:    redisReceiveEvent,
-    	SendEventHook:       nil,
-    	ProcessEventHook:    nil,
-    }, nil
+	mLog = log.With().Str("module", "redis").Caller().Logger()
+	mLog.Debug().Msg("ModInit")
+	return di.ModHookTable{
+		LoadConfigHook:   redisLoadConfig,
+		ReceiveEventHook: redisReceiveEvent,
+		SendEventHook:    nil,
+		ProcessEventHook: nil,
+	}, nil
 }
 
 func redisReceiveEvent() (di.Event, error) {
@@ -35,6 +37,7 @@ func redisReceiveEvent() (di.Event, error) {
 	var err error
 	return ret, err
 }
+
 /*
 func redisLoadChannelDefs(rc redis.Conn, lastChannelId uint32) ([]*ChannelDef, uint32, error) {
 	var err error

@@ -1,80 +1,101 @@
 package dm_http
+
 import (
+	"dagproc/internal/di"
+	"dagproc/internal/di_modplug"
 	"errors"
 	"fmt"
 	"regexp"
-	"dagproc/internal/di"
-	"dagproc/internal/di_modplug"
 )
-func httpConfigKWDF_module (v interface{}, hcp HttpConfigPtr) error {
-	switch t := v.(type) {
-		case string:
-			if (v.(string) != "http") {
-				return errors.New(fmt.Sprintf("module should be 'http' instead of %s", v.(string)))
-			}
+
+func httpConfigKWDF_module(v interface{}, hcp HttpConfigPtr) error {
+	switch v := v.(type) {
+	case string:
+		if v != "http" {
+			return fmt.Errorf("module should be 'http' instead of %s", v)
+		}
+		return nil
+	default:
+		return fmt.Errorf("'module' shoudl be string")
+	}
+}
+func httpConfigKWDF_hooks(v interface{}, hcp HttpConfigPtr) error {
+	switch v := v.(type) {
+	case []interface{}:
+		return di_modplug.ValidateHooks(v, "http")
+	default:
+		return errors.New("'hooks' must be a list of hooks")
+	}
+}
+func httpConfigKWDF_uri(v interface{}, hcp HttpConfigPtr) error {
+	switch v := v.(type) {
+	case string:
+		var m bool
+		if m, _ = regexp.Match("https?://.*(:[0-9]+)?/?.*", []byte(v)); m { // host and port
+			hcp.uri = v
 			return nil
-		default:
-			return errors.New(fmt.Sprintf("Wrong type for 'module' keyword: %T, should be 'string'", t))
+		}
+		return fmt.Errorf("%s does not look like http uri (does not match 'https?://.*(:[0-9]+)?/?.*')", v)
+	default:
+		return errors.New("'uri' should be string 'https?://.*(:[0-9]+)?/?.*")
 	}
 }
-func httpConfigKWDF_hooks (v interface{}, hcp HttpConfigPtr) error {
-	switch t := v.(type) {
-		case []interface{}:
-			return di_modplug.ValidateHooks(v.([]interface{}), "http")
-		default:
-			return errors.New(fmt.Sprintf("Wrong type for 'hooks' keyword: %T", t))
+func httpConfigKWDF_listen(v interface{}, hcp HttpConfigPtr) error {
+	switch v := v.(type) {
+	case string:
+		var m bool
+		if m, _ = regexp.Match(".*:[0-9]{1,5}$", []byte(v)); m {
+			hcp.listen = v
+			return nil
+		}
+		return fmt.Errorf("invalid host:port specification for 'listen': %s ", v)
+	default:
+		return errors.New("'listen' should be string 'hostname:port'")
 	}
 }
-func httpConfigKWDF_uri (v interface{}, hcp HttpConfigPtr) error {
-	switch t := v.(type) {
-		case string:
-			var m bool
-			if m, _ = regexp.Match("https?://.*(:[0-9]+)?/?.*", []byte(v.(string))); m == true  { // host and port
-				hcp.uri = v.(string)
-				return nil
-			}
-			return errors.New(fmt.Sprintf("%s does not look like http uri (does not match 'https?://.*(:[0-9]+)?/?.*')", v.(string)))
-		default:
-			return errors.New(fmt.Sprintf("Wrong type for 'uri' keyword: %T, should be string 'https?://.*(:[0-9]+)?/?.*", t))
-	}
-}
-func httpConfigKWDF_listen (v interface{}, hcp HttpConfigPtr) error {
-	switch t := v.(type) {
-		case string:
-			var m bool
-			if m, _ = regexp.Match(".*:[0-9]{1,5}$", []byte(v.(string))); m == true  {
-				hcp.listen = v.(string)
-				return nil
-			}
-			return errors.New(fmt.Sprintf("No way to listen on %s", v.(string)))
-		default:
-			return errors.New(fmt.Sprintf("Wrong type for 'listen' keyword: %T, should be string 'hostname:port'", t))
+
+func httpConfigKWDF_topic(v interface{}, hcp HttpConfigPtr) error {
+	switch v := v.(type) {
+	case string:
+		hcp.topic = v
+		return nil
+	default:
+		return errors.New("'topic' must be string")
 	}
 }
 
 func httpLoadConfig(config di.CFConfig, isGlobal bool) (di.PluginConfig, error) {
-    var err error
-    var ret HttpConfig
-    var k string
-    var v interface{}
-    var kwdfm map[string]HttpConfigKWD = map[string]HttpConfigKWD {
-    	"module":	HttpConfigKWD { dispFunc: httpConfigKWDF_module, 	dispFlags: di.CKW_GLOBAL },
-    	"hooks":	HttpConfigKWD { dispFunc: httpConfigKWDF_hooks, 	dispFlags: di.CKW_GLOBAL },
-    	"uri":		HttpConfigKWD { dispFunc: httpConfigKWDF_uri, 	dispFlags: di.CKW_GLOBAL },
-    	"listen":	HttpConfigKWD { dispFunc: httpConfigKWDF_listen, 	dispFlags: di.CKW_GLOBAL },
-    }
-    for k, v = range config {
-    	err = kwdfm[k].dispFunc(v, &ret)
-    	if (err != nil) {
-    		mLog.Error().Str("keyword", k).Err(err).Send()
-    		return ret, err
-    	}
-    }
-    if ((ret.uri == "") && (ret.listen == "")) {
-    	err = errors.New("Missing either 'uri' or 'listen' keyword")
-    	mLog.Error().Err(err).Send()
-    	return ret, err
-    }
-    mLog.Debug().Msgf("Loaded config: %v", ret)
-    return ret, nil
+	var err error
+	var ret HttpConfig
+	var k string
+	var v interface{}
+	var kwdfm map[string]HttpConfigKWD = map[string]HttpConfigKWD{
+		"module": {dispFunc: httpConfigKWDF_module, dispFlags: di.CKW_GLOBAL},
+		"hooks":  {dispFunc: httpConfigKWDF_hooks, dispFlags: di.CKW_GLOBAL},
+		"uri":    {dispFunc: httpConfigKWDF_uri, dispFlags: di.CKW_GLOBAL},
+		"listen": {dispFunc: httpConfigKWDF_listen, dispFlags: di.CKW_GLOBAL},
+		"topic":  {dispFunc: httpConfigKWDF_topic, dispFlags: di.CKW_CHANNEL},
+	}
+	for k, v = range config {
+		kwd, ok := kwdfm[k]
+		if !ok {
+			err = fmt.Errorf("unknown keyword '%s'", k)
+			mLog.Error().Str("keyword", k).Err(err)
+			return ret, err
+		}
+		err = kwd.dispFunc(v, &ret)
+		if err != nil {
+			mLog.Error().Str("keyword", k).Err(err).Send()
+			return ret, err
+		}
+	}
+	if isGlobal {
+		if (ret.uri == "") && (ret.listen == "") {
+			err = errors.New("missing either 'uri' or 'listen' keyword")
+			mLog.Error().Err(err).Send()
+			return ret, err
+		}
+	}
+	mLog.Debug().Msgf("Loaded config: %+v", ret)
+	return ret, nil
 }
