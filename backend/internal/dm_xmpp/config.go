@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-func xmppLoadConfig(config di.CFConfig, isGlobal bool) (di.PluginConfig, error) {
+func xmppLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginConfig, error) {
 	var err error
 	var f XmppConfigKWD
 	var ok bool
@@ -24,7 +24,21 @@ func xmppLoadConfig(config di.CFConfig, isGlobal bool) (di.PluginConfig, error) 
 		"template":  {dispFunc: xmppConfigKWDF_template, dispFlags: di.CKW_GLOBAL | di.CKW_CHANNEL},
 		"group":     {dispFunc: xmppConfigKWDF_group, dispFlags: di.CKW_CHANNEL},
 	}
-	for k, v = range config {
+	err = di.ValidateConfig(`
+		{ 	"module!": "string", 
+			"hooks!": [], 
+			"server": 		"string", 
+			"login": 		"string", 
+			"password": 	"string", 
+			"groupsURI":	"string",
+			"template": 	"string", 
+			"group": 		"string" 
+		}
+	`, config, path)
+	if err != nil {
+		return ret, err
+	}
+	for k, v = range config.(di.MSI) {
 		f, ok = kwdfm[k]
 		if !ok {
 			err = fmt.Errorf("Unknown keyword '%s'", k)

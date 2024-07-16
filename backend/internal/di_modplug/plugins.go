@@ -1,21 +1,25 @@
 package di_modplug
 
 import (
-	"errors"
 	"fmt"
 	"dagproc/internal/di"
 // 	"github.com/rs/zerolog/log"
 )
 
-func LoadPluginsConfig(cfg di.CFConfig) (map[string]di.PluginPtr, error) {
+func LoadPluginsConfig(cfg di.MSI, path string) (map[string]di.PluginPtr, error) {
 	var err error // pcle == plugin config load error
 	var ok bool // generic ok
-	var pn, mn string //plugin name, module name
+	var pn, mn, np string //plugin name, module name, new path
 	var pcd interface{} // pcd == plugin config description 
 	var ret map[string]di.PluginPtr
-	
-	if (cfg == nil) {
-		err = errors.New("Empty 'plugins' config section")
+	err = di.ValidateConfig(`
+		{
+			"*": {
+				"module!": "string",
+				"hooks!": [ "string" ]
+			}
+		}`, cfg, path)
+	if err != nil	{
 		return nil, err
 	}
 	ret = make(map[string]di.PluginPtr)
@@ -36,11 +40,9 @@ func LoadPluginsConfig(cfg di.CFConfig) (map[string]di.PluginPtr, error) {
 				return nil, fmt.Errorf("Invalid config for plugin '%s'", pn)
 		}
 		var mod di.Module
-		var pc di.CFConfig
+		var pc di.MSI
 		pc = pcd.(map[string]interface{})
-		if mn, ok = pc["module"].(string); !ok { //mn == module name
-			return nil, fmt.Errorf("Missing module name for plugin '%s'", pn)			
-		}
+		mn =  pc["module"].(string)
 		if mod, ok = di.ModMap[mn]; !ok {
 			return nil, fmt.Errorf("Uknown module '%s' for plugin '%s'", mn, pn)
 		}
@@ -48,7 +50,8 @@ func LoadPluginsConfig(cfg di.CFConfig) (map[string]di.PluginPtr, error) {
 		rmi = &di.Plugin {
 			Module: mod,
 		} 
-		rmi.Config, err = mod.Hooks.LoadConfigHook(pc, true)
+		np = fmt.Sprintf("%s.%s", path, pn)
+		rmi.Config, err = mod.Hooks.LoadConfigHook(pc, true, np)
 		if (err != nil) {
 			return nil, err
 		}

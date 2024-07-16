@@ -5,10 +5,11 @@ import (
 	"fmt"
 )
 
-func LoadTemplatesConfig(config di.CFConfig) (map[string]di.TemplatePtr, error) {
+func LoadTemplatesConfig(config di.MSI, path string) (map[string]di.TemplatePtr, error) {
 	var ret map[string]di.TemplatePtr
 	var err error
 	mLog.Debug().Msg("loading templates")
+	err = di.ValidateConfig(` { "*": "string" }`, config, path)
 	ret = make(map[string]di.TemplatePtr)
 	for k, v := range config {
 		switch v := v.(type) {

@@ -1,7 +1,7 @@
 package di
-
-type Event map[string]interface{}
-type ModLoadConfigHook      func(config CFConfig, isGlobal bool) (PluginConfig, error)
+type MSI map[string]interface{}
+type Event MSI
+type ModLoadConfigHook      func(config interface{}, isGlobal bool, path string) (PluginConfig, error)
 type ModReceiveEventHook    func() (Event, error)
 type ModSendEventHook       func(Event) error
 type ModProcessEventHook    func(Event) error
@@ -18,7 +18,6 @@ type Module struct {
     Name    string
     Hooks   ModHookTable
 }
-type CFConfig map[string]interface{} // Config File config
 type PluginConfig interface{} // Opaque, module-dependent 
 
 type PluginPtr *Plugin
@@ -57,10 +56,10 @@ type Channel struct {
 }
 type RulePtr *Rule
 type Rule struct {
-    RuleId       uint32 `json:"id"`
-    SrcChId      interface{} `json:"src"`
-    RuleStr      string `json:"cond"`
-    CondLink     string `json:"condfrom"`
+    RuleId       uint32 
+    SrcChId      string
+    RuleStr      string 
+    CondLink     string 
     Root         RulePart
 }
 type PnFunc struct {

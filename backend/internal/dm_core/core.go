@@ -30,9 +30,48 @@ func ModInit() (di.ModHookTable, error) {
 	}, nil
 }
 
-func coreLoadConfig(config di.CFConfig, isGlobal bool) (di.PluginConfig, error) {
+func coreLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginConfig, error) {
 	// No config for the core right now
-	return make(map[string]interface{}), nil
+	if (isGlobal) {
+		// We don't expect any global core config now
+		return make(map[string]interface{}), nil
+	}
+	// This is per channel config, so we need to parse channel definition passed in "config" as CFConfig 
+	// first we parse rules 
+	var (
+		ok bool
+		ret []di.RulePtr
+		rli int
+		nr di.RulePtr
+		rl []interface{} // rulelist, list of rules for the channel
+		r interface{} // one rule 
+		err error
+		np string
+	)
+	err = di.ValidateConfig(` { "rules": [] } `, config, path)
+	if err != nil {
+		return nil, err
+	}
+	rl = config.(di.MSI)["rules"].([]interface{})
+	ret = make([]di.RulePtr, 0, len(rl))
+	rli = 0
+	for _, r = range rl {
+		np = fmt.Sprintf("%s.%d", path, rli)
+		err = di.ValidateConfig(`{  "id": 0, "src!": "string", "cond!": "string" }`, r, np)
+		if (err != nil) {
+			return nil, err
+		}
+		nr = new(di.Rule)
+		nr.SrcChId = r.(di.MSI)["src"].(string)
+		nr.RuleStr = r.(di.MSI)["cond"].(string)
+		_, ok = r.(di.MSI)["id"]
+		if ok {
+			nr.RuleId = r.(di.MSI)["id"].(uint32)
+		}
+		ret[rli] = nr
+		rli++ 
+	}
+	return ret, nil
 }
 
 func coreProcessEvent(ev di.Event) error {
@@ -76,17 +115,17 @@ func ChannelGetBool(arg di.RulePartArg, event di.Event) bool {
 		return false
 	}
 	switch argVal.(type) {
-	case bool:
-		return argVal.(bool)
-	case string:
-		var argStr string
-		argStr = argVal.(string)
-		if (argStr == "true") || (argStr == "1") || (argStr == "True") || (argStr == "TRUE") {
-			return true
-		}
-		return false
-	case float64:
-		return argVal.(bool)
+		case bool:
+			return argVal.(bool)
+		case string:
+			var argStr string
+			argStr = argVal.(string)
+			if (argStr == "true") || (argStr == "1") || (argStr == "True") || (argStr == "TRUE") {
+				return true
+			}
+			return false
+		case float64:
+			return argVal.(bool)
 	}
 	mLog.Printf("Cannot convert arg %+v to boolean, returning true", argVal)
 	return true

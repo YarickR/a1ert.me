@@ -46,17 +46,17 @@ func loadConfig(confFilePath string) error {
 		return err		
 	}
 	// Templates go first, as plugins may reference them
-	di.GCfg.Templates, err = dm_core.LoadTemplatesConfig(gcj.TmplDescr)
+	di.GCfg.Templates, err = dm_core.LoadTemplatesConfig(gcj.TmplDescr, "templates")
 	if (err != nil) {
 		log.Error().Msg("Error loading templates config")		
 		return err
 	}
-	di.GCfg.Plugins, err = di_modplug.LoadPluginsConfig(gcj.PlugDescr)
+	di.GCfg.Plugins, err = di_modplug.LoadPluginsConfig(gcj.PlugDescr, "plugins")
 	if (err != nil) {
 		log.Error().Err(err).Msg("Error loading plugins config")
 		return err		
 	}
-	di.GCfg.Channels, err = dm_core.LoadChannelsConfig(gcj.ChanDescr)
+	di.GCfg.Channels, err = dm_core.LoadChannelsConfig(gcj.ChanDescr, "channels")
 	if (err != nil) {
 		log.Error().Msg("Error loading channels config")
 		return err		

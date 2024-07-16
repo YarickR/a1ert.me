@@ -24,24 +24,22 @@ import (
 
 */
 
-func parseChannel_getPluginList(chM map[string]interface{}) ([]string, error) {
-	var ret []string
-	var pn interface{}
-	var ok bool
+func parseChannel_getPluginList(chM map[string]interface{}, path string) ([]string, error) {
+	var (
+		ret []string
+		err error
+		pn interface{}
+		pl []interface{}
+	)
 
 	ret = nil
-	pl, ok := chM["plugins"]
-	if !ok {
-		return nil, errors.New("missing 'plugins' keyword")
+ 	err = di.ValidateConfig(`{"plugins!": [ "string" ]}`, chM, path)
+	if err != nil {
+		return nil, err
 	}
-	switch pl.(type) {
-	case []interface{}:
-		break
-	default:
-		return nil, errors.New("list of plugins is of a wrong type")
-	}
-	ret = make([]string, 0, len(pl.([]interface{})))
-	for _, pn = range pl.([]interface{}) {
+	pl  = chM["plugins"].([]interface{}) 
+	ret = make([]string, 0, len(pl))
+	for _, pn = range pl {
 		switch pn := pn.(type) {
 		case string:
 			ret = append(ret, pn)
@@ -51,21 +49,28 @@ func parseChannel_getPluginList(chM map[string]interface{}) ([]string, error) {
 	}
 	return ret, nil
 }
-func parseChannel(chConfig interface{}, chName string) (di.ChannelPtr, error) {
+func parseChannel(chConfig interface{}, chName string, path string) (di.ChannelPtr, error) {
 	var ret di.ChannelPtr
 	var err error
 	var ok bool
 	var chM map[string]interface{} //channel map
 	var pl []string                // plugin list
-	var pn string                  // plugin name
+	var pn, np string                  // plugin name, new path
 	var pc interface{}             //plugin config
-	switch chConfig.(type) {
-	case map[string]interface{}:
-	default:
-		return nil, fmt.Errorf("channel '%s' structure error", chName)
+
+	var chT string = `
+		{
+        "plugins!": [ "string" ],
+        "core": { "rules": [ { "id": 0, "src!": "string", "cond": "string" } ] } }
+    }
+	`
+	np = fmt.Sprintf("%s.%s", path, chName)
+	err = di.ValidateConfig(chT, chConfig, np)
+	if err != nil {
+		return nil, err
 	}
-	chM = chConfig.(map[string]interface{})
-	pl, err = parseChannel_getPluginList(chM) // to keep parseChannel from being too bloated
+	chM = chConfig.(di.MSI)
+	pl, err = parseChannel_getPluginList(chM, np) // to keep parseChannel from being too bloated
 	if err != nil {
 		return nil, fmt.Errorf("channel '%s' %w", chName, err)
 	}
@@ -82,24 +87,21 @@ func parseChannel(chConfig interface{}, chName string) (di.ChannelPtr, error) {
 		pc, ok = chM[pn]
 		err = nil
 		if ok {
-			// we have channel-level plugin config
-			switch pc := pc.(type) {
-			case map[string]interface{}:
-				mLog.Debug().Str("channel", chName).Str("plugin", pn).Msg("Loading config")
-				pCtx.Config, err = pCtx.Plugin.Module.Hooks.LoadConfigHook(pc, false)
-			default:
-				return nil, fmt.Errorf("invalid plugin configuration '%v'", pc)
-			}
+			mLog.Debug().Str("channel", chName).Str("plugin", pn).Msg("Loading config")
+			np = fmt.Sprintf("%s.%s.%s", path, chName, pn)
+			pCtx.Config, err = pCtx.Plugin.Module.Hooks.LoadConfigHook(pc, false, np)
+		} else {
+			mLog.Debug().Str("channel", chName).Str("plugin", pn).Msg("Plugin %s has no channel-specific config")
 		}
 		if err == nil {
 			if (pCtx.Plugin.Type & di.PT_IN) != 0 {
 				ret.InPlugs = append(ret.InPlugs, pCtx)
 			}
 			if (pCtx.Plugin.Type & di.PT_OUT) != 0 {
-				ret.InPlugs = append(ret.OutPlugs, pCtx)
+				ret.OutPlugs = append(ret.OutPlugs, pCtx)
 			}
 			if (pCtx.Plugin.Type & di.PT_PROC) != 0 {
-				ret.InPlugs = append(ret.ProcPlugs, pCtx)
+				ret.ProcPlugs = append(ret.ProcPlugs, pCtx)
 			}
 		} else {
 			mLog.Error().Str("channel", chName).Str("plugin", pn).Err(err)
@@ -108,15 +110,16 @@ func parseChannel(chConfig interface{}, chName string) (di.ChannelPtr, error) {
 	return ret, err
 }
 
-func LoadChannelsConfig(jsc map[string]interface{}) (map[string]di.ChannelPtr, error) {
+func LoadChannelsConfig(jsc map[string]interface{}, path string) (map[string]di.ChannelPtr, error) {
 	var ret map[string]di.ChannelPtr
 	var err error
 	mLog.Debug().Msg("LoadChannelsConfig")
 	ret = make(map[string]di.ChannelPtr)
 	err = nil
+	// We have to do two passes - parse all channels and assign ids etc, and then bind sources and sinks
 	for k, v := range jsc {
 		var newC di.ChannelPtr
-		newC, err = parseChannel(v, k)
+		newC, err = parseChannel(v, k, path)
 		if err != nil {
 			mLog.Error().Str("channel", k).Err(err).Msg("Error parsing channel")
 			return nil, err

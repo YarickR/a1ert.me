@@ -46,32 +46,36 @@ func redisConfigKWDF_uri(v interface{}, rcp RedisConfigPtr) error {
 }
 func redisConfigKWDF_list(v interface{}, rcp RedisConfigPtr) error {
 	switch v := v.(type) {
-	case string:
-		var m bool
-		if m, _ = regexp.Match("[0-9a-zA-Z_]", []byte(v)); m {
-			rcp.list = v
-			return nil
-		}
-		return fmt.Errorf("%s does not look like list name", v)
-	default:
-		return fmt.Errorf("'list' must be redis identifier")
+		case string:
+			var m bool
+			if m, _ = regexp.Match("[0-9a-zA-Z_]", []byte(v)); m {
+				rcp.list = v
+				return nil
+			}
+			return fmt.Errorf("%s does not look like list name", v)
+		default:
+			return fmt.Errorf("'list' must be redis identifier")
 	}
 }
 
-func redisLoadConfig(config di.CFConfig, isGlobal bool) (di.PluginConfig, error) {
+func redisLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginConfig, error) {
 	var err error
 	var ret RedisConfig
 	var k string
 	var v interface{}
 	var f RedisConfigKWD
 	var ok bool
-	var kwdfm map[string]RedisConfigKWD = map[string]RedisConfigKWD{
+	var kwdfm map[string]RedisConfigKWD = map[string]RedisConfigKWD {
 		"module": {dispFunc: redisConfigKWDF_module, dispFlags: di.CKW_GLOBAL},
 		"hooks":  {dispFunc: redisConfigKWDF_hooks, dispFlags: di.CKW_GLOBAL},
 		"uri":    {dispFunc: redisConfigKWDF_uri, dispFlags: di.CKW_GLOBAL},
 		"list":   {dispFunc: redisConfigKWDF_list, dispFlags: di.CKW_GLOBAL},
 	}
-	for k, v = range config {
+	err = di.ValidateConfig(`{ "module": "string", "hooks": [], "uri": "string", "list": "string"}`, config, path)
+	if err != nil {
+		return ret, err
+	}
+	for k, v = range config.(di.MSI) {
 		f, ok = kwdfm[k]
 		if !ok {
 			err = fmt.Errorf("unknown keyword '%s'", k)

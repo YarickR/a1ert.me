@@ -64,7 +64,7 @@ func httpConfigKWDF_topic(v interface{}, hcp HttpConfigPtr) error {
 	}
 }
 
-func httpLoadConfig(config di.CFConfig, isGlobal bool) (di.PluginConfig, error) {
+func httpLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginConfig, error) {
 	var err error
 	var ret HttpConfig
 	var k string
@@ -76,7 +76,11 @@ func httpLoadConfig(config di.CFConfig, isGlobal bool) (di.PluginConfig, error) 
 		"listen": {dispFunc: httpConfigKWDF_listen, dispFlags: di.CKW_GLOBAL},
 		"topic":  {dispFunc: httpConfigKWDF_topic, dispFlags: di.CKW_CHANNEL},
 	}
-	for k, v = range config {
+	err = di.ValidateConfig(` { "module": "string", "hooks": [], "uri": "string", "listen": "string", "topic": "string"}`, config, path)
+	if err != nil {
+		return ret, err
+	}
+	for k, v = range config.(di.MSI) {
 		kwd, ok := kwdfm[k]
 		if !ok {
 			err = fmt.Errorf("unknown keyword '%s'", k)
