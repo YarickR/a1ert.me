@@ -74,83 +74,42 @@ func xmppLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 }
 
 func xmppConfigKWDF_module(v interface{}, xcp XmppConfigPtr) error {
-	switch v.(type) {
-	case string:
-		if v.(string) != "xmpp" {
-			return errors.New(fmt.Sprintf("module should be 'xmpp' instead of %s", v.(string)))
-		}
-		return nil
-	default:
-		return errors.New(fmt.Sprintf("'module' should be 'string'"))
+	if v.(string) != "xmpp" {
+		return fmt.Errorf("module should be 'xmpp' instead of %s", v.(string))
 	}
+	return nil
 }
 func xmppConfigKWDF_hooks(v interface{}, xcp XmppConfigPtr) error {
-	switch v.(type) {
-	case []interface{}:
-		return di_modplug.ValidateHooks(v.([]interface{}), "xmpp")
-	default:
-		return errors.New(fmt.Sprintf("'hooks' should be a list of active hooks for this plugin"))
-	}
+	return di_modplug.ValidateHooks(v.([]interface{}), "xmpp")
 }
 func xmppConfigKWDF_server(v interface{}, xcp XmppConfigPtr) error {
-	switch v.(type) {
-	case string:
-		xcp.server = v.(string)
-		return nil
-	default:
-		return errors.New(fmt.Sprintf("'server' should be string"))
-	}
+	xcp.server = v.(string)
+	return nil
 }
 func xmppConfigKWDF_login(v interface{}, xcp XmppConfigPtr) error {
-	switch v.(type) {
-	case string:
-		xcp.login = v.(string)
-		return nil
-	default:
-		return errors.New(fmt.Sprintf("'login' should be string "))
-	}
+	xcp.login = v.(string)
+	return nil
 }
 func xmppConfigKWDF_password(v interface{}, xcp XmppConfigPtr) error {
-	switch v.(type) {
-	case string:
-		xcp.password = v.(string)
-		return nil
-	default:
-		return errors.New(fmt.Sprintf("'password' should be string "))
-	}
+	xcp.password = v.(string)
+	return nil
 }
 
 func xmppConfigKWDF_groupsURI(v interface{}, xcp XmppConfigPtr) error {
-	switch v.(type) {
-	case string:
-		xcp.groupsURI = v.(string)
-		return nil
-	default:
-		return errors.New(fmt.Sprintf("'groupsURI' should be string "))
-	}
+	xcp.groupsURI = v.(string)
+	return nil
 }
 
 func xmppConfigKWDF_template(v interface{}, xcp XmppConfigPtr) error {
 	var ok bool
-	switch v := v.(type) {
-	case string:
-		xcp.template, ok = di.GCfg.Templates[v]
-		if !ok {
-			xcp.template = nil
-			return fmt.Errorf("undefined template '%s'", v)
-		}
-		return nil
-	default:
-		return errors.New("'template' should be string ")
+	xcp.template, ok = di.GCfg.Templates[v.(string)]
+	if !ok {
+		xcp.template = nil
+		return fmt.Errorf("undefined template '%s'", v.(string))
 	}
+	return nil
 }
 func xmppConfigKWDF_group(v interface{}, xcp XmppConfigPtr) error {
-	switch v := v.(type) {
-	case string:
-		xcp.group = v
-		return nil
-	default:
-		return errors.New("'groups' should be string ")
-	}
-
+	xcp.group = v.(string)
+	return nil
 }

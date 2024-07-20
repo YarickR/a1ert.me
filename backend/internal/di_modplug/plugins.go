@@ -9,7 +9,7 @@ import (
 func LoadPluginsConfig(cfg di.MSI, path string) (map[string]di.PluginPtr, error) {
 	var err error // pcle == plugin config load error
 	var ok bool // generic ok
-	var pn, mn, np string //plugin name, module name, new path
+	var pn, mn string //plugin name, module name, new path
 	var pcd interface{} // pcd == plugin config description 
 	var ret map[string]di.PluginPtr
 	err = di.ValidateConfig(`
@@ -50,8 +50,7 @@ func LoadPluginsConfig(cfg di.MSI, path string) (map[string]di.PluginPtr, error)
 		rmi = &di.Plugin {
 			Module: mod,
 		} 
-		np = fmt.Sprintf("%s.%s", path, pn)
-		rmi.Config, err = mod.Hooks.LoadConfigHook(pc, true, np)
+		rmi.Config, err = mod.Hooks.LoadConfigHook(pc, true, fmt.Sprintf("%s.%s", path, pn))
 		if (err != nil) {
 			return nil, err
 		}

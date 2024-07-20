@@ -46,7 +46,6 @@ func coreLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 		rl []interface{} // rulelist, list of rules for the channel
 		r interface{} // one rule 
 		err error
-		np string
 	)
 	err = di.ValidateConfig(` { "rules": [] } `, config, path)
 	if err != nil {
@@ -56,8 +55,7 @@ func coreLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 	ret = make([]di.RulePtr, 0, len(rl))
 	rli = 0
 	for _, r = range rl {
-		np = fmt.Sprintf("%s.%d", path, rli)
-		err = di.ValidateConfig(`{  "id": 0, "src!": "string", "cond!": "string" }`, r, np)
+		err = di.ValidateConfig(`{  "id": 0, "src!": "string", "cond!": "string" }`, r, fmt.Sprintf("%s.%d", path, rli))
 		if (err != nil) {
 			return nil, err
 		}

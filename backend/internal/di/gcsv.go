@@ -80,7 +80,7 @@ func validateConfigNode(t interface{}, c interface{}, path string) error {
 			var (
 				tk []string
 				ck []string
-				mi, np  string // map index, star index, new path
+				mi string // map index, star index, new path
 				ok, hasStar bool
 			)
 			tk = make([]string, 0, len(t.(MSI)))
@@ -95,12 +95,11 @@ func validateConfigNode(t interface{}, c interface{}, path string) error {
 			if (ret == nil) {
 				if hasStar {
 					for mi = range(c.(MSI)) {
-						np = fmt.Sprintf("%s.%s", path, mi);
 						_, ok = t.(MSI)[mi]
 						if ok {
-							ret = validateConfigNode(t.(MSI)[mi], c.(MSI)[mi], np);
+							ret = validateConfigNode(t.(MSI)[mi], c.(MSI)[mi], fmt.Sprintf("%s.%s", path, mi));
 						} else {
-							ret = validateConfigNode(t.(MSI)["*"], c.(MSI)[mi], np);
+							ret = validateConfigNode(t.(MSI)["*"], c.(MSI)[mi], fmt.Sprintf("%s.%s", path, mi));
 						}
 						if (ret != nil) {
 							break ;
@@ -109,8 +108,7 @@ func validateConfigNode(t interface{}, c interface{}, path string) error {
 
 				} else {
 					for mi = range(t.(MSI)) {
-						np = fmt.Sprintf("%s.%s", path, mi);
-						ret = validateConfigNode(t.(MSI)[mi], c.(MSI)[mi], np);
+						ret = validateConfigNode(t.(MSI)[mi], c.(MSI)[mi], fmt.Sprintf("%s.%s", path, mi));
 						if (ret != nil) {
 							break ;
 						}
@@ -118,22 +116,17 @@ func validateConfigNode(t interface{}, c interface{}, path string) error {
 				}
 			}
 		case []interface{}:
-			var (
-				li int // list index
-				np string
-			)
+			var li int // list index
 			if (len(t.([]interface{})) == 1) { // single item in template array means every item in config should be of the same type
 				for li = range(c.([]interface{})) {
-					np = fmt.Sprintf("%s.%d", path, li);
-					ret = validateConfigNode(t.([]interface{})[0], c.([]interface{})[li], np);
+					ret = validateConfigNode(t.([]interface{})[0], c.([]interface{})[li], fmt.Sprintf("%s.%d", path, li));
 					if (ret != nil) {
 						return ret;
 					}
 				}
 			} else {
 				for li = range(t.([]interface{})) {
-					np = fmt.Sprintf("%s.%d", path, li);
-					ret = validateConfigNode(t.([]interface{})[li], c.([]interface{})[li], np);
+					ret = validateConfigNode(t.([]interface{})[li], c.([]interface{})[li], fmt.Sprintf("%s.%d", path, li));
 					if (ret != nil) {
 						return ret;
 					}

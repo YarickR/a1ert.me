@@ -55,7 +55,7 @@ func parseChannel(chConfig interface{}, chName string, path string) (di.ChannelP
 	var ok bool
 	var chM map[string]interface{} //channel map
 	var pl []string                // plugin list
-	var pn, np string                  // plugin name, new path
+	var pn string                  // plugin name, new path
 	var pc interface{}             //plugin config
 
 	var chT string = `
@@ -64,13 +64,12 @@ func parseChannel(chConfig interface{}, chName string, path string) (di.ChannelP
         "core": { "rules": [ { "id": 0, "src!": "string", "cond": "string" } ] } }
     }
 	`
-	np = fmt.Sprintf("%s.%s", path, chName)
-	err = di.ValidateConfig(chT, chConfig, np)
+	err = di.ValidateConfig(chT, chConfig, fmt.Sprintf("%s.%s", path, chName))
 	if err != nil {
 		return nil, err
 	}
 	chM = chConfig.(di.MSI)
-	pl, err = parseChannel_getPluginList(chM, np) // to keep parseChannel from being too bloated
+	pl, err = parseChannel_getPluginList(chM, fmt.Sprintf("%s.%s", path, chName)) // to keep parseChannel from being too bloated
 	if err != nil {
 		return nil, fmt.Errorf("channel '%s' %w", chName, err)
 	}
@@ -88,8 +87,7 @@ func parseChannel(chConfig interface{}, chName string, path string) (di.ChannelP
 		err = nil
 		if ok {
 			mLog.Debug().Str("channel", chName).Str("plugin", pn).Msg("Loading config")
-			np = fmt.Sprintf("%s.%s.%s", path, chName, pn)
-			pCtx.Config, err = pCtx.Plugin.Module.Hooks.LoadConfigHook(pc, false, np)
+			pCtx.Config, err = pCtx.Plugin.Module.Hooks.LoadConfigHook(pc, false, fmt.Sprintf("%s.%s.%s", path, chName, pn))
 		} else {
 			mLog.Debug().Str("channel", chName).Str("plugin", pn).Msg("Plugin %s has no channel-specific config")
 		}
