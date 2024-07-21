@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func LoadTemplatesConfig(config di.MSI, path string) (map[string]di.TemplatePtr, error) {
+func LoadTemplatesConfig(config map[string]interface{}, path string) (map[string]di.TemplatePtr, error) {
 	var ret map[string]di.TemplatePtr
 	var err error
 	mLog.Debug().Msg("loading templates")

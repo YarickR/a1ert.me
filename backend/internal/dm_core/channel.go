@@ -61,14 +61,18 @@ func parseChannel(chConfig interface{}, chName string, path string) (di.ChannelP
 	var chT string = `
 		{
         "plugins!": [ "string" ],
-        "core": { "rules": [ { "id": 0, "src!": "string", "cond": "string" } ] } }
+        "core": { 
+        	"rules": [ 
+        		{ "id": 0, "src!": "string", "cond": "string" } 
+        	] 
+        }
     }
 	`
 	err = di.ValidateConfig(chT, chConfig, fmt.Sprintf("%s.%s", path, chName))
 	if err != nil {
 		return nil, err
 	}
-	chM = chConfig.(di.MSI)
+	chM = chConfig.(map[string]interface{})
 	pl, err = parseChannel_getPluginList(chM, fmt.Sprintf("%s.%s", path, chName)) // to keep parseChannel from being too bloated
 	if err != nil {
 		return nil, fmt.Errorf("channel '%s' %w", chName, err)
@@ -89,7 +93,7 @@ func parseChannel(chConfig interface{}, chName string, path string) (di.ChannelP
 			mLog.Debug().Str("channel", chName).Str("plugin", pn).Msg("Loading config")
 			pCtx.Config, err = pCtx.Plugin.Module.Hooks.LoadConfigHook(pc, false, fmt.Sprintf("%s.%s.%s", path, chName, pn))
 		} else {
-			mLog.Debug().Str("channel", chName).Str("plugin", pn).Msg("Plugin %s has no channel-specific config")
+			mLog.Debug().Str("channel", chName).Str("plugin", pn).Msg("Plugin has no channel-specific config" )
 		}
 		if err == nil {
 			if (pCtx.Plugin.Type & di.PT_IN) != 0 {

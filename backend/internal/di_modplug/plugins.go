@@ -6,7 +6,7 @@ import (
 // 	"github.com/rs/zerolog/log"
 )
 
-func LoadPluginsConfig(cfg di.MSI, path string) (map[string]di.PluginPtr, error) {
+func LoadPluginsConfig(cfg map[string]interface{}, path string) (map[string]di.PluginPtr, error) {
 	var err error // pcle == plugin config load error
 	var ok bool // generic ok
 	var pn, mn string //plugin name, module name, new path
@@ -40,7 +40,7 @@ func LoadPluginsConfig(cfg di.MSI, path string) (map[string]di.PluginPtr, error)
 				return nil, fmt.Errorf("Invalid config for plugin '%s'", pn)
 		}
 		var mod di.Module
-		var pc di.MSI
+		var pc map[string]interface{}
 		pc = pcd.(map[string]interface{})
 		mn =  pc["module"].(string)
 		if mod, ok = di.ModMap[mn]; !ok {

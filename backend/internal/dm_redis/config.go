@@ -75,7 +75,7 @@ func redisLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginC
 	if err != nil {
 		return ret, err
 	}
-	for k, v = range config.(di.MSI) {
+	for k, v = range config.(map[string]interface{}) {
 		f, ok = kwdfm[k]
 		if !ok {
 			err = fmt.Errorf("unknown keyword '%s'", k)

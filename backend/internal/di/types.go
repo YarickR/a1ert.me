@@ -1,6 +1,5 @@
 package di
-type MSI map[string]interface{}
-type Event MSI
+type Event map[string]interface{}
 type ModLoadConfigHook      func(config interface{}, isGlobal bool, path string) (PluginConfig, error)
 type ModReceiveEventHook    func() (Event, error)
 type ModSendEventHook       func(Event) error

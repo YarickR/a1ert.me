@@ -80,7 +80,7 @@ func httpLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 	if err != nil {
 		return ret, err
 	}
-	for k, v = range config.(di.MSI) {
+	for k, v = range config.(map[string]interface{}) {
 		kwd, ok := kwdfm[k]
 		if !ok {
 			err = fmt.Errorf("unknown keyword '%s'", k)

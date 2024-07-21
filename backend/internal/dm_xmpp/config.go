@@ -24,21 +24,29 @@ func xmppLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 		"template":  {dispFunc: xmppConfigKWDF_template, dispFlags: di.CKW_GLOBAL | di.CKW_CHANNEL},
 		"group":     {dispFunc: xmppConfigKWDF_group, dispFlags: di.CKW_CHANNEL},
 	}
-	err = di.ValidateConfig(`
-		{ 	"module!": "string", 
-			"hooks!": [], 
-			"server": 		"string", 
-			"login": 		"string", 
-			"password": 	"string", 
-			"groupsURI":	"string",
-			"template": 	"string", 
-			"group": 		"string" 
-		}
-	`, config, path)
+	if (isGlobal) {
+		err = di.ValidateConfig(`
+			{ 	"module!": "string", 
+				"hooks!": [], 
+				"server": 		"string", 
+				"login": 		"string", 
+				"password": 	"string", 
+				"groupsURI":	"string",
+				"template": 	"string", 
+				"group": 		"string" 
+			}
+		`, config, path) 
+	} else { // per channel config may define only different group and template for outgoing messages
+		err = di.ValidateConfig(` 
+			{ 
+				"template": 	"string", 
+				"group": 		"string" 
+			}`, config, path)
+	}
 	if err != nil {
 		return ret, err
 	}
-	for k, v = range config.(di.MSI) {
+	for k, v = range config.(map[string]interface{}) {
 		f, ok = kwdfm[k]
 		if !ok {
 			err = fmt.Errorf("Unknown keyword '%s'", k)

@@ -51,8 +51,8 @@ func coreLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 	if err != nil {
 		return nil, err
 	}
-	rl = config.(di.MSI)["rules"].([]interface{})
-	ret = make([]di.RulePtr, 0, len(rl))
+	rl = config.(map[string]interface{})["rules"].([]interface{})
+	ret = make([]di.RulePtr, len(rl), len(rl))
 	rli = 0
 	for _, r = range rl {
 		err = di.ValidateConfig(`{  "id": 0, "src!": "string", "cond!": "string" }`, r, fmt.Sprintf("%s.%d", path, rli))
@@ -60,11 +60,11 @@ func coreLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 			return nil, err
 		}
 		nr = new(di.Rule)
-		nr.SrcChId = r.(di.MSI)["src"].(string)
-		nr.RuleStr = r.(di.MSI)["cond"].(string)
-		_, ok = r.(di.MSI)["id"]
+		nr.SrcChId = r.(map[string]interface{})["src"].(string)
+		nr.RuleStr = r.(map[string]interface{})["cond"].(string)
+		_, ok = r.(map[string]interface{})["id"]
 		if ok {
-			nr.RuleId = r.(di.MSI)["id"].(uint32)
+			nr.RuleId = uint32(r.(map[string]interface{})["id"].(float64))
 		}
 		ret[rli] = nr
 		rli++ 
