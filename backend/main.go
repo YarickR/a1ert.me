@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"os"
 	"time"
+	"sync"
 
 	//    "strings"
 	//    "errors"
@@ -18,13 +19,17 @@ import (
 )
 
 func main() {
-	var confFilePath string
-	var logLevel string
-	var dryRun bool
-	var _ls2llc map[string]zerolog.Level
-	var config di.GlobalConfig
-	var err error
-	var _mn string
+	var (
+		confFilePath string
+		logLevel string
+		dryRun bool
+		_ls2llc map[string]zerolog.Level
+		config di.GlobalConfig
+		err error
+		_mn string
+		mainWG sync.WaitGroup
+		inChannel chan di.DagMsg
+	)
 	_ls2llc = map[string]zerolog.Level{"debug": zerolog.DebugLevel, "info": zerolog.InfoLevel, "warn": zerolog.WarnLevel, "fatal": zerolog.FatalLevel}
 
 	di.ModHookMap = map[string]di.ModHooksFunc{
@@ -77,6 +82,7 @@ func main() {
 		os.Exit(2)
 	}
 	log.Debug().Str("Loaded config", fmt.Sprintf("%v", config)).Send()
+	runWorkers(di.GCfg)
 	/*
 		config, err = loadConfig(configDSN)
 		if err != nil { // Actual error description is in the loadConfig func

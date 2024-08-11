@@ -23,7 +23,15 @@ import (
       },
 
 */
-
+func ChannelsUsingPlugin(pluginName string, channels map[string]di.ChannelPtr) []di.ChannelPtr {
+	var (
+		ret []di.ChannelPtr
+		pn string
+		pp di.ChannelPtr
+	)
+	ret = make([]di.ChannelPtr)
+	for pn, pp = range ()
+}
 func parseChannel_getPluginList(chM map[string]interface{}, path string) ([]string, error) {
 	var (
 		ret []string
@@ -128,8 +136,35 @@ func LoadChannelsConfig(jsc map[string]interface{}, path string) (map[string]di.
 		}
 		ret[k] = newC
 	}
+	for k := range ret {
+		err = connectSrcsAndSinks(ret, k)
+		if (err != nil) {
+			return nil, err
+		}
+	}
 	mLog.Debug().Msgf("Loaded config: %v", ret)
 	return ret, nil
+}
+
+func connectSrcsAndSinks(chM map[string]di.ChannelPtr, ch string) error {
+	var (
+		ret error
+		chP, srcChP di.ChannelPtr
+		rP di.RulePtr
+		ok bool
+		k int
+	)
+	chP = chM[ch]
+	for k, rP = range chP.Rules {
+		srcChP, ok = chM[rP.SrcChId]
+		if ok {
+			srcChP.Sinks = append(srcChP.Sinks, chP)
+		} else {
+			ret = fmt.Errorf("Channel %s Rule %d links to unknown channel %s", ch, k, rP.SrcChId)
+			break
+		}
+	}
+	return ret
 }
 
 func ChannelGetKeyValue(event di.Event, key string) interface{} {

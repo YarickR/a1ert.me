@@ -1,15 +1,36 @@
 package di
+import (
+    "sync"
+)
 type Event map[string]interface{}
+
+type DagMsg struct {
+    Data    map[string]interface{}
+    Plugin  PluginPtr
+    Channel ChannelPtr
+}
+type DagMsgPtr *DagMsg
+
+type PlugComm struct {
+    TxCh  chan DagMsgPtr
+    CTS    bool // This plugin is clear to send 
+    Channels []ChannelPtr
+    Buffer []DagMsgPtr
+}
+
 type ModLoadConfigHook      func(config interface{}, isGlobal bool, path string) (PluginConfig, error)
-type ModReceiveEventHook    func() (Event, error)
-type ModSendEventHook       func(Event) error
-type ModProcessEventHook    func(Event) error
+type ModInGoroHook          func(this PluginPtr, RxCh chan DagMsgPtr, wg sync.WaitGroup) error 
+type ModOutGoroHook         func(this PluginPtr, TxCh chan DagMsgPtr, CtsCh chan DagMsgPtr, wg sync.WaitGroup) error 
+
 type ModHookTable struct {
     LoadConfigHook      ModLoadConfigHook
-    ReceiveEventHook    ModReceiveEventHook
-    SendEventHook       ModSendEventHook
-    ProcessEventHook    ModProcessEventHook
+//    ReceiveEventHook    ModReceiveEventHook
+//    SendEventHook       ModSendEventHook
+//    ProcessEventHook    ModProcessEventHook
+    InGoroHook          ModInGoroHook 
+    OutGoroHook         ModOutGoroHook 
 }
+
 type ModHooksFunc func()    (ModHookTable, error)
 
 type ModulePtr *Module
@@ -20,7 +41,6 @@ type Module struct {
 type PluginConfig interface{} // Opaque, module-dependent 
 
 type PluginPtr *Plugin
-
 type Plugin struct {
 	Name   string
     Type   int
@@ -129,4 +149,9 @@ type GlobalConfig struct {
 	Plugins			map[string]PluginPtr 
 	Channels		map[string]ChannelPtr
 	Templates		map[string]TemplatePtr
+}
+
+type GlobalChans struct {
+    InChan chan DagMsg
+    OutChan chan DagMsg
 }

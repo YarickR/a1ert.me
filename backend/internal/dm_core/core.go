@@ -24,9 +24,9 @@ func ModInit() (di.ModHookTable, error) {
 	mLog.Debug().Msg("ModInit")
 	return di.ModHookTable{
 		LoadConfigHook:   coreLoadConfig,
-		ReceiveEventHook: nil,
-		SendEventHook:    nil,
-		ProcessEventHook: coreProcessEvent,
+//		ReceiveEventHook: nil,
+//		SendEventHook:    nil,
+//		ProcessEventHook: coreProcessEvent,
 	}, nil
 }
 

@@ -11,7 +11,7 @@ import (
 
 	//"github.com/gomodule/redigo/redis"
 	"dagproc/internal/di"
-
+	"sync"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -25,19 +25,28 @@ func ModInit() (di.ModHookTable, error) {
 	mLog = log.With().Str("module", "redis").Caller().Logger()
 	mLog.Debug().Msg("ModInit")
 	return di.ModHookTable{
-		LoadConfigHook:   redisLoadConfig,
-		ReceiveEventHook: redisReceiveEvent,
-		SendEventHook:    nil,
-		ProcessEventHook: nil,
+		LoadConfigHook:	redisLoadConfig,
+		InGoroHook:		redisInGoroHook,
+		OutGoroHook:	redisOutGoroHook,
 	}, nil
 }
 
-func redisReceiveEvent() (di.Event, error) {
-	var ret di.Event
-	var err error
-	return ret, err
+func redisInGoroHook(this di.PluginPtr, RxCh chan DagMsgPtr, wg sync.WaitGroup) error  {
+	var (
+		ret error
+	)
+	msg di.DagMsgPtr
+	msg.Plugin = this
+	msg.Channel = this
+	return ret
 }
 
+func redisOutGoroHook(this PluginPtr, TxCh chan DagMsgPtr, CtsCh chan DagMsgPtr, wg sync.WaitGroup) : error {
+	var (
+		ret error
+	)
+	return ret
+}
 /*
 func redisLoadChannelDefs(rc redis.Conn, lastChannelId uint32) ([]*ChannelDef, uint32, error) {
 	var err error
