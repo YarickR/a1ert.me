@@ -23,15 +23,6 @@ import (
       },
 
 */
-func ChannelsUsingPlugin(pluginName string, channels map[string]di.ChannelPtr) []di.ChannelPtr {
-	var (
-		ret []di.ChannelPtr
-		pn string
-		pp di.ChannelPtr
-	)
-	ret = make([]di.ChannelPtr)
-	for pn, pp = range ()
-}
 func parseChannel_getPluginList(chM map[string]interface{}, path string) ([]string, error) {
 	var (
 		ret []string

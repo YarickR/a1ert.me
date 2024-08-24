@@ -25,6 +25,11 @@ func runWorkers(cfg di.GlobalConfig) {
 	CtsCh = make(chan di.DagMsgPtr)
 	pcs = make(map[di.PluginPtr]di.PlugComm)
 	wg.Add(len(plugins)) 
+	for chn, chp = range(cfg.Channels) { // channel name, channel points
+		for cpc = range(chp[InPlugs]) { // channelpluginctx
+
+		}
+	}
 	for pn, pp = range(cfg.Plugins) {
 		pcs[pp].Channels = dm_core.ChannelsUsingPlugin(pn, cfg.Channels)
 		if ((pp.Type & di.PT_IN) != 0) {
