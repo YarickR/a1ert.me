@@ -2,33 +2,29 @@ package di
 import (
     "sync"
 )
-type Event map[string]interface{}
-
 type DagMsg struct {
     Data    map[string]interface{}
-    Plugin  PluginPtr
     Channel ChannelPtr
 }
 type DagMsgPtr *DagMsg
 
+type PlugCommPtr *PlugComm
 type PlugComm struct {
-    TxCh  chan DagMsgPtr
+    TxChan chan DagMsg
     CTS    bool // This plugin is clear to send 
-    Channels []ChannelPtr
-    Buffer []DagMsgPtr
+    Buffer []DagMsg
 }
 
 type ModLoadConfigHook      func(config interface{}, isGlobal bool, path string) (PluginConfig, error)
-type ModInGoroHook          func(this PluginPtr, RxCh chan DagMsgPtr, wg sync.WaitGroup) error 
-type ModOutGoroHook         func(this PluginPtr, TxCh chan DagMsgPtr, CtsCh chan DagMsgPtr, wg sync.WaitGroup) error 
-
+type ModReceiveMsgHook      func(ChPCtx ChanPlugCtx) (DagMsg, error)
+type ModSendMsgHook         func(msg DagMsg, ChPCtx ChanPlugCtx) error 
 type ModHookTable struct {
     LoadConfigHook      ModLoadConfigHook
-//    ReceiveEventHook    ModReceiveEventHook
-//    SendEventHook       ModSendEventHook
+    ReceiveMsgHook      ModReceiveMsgHook
+    SendMsgHook         ModSendMsgHook
 //    ProcessEventHook    ModProcessEventHook
-    InGoroHook          ModInGoroHook 
-    OutGoroHook         ModOutGoroHook 
+ //   InGoroHook          ModInGoroHook 
+ //   OutGoroHook         ModOutGoroHook 
 }
 
 type ModHooksFunc func()    (ModHookTable, error)
@@ -58,7 +54,7 @@ const (
     CKW_GLOBAL  = 1 // keyword allowed in global config
     CKW_CHANNEL = 2 // keyword allowed in per channel config
 )
-type ChannelPluginCtx struct {
+type ChanPlugCtx struct {
     Plugin  PluginPtr
     Config  PluginConfig
 }
@@ -69,9 +65,9 @@ type Channel struct {
     Descr      string 
     Rules      []RulePtr
     Sinks      []ChannelPtr
-    InPlugs    []ChannelPluginCtx
-    OutPlugs   []ChannelPluginCtx
-    ProcPlugs  []ChannelPluginCtx
+    InPlugs    []ChanPlugCtx
+    OutPlugs   []ChanPlugCtx
+    ProcPlugs  []ChanPlugCtx
 }
 type RulePtr *Rule
 type Rule struct {

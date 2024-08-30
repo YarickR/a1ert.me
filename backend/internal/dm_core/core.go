@@ -72,7 +72,7 @@ func coreLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 	return ret, nil
 }
 
-func coreProcessEvent(ev di.Event) error {
+func ProcessEvent(ev di.DagMsgPtr)  {
 	mLog.Debug().Msg("coreProcessEvent")
 	return nil
 }

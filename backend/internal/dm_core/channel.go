@@ -81,7 +81,7 @@ func parseChannel(chConfig interface{}, chName string, path string) (di.ChannelP
 	mLog.Debug().Str("channel", chName).Msg("Loading config")
 
 	for _, pn = range pl {
-		var pCtx di.ChannelPluginCtx
+		var pCtx di.ChannelPluginCtx = di.ChannelPluginCtx{}
 		pCtx.Plugin, ok = di.GCfg.Plugins[pn]
 		if !ok {
 			return nil, fmt.Errorf("unknown plugin '%s'", pn)

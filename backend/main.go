@@ -27,8 +27,6 @@ func main() {
 		config di.GlobalConfig
 		err error
 		_mn string
-		mainWG sync.WaitGroup
-		inChannel chan di.DagMsg
 	)
 	_ls2llc = map[string]zerolog.Level{"debug": zerolog.DebugLevel, "info": zerolog.InfoLevel, "warn": zerolog.WarnLevel, "fatal": zerolog.FatalLevel}
 
