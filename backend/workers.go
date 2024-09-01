@@ -18,30 +18,31 @@ import (
 func runWorkers(cfg di.GlobalConfig) {
 	var (
 		wg sync.WaitGroup
-		RxCh chan di.DagMsg
-		CtsCh chan di.ChanPlugCtx
-		opcs map[di.ChanPlugCtx]di.PlugCommPtr // output plugin communications slice
+		RxCh chan di.DagMsgPtr
+		CtsCh chan di.ChanPlugCtxPtr
+		opcs map[di.ChanPlugCtxPtr]di.PlugCommPtr // output plugin communications slice
 		chpt di.ChannelPtr // channel pointer
-		chplct di.ChanPlugCtx // channel plugin context
+		chplct di.ChanPlugCtxPtr // channel plugin context
 		plcopt di.PlugCommPtr // plugin communication 
 		ok bool
 	)
-	RxCh = make(chan di.DagMsg)
-	CtsCh = make(chan di.ChanPlugCtx)
-	opcs = make(map[di.ChanPlugCtx]di.PlugCommPtr)
+	RxCh = make(chan di.DagMsgPtr)
+	CtsCh = make(chan di.ChanPlugCtxPtr)
+	opcs = make(map[di.ChanPlugCtxPtr]di.PlugCommPtr)
 	for _, chpt = range(cfg.Channels) { // channel name, channel pointers
-		for _, chplct = range(chpt.InPlugs) { // channelpluginctx
+		for _, chplct = range(chpt.InPlugs) { // channelpluginctxptr
 			wg.Add(1)
 			go inGoro(chpt, chplct, RxCh, &wg)
 		}
 		for _, chplct = range(chpt.OutPlugs) {
 			wg.Add(1)
-			plcopt = new (di.PlugComm)
-			plcopt.TxChan = make(chan di.DagMsg)
-			plcopt.CTS = false // should be raised on OutGoroHook
-			plcopt.Buffer = make([]di.DagMsg, 0)
+			plcopt = &di.PlugComm {
+				TxChan: make(chan di.DagMsgPtr),
+				CTS: 	false, // should get raised in OutGoro
+				Buffer: make([]di.DagMsgPtr, 0),
+			}
 			opcs[chplct] = plcopt // Each output plugin context needs it's separate goroutine, and respective plugin communication context
-			go outGoro(chpt, chplct, plcopt.TxChan, CtsCh, &wg)
+			go outGoro(chplct, plcopt.TxChan, CtsCh, &wg)
 		}
 
 	} 
@@ -49,10 +50,10 @@ func runWorkers(cfg di.GlobalConfig) {
 	// Now, magic
 	for (true) {
 		var (
-			inMsg di.DagMsg
-			ctsMsg di.ChanPlugCtx
-			outMsgs []di.DagMsg
-			om di.DagMsg
+			inMsg di.DagMsgPtr
+			ctsMsg di.ChanPlugCtxPtr
+			outMsgs []di.DagMsgPtr
+			om di.DagMsgPtr
 		)
 		select {
 			case inMsg = <- RxCh:
@@ -62,50 +63,76 @@ func runWorkers(cfg di.GlobalConfig) {
 					for _, chplct = range(om.Channel.OutPlugs) {
 						plcopt,ok = opcs[chplct]
 						if (!ok) {
-							log.Info().Msgf("Unknown log level %s, actual log level set to info", logLevel)
+							log.Error().Msgf("Request to send message to the unknown plugin of channel %s", om.Channel.Name)
+							continue
 						}
-						if opcs[chplct].CTS {
-							opcs[chplct].TxChan <- om
+						if plcopt.CTS {
+							plcopt.TxChan <- om
+							plcopt.CTS = false
 						} else {
-							opcs[chplct].Buffer = append(opcs[chplct].Buffer, om) // rpush
+							plcopt.Buffer = append(opcs[chplct].Buffer, om) // rpush
 						}
 					}
 				}
 			case ctsMsg = <- CtsCh:
 				// Plugin reports it is Clear To Send
-				if len(opcs[cpc].Buffer) > 0 {
+				plcopt, ok = opcs[ctsMsg]
+				if (!ok) {
+					log.Error().Msgf("Plugin %s reports readiness for an unknown context %v", ctsMsg.Plugin.Name, ctsMsg)
+					continue
+				}
+				if len(plcopt.Buffer) > 0 {
 					// lpop
-					opcs[cpc].TxChan <- opcs[cpc].Buffer[0:1]  
-					opcs[cpc].Buffer = opcs[cpc].Buffer[1:] 
+					plcopt.TxChan <- plcopt.Buffer[0]
+					plcopt.Buffer = plcopt.Buffer[1:] 
 				} else {
-					opcs[cpc].CTS = true
+					plcopt.CTS = true
 				}
 		}
 	}
 	wg.Wait()
 }
 
-func ProcessInMsg(msg di.DagMsg) []di.DagMsg {
+func processInMsg(msg di.DagMsgPtr) []di.DagMsgPtr {
 	var (
-		ret []di.DagMsg
+		ret []di.DagMsgPtr
 	)
-	ret = make([]di.DagMsg, 0)
+	ret = make([]di.DagMsgPtr, 0)
 	return ret
 }
 
-func inGoro(ChPt di.ChannelPtr, ChPCtx di.ChanPlugCtx, RxChan chan di.DagMsg, wg *sync.WaitGroup) error {
+func inGoro(ch di.ChannelPtr, chplct di.ChanPlugCtxPtr, rxChan chan di.DagMsgPtr, wg *sync.WaitGroup) error {
 	var (
-		ret error
+		err error
+		nm di.DagMsgPtr
 	)
+	for true {
+		nm, err = chplct.Plugin.Module.Hooks.ReceiveMsgHook(chplct)
+		if err != nil {
+			// some error up the stack, resume the loop
+			continue
+		}
+		nm.Channel = ch
+		rxChan <- nm
+	}
 	wg.Done()
-	return ret
+	return err
 } 
 
-func outGoro(ChPt di.ChannelPtr, ChPCtx di.ChanPlugCtx, TxChan chan di.DagMsg, CtsChan chan di.ChanPlugCtx , wg *sync.WaitGroup) error {
+func outGoro(chplct di.ChanPlugCtxPtr, txChan chan di.DagMsgPtr, ctsChan chan di.ChanPlugCtxPtr , wg *sync.WaitGroup) error {
 	var (
-		ret error
+		err error
+		nm di.DagMsgPtr
 	)
+	for true {
+		ctsChan <- chplct  // Clearing CTS flag in main thread
+		nm = <- txChan
+		err = chplct.Plugin.Module.Hooks.SendMsgHook(nm, chplct)
+		if err != nil {
+			// Error delivering the message, drop it for now (FIXME)
+		}
+	}
 	wg.Done()
-	return ret
+	return err
 }
 

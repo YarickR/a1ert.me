@@ -3,5 +3,6 @@ admin/logs
 pmts2xmpp
 dagproc
 *.json*
+*.sublime-*
 data
 *.kate-swp

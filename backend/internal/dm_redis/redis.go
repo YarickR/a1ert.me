@@ -11,7 +11,6 @@ import (
 
 	//"github.com/gomodule/redigo/redis"
 	"dagproc/internal/di"
-	"sync"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -25,30 +24,30 @@ func ModInit() (di.ModHookTable, error) {
 	mLog = log.With().Str("module", "redis").Caller().Logger()
 	mLog.Debug().Msg("ModInit")
 	return di.ModHookTable{
-		LoadConfigHook:	redisLoadConfig,
-		InGoroHook:		redisInGoroHook,
-		OutGoroHook:	redisOutGoroHook,
+		LoadConfigHook:	  redisLoadConfig,
+		ReceiveMsgHook:	  redisRecvMsg,
+		SendMsgHook:	  redisSendMsg,
+		ProcessMsgHook:   nil,
 	}, nil
 }
 
-func redisInGoroHook(this di.PluginPtr, RxCh chan DagMsgPtr, wg sync.WaitGroup) error  {
+func redisRecvMsg(chplct di.ChanPlugCtxPtr) (di.DagMsgPtr, error)  {
 	var (
 		ret error
-	)
-	msg di.DagMsgPtr
-	msg.Plugin = this
-	msg.Channel = this
-	return ret
+		dams di.DagMsgPtr
+    )
+    dams = &di.DagMsg{ Data: nil, Channel: nil }
+	return dams, ret
 }
 
-func redisOutGoroHook(this PluginPtr, TxCh chan DagMsgPtr, CtsCh chan DagMsgPtr, wg sync.WaitGroup) : error {
+func redisSendMsg(dams di.DagMsgPtr, chplct di.ChanPlugCtxPtr) error {
 	var (
 		ret error
 	)
 	return ret
 }
 /*
-func redisLoadChannelDefs(rc redis.Conn, lastChannelId uint32) ([]*ChannelDef, uint32, error) {
+func redisLoadChannelDefs(r                                                             c redis.Conn, lastChannelId uint32) ([]*ChannelDef, uint32, error) {
 	var err error
 	var cdNum uint64
 	var cdsList []string

@@ -24,15 +24,15 @@ func ValidateHooks(hooks []interface{}, module string) error {
         }
         switch strings.ToLower(v.(string)) {
             case "in":
-                if (m.Hooks.ReceiveEventHook == nil) {
+                if (m.Hooks.ReceiveMsgHook == nil) {
                     ok = false;
                 }
             case "out":
-                if (m.Hooks.SendEventHook == nil) {
+                if (m.Hooks.SendMsgHook == nil) {
                     ok = false;
                 }
             case "process":
-                if (m.Hooks.ProcessEventHook == nil) {
+                if (m.Hooks.ProcessMsgHook == nil) {
                     ok = false;
                 }
         }

@@ -28,23 +28,26 @@ func ModInit() (di.ModHookTable, error) {
 	mLog.Debug().Msg("ModInit")
 	return di.ModHookTable{
 		LoadConfigHook:   xmppLoadConfig,
-		ReceiveEventHook: xmppReceive,
-		SendEventHook:    xmppSend,
-		ProcessEventHook: nil,
+		ReceiveMsgHook: xmppRecvMsg,
+		SendMsgHook:    xmppSendMsg,
+		ProcessMsgHook: nil,
 	}, nil
 }
 
-func xmppReceive() (di.Event, error) {
-	var ret di.Event
-	var err error
-	err = nil
-	return ret, err
+func xmppRecvMsg(chplct di.ChanPlugCtxPtr) (di.DagMsgPtr, error)  {
+	var (
+		ret error
+		dams di.DagMsgPtr
+    )
+    dams = &di.DagMsg{ Data: nil, Channel: nil }
+	return dams, ret
 }
 
-func xmppSend(ev di.Event) error {
-	var err error
-	err = nil
-	return err
+func xmppSendMsg(dams di.DagMsgPtr, chplct di.ChanPlugCtxPtr) error {
+	var (
+		ret error
+	)
+	return ret
 }
 
 /*

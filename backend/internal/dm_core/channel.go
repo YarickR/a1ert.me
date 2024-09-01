@@ -81,7 +81,7 @@ func parseChannel(chConfig interface{}, chName string, path string) (di.ChannelP
 	mLog.Debug().Str("channel", chName).Msg("Loading config")
 
 	for _, pn = range pl {
-		var pCtx di.ChannelPluginCtx = di.ChannelPluginCtx{}
+		var pCtx di.ChanPlugCtxPtr = &di.ChanPlugCtx{ Plugin: nil, Config: nil, Ctx: nil }
 		pCtx.Plugin, ok = di.GCfg.Plugins[pn]
 		if !ok {
 			return nil, fmt.Errorf("unknown plugin '%s'", pn)
@@ -158,7 +158,7 @@ func connectSrcsAndSinks(chM map[string]di.ChannelPtr, ch string) error {
 	return ret
 }
 
-func ChannelGetKeyValue(event di.Event, key string) interface{} {
+func ChannelGetKeyValue(event map[string]interface{}, key string) interface{} {
 	var err error
 	var path []string = strings.Split(key, ".")
 

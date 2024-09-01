@@ -72,20 +72,20 @@ func coreLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 	return ret, nil
 }
 
-func ProcessEvent(ev di.DagMsgPtr)  {
+func ProcessEvent(ev di.DagMsgPtr) error  {
 	mLog.Debug().Msg("coreProcessEvent")
 	return nil
 }
 
-func ruleFuncTrue(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncTrue(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	return true
 }
 
-func ruleFuncFalse(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncFalse(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	return false
 }
 
-func ruleFuncValue(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncValue(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	if len(args) != 1 {
 		mLog.Printf("value() takes one argument, %d given", len(args))
 		return nil
@@ -101,7 +101,7 @@ func ruleFuncValue(args []di.RulePartArg, event di.Event) interface{} {
 	return nil
 }
 
-func ChannelGetBool(arg di.RulePartArg, event di.Event) bool {
+func ChannelGetBool(arg di.RulePartArg, event map[string]interface{}) bool {
 	var argVal interface{}
 	if arg.ArgType != di.PartArgTypeFunc {
 		mLog.Printf("Argument %+v should be a function for ChannelGetBool", arg)
@@ -129,7 +129,7 @@ func ChannelGetBool(arg di.RulePartArg, event di.Event) bool {
 	return true
 }
 
-func ChannelGetNum(arg di.RulePartArg, event di.Event) float64 {
+func ChannelGetNum(arg di.RulePartArg, event map[string]interface{}) float64 {
 	var argVal interface{}
 	if arg.ArgType != di.PartArgTypeFunc {
 		log.Printf("Argument %+v should be a function for ChannelGetNum", arg)
@@ -157,7 +157,7 @@ func ChannelGetNum(arg di.RulePartArg, event di.Event) float64 {
 	return 0
 }
 
-func ChannelGetStr(arg di.RulePartArg, event di.Event) string {
+func ChannelGetStr(arg di.RulePartArg, event map[string]interface{}) string {
 	var argVal interface{}
 	if arg.ArgType != di.PartArgTypeFunc {
 		log.Printf("Argument %+v should be a function for ChannelGetStr", arg)
@@ -180,7 +180,7 @@ func ChannelGetStr(arg di.RulePartArg, event di.Event) string {
 	return ""
 }
 
-func ChannelGetRaw(arg di.RulePartArg, event di.Event) interface{} {
+func ChannelGetRaw(arg di.RulePartArg, event map[string]interface{}) interface{} {
 	if arg.ArgType != di.PartArgTypeFunc {
 		log.Printf("Argument %+v should be a function for ChannelGetRaw", arg)
 		return ""
@@ -207,70 +207,70 @@ func channelCheckArgs(args []di.RulePartArg, numArgs int, argTypes ...di.RulePar
 	return goodCnt == len(args)
 }
 
-func ruleFuncEq(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncEq(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	if !channelCheckArgs(args, 2, di.PartArgTypeFunc, di.PartArgTypeFunc) {
 		return false
 	}
 	return ChannelGetNum(args[0], event) == ChannelGetNum(args[1], event)
 }
 
-func ruleFuncNe(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncNe(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	if !channelCheckArgs(args, 2, di.PartArgTypeFunc, di.PartArgTypeFunc) {
 		return false
 	}
 	return ChannelGetNum(args[0], event) != ChannelGetNum(args[1], event)
 }
 
-func ruleFuncLt(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncLt(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	if !channelCheckArgs(args, 2, di.PartArgTypeFunc, di.PartArgTypeFunc) {
 		return false
 	}
 	return ChannelGetNum(args[0], event) < ChannelGetNum(args[1], event)
 }
 
-func ruleFuncLe(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncLe(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	if !channelCheckArgs(args, 2, di.PartArgTypeFunc, di.PartArgTypeFunc) {
 		return false
 	}
 	return ChannelGetNum(args[0], event) <= ChannelGetNum(args[1], event)
 }
 
-func ruleFuncGt(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncGt(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	if !channelCheckArgs(args, 2, di.PartArgTypeFunc, di.PartArgTypeFunc) {
 		return false
 	}
 	return ChannelGetNum(args[0], event) > ChannelGetNum(args[1], event)
 }
 
-func ruleFuncGe(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncGe(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	if !channelCheckArgs(args, 2, di.PartArgTypeFunc, di.PartArgTypeFunc) {
 		return false
 	}
 	return ChannelGetNum(args[0], event) >= ChannelGetNum(args[1], event)
 }
 
-func ruleFuncAnd(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncAnd(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	if !channelCheckArgs(args, 2, di.PartArgTypeFunc, di.PartArgTypeFunc) {
 		return false
 	}
 	return ChannelGetBool(args[0], event) && ChannelGetBool(args[1], event)
 }
 
-func ruleFuncOr(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncOr(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	if !channelCheckArgs(args, 2, di.PartArgTypeFunc, di.PartArgTypeFunc) {
 		return false
 	}
 	return ChannelGetBool(args[0], event) || ChannelGetBool(args[1], event)
 }
 
-func ruleFuncNot(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncNot(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	if !channelCheckArgs(args, 1, di.PartArgTypeFunc) {
 		return false
 	}
 	return !ChannelGetBool(args[0], event)
 }
 
-func ruleFuncRegex(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncRegex(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	if !channelCheckArgs(args, 2, di.PartArgTypeFunc, di.PartArgTypeFunc) {
 		return false
 	}
@@ -287,7 +287,7 @@ func ruleFuncRegex(args []di.RulePartArg, event di.Event) interface{} {
 	return ret
 }
 
-func ruleFuncHas(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncHas(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	if !channelCheckArgs(args, 2, di.PartArgTypeFunc, di.PartArgTypeFunc) {
 		return false
 	}
@@ -312,7 +312,7 @@ func ruleFuncHas(args []di.RulePartArg, event di.Event) interface{} {
 	return false
 }
 
-func ruleFuncSince(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncSince(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	var err error
 	/* "Application level" function */
 	if !channelCheckArgs(args, 1, di.PartArgTypeFunc) {
@@ -339,7 +339,7 @@ func ruleFuncSince(args []di.RulePartArg, event di.Event) interface{} {
 	return time.Since(parsedDate)
 }
 
-func ruleFuncJoin(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncJoin(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	if !channelCheckArgs(args, 2, di.PartArgTypeFunc, di.PartArgTypeFunc) {
 		return false
 	}
@@ -369,7 +369,7 @@ func ruleFuncJoin(args []di.RulePartArg, event di.Event) interface{} {
 	return strings.Join(temp, joinSym)
 }
 
-func ruleFuncHasany(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncHasany(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	if !channelCheckArgs(args, 2, di.PartArgTypeFunc, di.PartArgTypeFunc) {
 		return false
 	}
@@ -396,7 +396,7 @@ func ruleFuncHasany(args []di.RulePartArg, event di.Event) interface{} {
 	return false
 }
 
-func ruleFuncHasall(args []di.RulePartArg, event di.Event) interface{} {
+func ruleFuncHasall(args []di.RulePartArg, event map[string]interface{}) interface{} {
 	if !channelCheckArgs(args, 2, di.PartArgTypeFunc, di.PartArgTypeFunc) {
 		return false
 	}
@@ -614,7 +614,7 @@ func channelParseRules(chDef *di.Channel) error {
 		partBufIdx = 0
 		parserSP = 0
 		parserStack = make([]di.RuleParserCtx, 0, 10)
-		parserStack = append(parserStack, di.RuleParserCtx{&chRule.Root, 0})
+		parserStack = append(parserStack, di.RuleParserCtx{PartPtr: &chRule.Root, CurrArg: 0})
 
 		for (rPos <= len(rRule)) &&
 			(parserSP >= 0) &&
@@ -744,10 +744,14 @@ func channelParseSet(setStr string) []di.RulePartArg {
 				/* this is a number */
 				var num float64
 				num, err = strconv.ParseFloat(argStr, 64)
-				ret = append(ret, di.RulePartArg{di.RulePartArgType(currRuleParserState), num})
+				ret = append(ret, di.RulePartArg {
+                                        ArgType: di.RulePartArgType(currRuleParserState),
+                                        ArgValue: num})
 			} else {
 				/* string goes unmodified */
-				ret = append(ret, di.RulePartArg{di.RulePartArgType(currRuleParserState), argStr})
+				ret = append(ret, di.RulePartArg{
+                                        ArgType:    di.RulePartArgType(currRuleParserState),
+                                        ArgValue:   argStr})
 			}
 			newRuleParserState = di.RuleParserLookingForArg
 			partBufIdx = 0
@@ -828,7 +832,7 @@ func channelPipeSrcsToSinks(channelDefs []di.ChannelPtr, lastChannelId uint32) {
 	*/
 }
 
-func channelMatchEvent(channel di.ChannelPtr, srcChId uint32, event di.Event) bool {
+func channelMatchEvent(channel di.ChannelPtr, srcChId uint32, event map[string]interface{}) bool {
 	mLog.Fatal().Msgf("FIXME")
 	os.Exit(1)
 	/*
@@ -854,7 +858,7 @@ func channelMatchEvent(channel di.ChannelPtr, srcChId uint32, event di.Event) bo
 }
 
 func channelRunTheGauntlet(channelDefs []di.ChannelPtr, initialChId uint32, srcChId uint32,
-	event di.Event, groupsToDeliver map[string]string, totalMatches uint32) uint32 { // Everything is a pointer, God bless Go magic
+	event map[string]interface{}, groupsToDeliver map[string]string, totalMatches uint32) uint32 { // Everything is a pointer, God bless Go magic
 	mLog.Fatal().Msgf("FIXME")
 	os.Exit(1)
 	/*

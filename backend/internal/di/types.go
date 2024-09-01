@@ -1,7 +1,4 @@
 package di
-import (
-    "sync"
-)
 type DagMsg struct {
     Data    map[string]interface{}
     Channel ChannelPtr
@@ -10,19 +7,20 @@ type DagMsgPtr *DagMsg
 
 type PlugCommPtr *PlugComm
 type PlugComm struct {
-    TxChan chan DagMsg
+    TxChan chan DagMsgPtr
     CTS    bool // This plugin is clear to send 
-    Buffer []DagMsg
+    Buffer []DagMsgPtr
 }
 
 type ModLoadConfigHook      func(config interface{}, isGlobal bool, path string) (PluginConfig, error)
-type ModReceiveMsgHook      func(ChPCtx ChanPlugCtx) (DagMsg, error)
-type ModSendMsgHook         func(msg DagMsg, ChPCtx ChanPlugCtx) error 
+type ModReceiveMsgHook      func(chplct ChanPlugCtxPtr) (DagMsgPtr, error)
+type ModSendMsgHook         func(dams DagMsgPtr, chplct ChanPlugCtxPtr) error 
+type ModProcessMsgHook      func(dams DagMsgPtr, chplct ChanPlugCtxPtr) (DagMsgPtr, error) 
 type ModHookTable struct {
     LoadConfigHook      ModLoadConfigHook
     ReceiveMsgHook      ModReceiveMsgHook
     SendMsgHook         ModSendMsgHook
-//    ProcessEventHook    ModProcessEventHook
+    ProcessMsgHook      ModProcessMsgHook
  //   InGoroHook          ModInGoroHook 
  //   OutGoroHook         ModOutGoroHook 
 }
@@ -34,7 +32,8 @@ type Module struct {
     Name    string
     Hooks   ModHookTable
 }
-type PluginConfig interface{} // Opaque, module-dependent 
+type PluginConfig       interface{} // Opaque, module-dependent 
+type PluginConfigCtx    interface{} // Opaque, module-dependent 
 
 type PluginPtr *Plugin
 type Plugin struct {
@@ -42,6 +41,7 @@ type Plugin struct {
     Type   int
 	Module Module
 	Config PluginConfig
+    Ctx    PluginConfigCtx
 }
 
 const (
@@ -54,9 +54,11 @@ const (
     CKW_GLOBAL  = 1 // keyword allowed in global config
     CKW_CHANNEL = 2 // keyword allowed in per channel config
 )
+type ChanPlugCtxPtr *ChanPlugCtx
 type ChanPlugCtx struct {
     Plugin  PluginPtr
-    Config  PluginConfig
+    Config  PluginConfig        // interface{}
+    Ctx     PluginConfigCtx     // interface{}
 }
 
 type ChannelPtr *Channel
@@ -65,9 +67,9 @@ type Channel struct {
     Descr      string 
     Rules      []RulePtr
     Sinks      []ChannelPtr
-    InPlugs    []ChanPlugCtx
-    OutPlugs   []ChanPlugCtx
-    ProcPlugs  []ChanPlugCtx
+    InPlugs    []ChanPlugCtxPtr
+    OutPlugs   []ChanPlugCtxPtr
+    ProcPlugs  []ChanPlugCtxPtr
 }
 type RulePtr *Rule
 type Rule struct {
@@ -118,7 +120,7 @@ type RulePartArg struct {
     ArgValue   interface{}
 }
 
-type RulePartFunc func(args []RulePartArg, event Event) interface{}
+type RulePartFunc func(args []RulePartArg, event map[string]interface{}) interface{}
 
 type RulePart struct {
     Function     RulePartFunc

@@ -25,23 +25,33 @@ func ModInit() (di.ModHookTable, error) {
 	mLog = log.With().Str("module", "http").Caller().Logger()
 	mLog.Debug().Msg("ModInit")
 	return di.ModHookTable{
-		LoadConfigHook:   httpLoadConfig,
-		ReceiveEventHook: httpReceiveEvent,
-		SendEventHook:    httpSendEvent,
-		ProcessEventHook: httpProcessEvent,
+		LoadConfigHook:   	httpLoadConfig,
+		ReceiveMsgHook: 	httpRecvMsg,
+		SendMsgHook:    	httpSendMsg,
+		ProcessMsgHook: 	httpProcessMsg,
 	}, nil
 }
 
-func httpReceiveEvent() (di.Event, error) {
-	var ret di.Event
-	var err error
-	return ret, err
+func httpRecvMsg(chplct di.ChanPlugCtxPtr) (di.DagMsgPtr, error)  {
+	var (
+		ret error
+		dams di.DagMsgPtr
+    )
+    dams = &di.DagMsg{ Data: nil, Channel: nil }
+	return dams, ret
 }
-func httpSendEvent(ev di.Event) error {
-	var err error
-	return err
+func httpSendMsg(dams di.DagMsgPtr, chplct di.ChanPlugCtxPtr) error {
+	var (
+		ret error
+	)
+	return ret
 }
-func httpProcessEvent(ev di.Event) error {
-	var err error
-	return err
+
+func httpProcessMsg(dams di.DagMsgPtr, chplct di.ChanPlugCtxPtr) (di.DagMsgPtr, error) {
+	var (
+		ret error
+		odams di.DagMsgPtr
+    )
+    odams = &di.DagMsg{ Data: dams.Data, Channel: dams.Channel }
+	return odams, ret
 }
