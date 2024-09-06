@@ -49,7 +49,7 @@ func redisLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginC
 		"uri":    {dispFunc: redisConfigKWDF_uri, dispFlags: di.CKW_GLOBAL},
 		"list":   {dispFunc: redisConfigKWDF_list, dispFlags: di.CKW_GLOBAL},
 	}
-	err = di.ValidateConfig(`{ "uri": "string", "list": "string"}`, config, path)
+	err = di.ValidateConfig(`{ "uri!": "string", "list": "string"}`, config, path)
 	if err != nil {
 		return ret, err
 	}

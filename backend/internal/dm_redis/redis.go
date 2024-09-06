@@ -1,14 +1,14 @@
 package dm_redis
 
 import (
-	//"encoding/json"
+	"encoding/json"
 	//"flag"
 	//"io/ioutil"
 	//"os"
 	//"sync"
 	//"text/template"
 	//"time"
-
+	"fmt"
 	"github.com/gomodule/redigo/redis"
 	"dagproc/internal/di"
 	"github.com/rs/zerolog"
@@ -36,11 +36,27 @@ func redisRecvMsg(chplct di.ChanPlugCtxPtr) (di.DagMsgPtr, error)  {
 		ret error
 		dams di.DagMsgPtr
 		cpc RedisCPC
+		gc, cc RedisConfig // global config , channel config
+    	uri, list string
+    	inMsg interface{}
     )
     dams = &di.DagMsg{ Data: nil, Channel: nil }
+    gc = chplct.Plugin.Config.(RedisConfig)
+    cc = chplct.Config.(RedisConfig)
+    list = ""
+    if (chplct.Config != nil) {
+    	list = cc.list 
+    } 
+    if (list == "") {
+    	list = gc.list
+    }
+    if (list == "") {
+    	ret = fmt.Errorf("Missing list name for plugin '%s'", chplct.Plugin.Name)
+    	mLog.Error().Err(ret)
+    	return nil, ret
+    }
     cpc = chplct.Ctx.(RedisCPC)
     if (cpc.conn == nil) {
-    	var uri string 
     	uri = chplct.Plugin.Config.(RedisConfig).uri
     	cpc.conn, ret = redis.DialURL(uri)
     	if (ret != nil) {
@@ -48,6 +64,15 @@ func redisRecvMsg(chplct di.ChanPlugCtxPtr) (di.DagMsgPtr, error)  {
     		return nil, ret	
     	}
     	chplct.Ctx = cpc
+    }
+    inMsg, ret = cpc.conn.Do("BLPOP", list)
+    if (ret != nil) {
+    	return nil, ret
+    }
+    ret = json.Unmarshal(inMsg.([]byte), &dams.Data)
+    if (ret != nil) {
+    	mLog.Error().Err(ret)
+    	return nil, ret
     }
 	return dams, ret
 }
