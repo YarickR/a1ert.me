@@ -16,7 +16,7 @@ func LoadPluginsConfig(cfg map[string]interface{}, path string) (map[string]di.P
 		{
 			"*": {
 				"module!": "string",
-				"hooks!": [ "string" ]
+				"type!": "string"
 			}
 		}`, cfg, path)
 	if err != nil	{
@@ -26,7 +26,7 @@ func LoadPluginsConfig(cfg map[string]interface{}, path string) (map[string]di.P
 
 	ret["core"] = &di.Plugin {
 		Name: 	"core",
-		Type: 	di.PT_PROC,
+		Type: 	"proc",
 		Module: di.ModMap["core"],
 		Config: nil,
 	}
@@ -39,16 +39,22 @@ func LoadPluginsConfig(cfg map[string]interface{}, path string) (map[string]di.P
 			default:
 				return nil, fmt.Errorf("Invalid config for plugin '%s'", pn)
 		}
-		var mod di.Module
-		var pc map[string]interface{}
+		var (
+			mod di.Module
+			pc map[string]interface{}
+		)
 		pc = pcd.(map[string]interface{})
 		mn =  pc["module"].(string)
 		if mod, ok = di.ModMap[mn]; !ok {
 			return nil, fmt.Errorf("Uknown module '%s' for plugin '%s'", mn, pn)
 		}
+		if err = ValidatePluginType(pc["type"].(string), mn); err != nil {
+			return nil, err
+		}
 		var rmi di.PluginPtr  // ret map item
 		rmi = &di.Plugin {
 			Module: mod,
+			Type: pc["type"].(string), 
 		} 
 		rmi.Config, err = mod.Hooks.LoadConfigHook(pc, true, fmt.Sprintf("%s.%s", path, pn))
 		if (err != nil) {

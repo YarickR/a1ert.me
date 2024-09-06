@@ -9,7 +9,7 @@ import (
 	//"text/template"
 	//"time"
 
-	//"github.com/gomodule/redigo/redis"
+	"github.com/gomodule/redigo/redis"
 	"dagproc/internal/di"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -35,8 +35,20 @@ func redisRecvMsg(chplct di.ChanPlugCtxPtr) (di.DagMsgPtr, error)  {
 	var (
 		ret error
 		dams di.DagMsgPtr
+		cpc RedisCPC
     )
     dams = &di.DagMsg{ Data: nil, Channel: nil }
+    cpc = chplct.Ctx.(RedisCPC)
+    if (cpc.conn == nil) {
+    	var uri string 
+    	uri = chplct.Plugin.Config.(RedisConfig).uri
+    	cpc.conn, ret = redis.DialURL(uri)
+    	if (ret != nil) {
+    		mLog.Error().Err(ret)
+    		return nil, ret	
+    	}
+    	chplct.Ctx = cpc
+    }
 	return dams, ret
 }
 

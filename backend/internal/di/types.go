@@ -21,8 +21,6 @@ type ModHookTable struct {
     ReceiveMsgHook      ModReceiveMsgHook
     SendMsgHook         ModSendMsgHook
     ProcessMsgHook      ModProcessMsgHook
- //   InGoroHook          ModInGoroHook 
- //   OutGoroHook         ModOutGoroHook 
 }
 
 type ModHooksFunc func()    (ModHookTable, error)
@@ -38,17 +36,11 @@ type PluginConfigCtx    interface{} // Opaque, module-dependent
 type PluginPtr *Plugin
 type Plugin struct {
 	Name   string
-    Type   int
+    Type   string
 	Module Module
 	Config PluginConfig
     Ctx    PluginConfigCtx
 }
-
-const (
-    PT_IN       = 1 // Plugin type
-    PT_OUT      = 2
-    PT_PROC     = 4
-)
 
 const (
     CKW_GLOBAL  = 1 // keyword allowed in global config

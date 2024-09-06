@@ -12,17 +12,17 @@
       },
       "redis_in": {
         "module": "redis",
-        "hooks": [ "input" ],
+        "type": "in",
         "uri": "redis://redis.server:6379"
       },
       "http_proc": {
         "module": "http", 
-        "hooks": [ "process" ],
+        "type": "proc"
         "uri": "https://vms.server/serverinfo"
       },
       "http_out": {
         "module": "http", 
-        "hooks": [ "output" ],
+        "type": out",
         "uri": "https://ntfy.server/alert/{{.config.topic}}"
       }
     },

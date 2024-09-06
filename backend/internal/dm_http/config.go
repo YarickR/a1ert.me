@@ -2,31 +2,11 @@ package dm_http
 
 import (
 	"dagproc/internal/di"
-	"dagproc/internal/di_modplug"
 	"errors"
 	"fmt"
 	"regexp"
 )
 
-func httpConfigKWDF_module(v interface{}, hcp HttpConfigPtr) error {
-	switch v := v.(type) {
-	case string:
-		if v != "http" {
-			return fmt.Errorf("module should be 'http' instead of %s", v)
-		}
-		return nil
-	default:
-		return fmt.Errorf("'module' shoudl be string")
-	}
-}
-func httpConfigKWDF_hooks(v interface{}, hcp HttpConfigPtr) error {
-	switch v := v.(type) {
-	case []interface{}:
-		return di_modplug.ValidateHooks(v, "http")
-	default:
-		return errors.New("'hooks' must be a list of hooks")
-	}
-}
 func httpConfigKWDF_uri(v interface{}, hcp HttpConfigPtr) error {
 	switch v := v.(type) {
 	case string:
@@ -70,13 +50,11 @@ func httpLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 	var k string
 	var v interface{}
 	var kwdfm map[string]HttpConfigKWD = map[string]HttpConfigKWD{
-		"module": {dispFunc: httpConfigKWDF_module, dispFlags: di.CKW_GLOBAL},
-		"hooks":  {dispFunc: httpConfigKWDF_hooks, dispFlags: di.CKW_GLOBAL},
 		"uri":    {dispFunc: httpConfigKWDF_uri, dispFlags: di.CKW_GLOBAL},
 		"listen": {dispFunc: httpConfigKWDF_listen, dispFlags: di.CKW_GLOBAL},
 		"topic":  {dispFunc: httpConfigKWDF_topic, dispFlags: di.CKW_CHANNEL},
 	}
-	err = di.ValidateConfig(` { "module": "string", "hooks": [], "uri": "string", "listen": "string", "topic": "string"}`, config, path)
+	err = di.ValidateConfig(` { "module!": "string", "type!": "string", "uri": "string", "listen": "string", "topic": "string"}`, config, path)
 	if err != nil {
 		return ret, err
 	}

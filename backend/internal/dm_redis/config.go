@@ -2,31 +2,11 @@ package dm_redis
 
 import (
 	"dagproc/internal/di"
-	"dagproc/internal/di_modplug"
 	"errors"
 	"fmt"
 	"regexp"
 )
 
-func redisConfigKWDF_module(v interface{}, rcp RedisConfigPtr) error {
-	switch v := v.(type) {
-	case string:
-		if v != "redis" {
-			return fmt.Errorf("module must be 'redis' instead of '%s'", v)
-		}
-		return nil
-	default:
-		return errors.New("'module' must be string 'redis'")
-	}
-}
-func redisConfigKWDF_hooks(v interface{}, rcp RedisConfigPtr) error {
-	switch v := v.(type) {
-	case []interface{}:
-		return di_modplug.ValidateHooks(v, "redis")
-	default:
-		return errors.New("'hooks' must be a list of hooks")
-	}
-}
 func redisConfigKWDF_uri(v interface{}, rcp RedisConfigPtr) error {
 	switch v := v.(type) {
 	case string:
@@ -66,12 +46,10 @@ func redisLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginC
 	var f RedisConfigKWD
 	var ok bool
 	var kwdfm map[string]RedisConfigKWD = map[string]RedisConfigKWD {
-		"module": {dispFunc: redisConfigKWDF_module, dispFlags: di.CKW_GLOBAL},
-		"hooks":  {dispFunc: redisConfigKWDF_hooks, dispFlags: di.CKW_GLOBAL},
 		"uri":    {dispFunc: redisConfigKWDF_uri, dispFlags: di.CKW_GLOBAL},
 		"list":   {dispFunc: redisConfigKWDF_list, dispFlags: di.CKW_GLOBAL},
 	}
-	err = di.ValidateConfig(`{ "module": "string", "hooks": [], "uri": "string", "list": "string"}`, config, path)
+	err = di.ValidateConfig(`{ "uri": "string", "list": "string"}`, config, path)
 	if err != nil {
 		return ret, err
 	}

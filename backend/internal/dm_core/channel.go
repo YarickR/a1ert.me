@@ -2,7 +2,6 @@ package dm_core
 
 import (
 	"dagproc/internal/di"
-	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -38,13 +37,8 @@ func parseChannel_getPluginList(chM map[string]interface{}, path string) ([]stri
 	}
 	pl  = chM["plugins"].([]interface{}) 
 	ret = make([]string, 0, len(pl))
-	for _, pn = range pl {
-		switch pn := pn.(type) {
-		case string:
-			ret = append(ret, pn)
-		default:
-			return nil, errors.New("wrong type for plugin")
-		}
+	for _, pn = range pl { // god I miss map()
+		ret = append(ret, pn.(string)) 
 	}
 	return ret, nil
 }
@@ -95,14 +89,10 @@ func parseChannel(chConfig interface{}, chName string, path string) (di.ChannelP
 			mLog.Debug().Str("channel", chName).Str("plugin", pn).Msg("Plugin has no channel-specific config" )
 		}
 		if err == nil {
-			if (pCtx.Plugin.Type & di.PT_IN) != 0 {
-				ret.InPlugs = append(ret.InPlugs, pCtx)
-			}
-			if (pCtx.Plugin.Type & di.PT_OUT) != 0 {
-				ret.OutPlugs = append(ret.OutPlugs, pCtx)
-			}
-			if (pCtx.Plugin.Type & di.PT_PROC) != 0 {
-				ret.ProcPlugs = append(ret.ProcPlugs, pCtx)
+			switch (pCtx.Plugin.Type) {
+				case "in": 		ret.InPlugs = append(ret.InPlugs, pCtx)
+				case "out": 	ret.OutPlugs = append(ret.OutPlugs, pCtx)
+				case "proc":	ret.ProcPlugs = append(ret.ProcPlugs, pCtx)
 			}
 		} else {
 			mLog.Error().Str("channel", chName).Str("plugin", pn).Err(err)

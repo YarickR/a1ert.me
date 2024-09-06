@@ -2,7 +2,6 @@ package dm_xmpp
 
 import (
 	"dagproc/internal/di"
-	"dagproc/internal/di_modplug"
 	"errors"
 	"fmt"
 )
@@ -15,8 +14,6 @@ func xmppLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 	var k string
 	var v interface{}
 	var kwdfm map[string]XmppConfigKWD = map[string]XmppConfigKWD{
-		"module":    {dispFunc: xmppConfigKWDF_module, dispFlags: di.CKW_GLOBAL},
-		"hooks":     {dispFunc: xmppConfigKWDF_hooks, dispFlags: di.CKW_GLOBAL},
 		"server":    {dispFunc: xmppConfigKWDF_server, dispFlags: di.CKW_GLOBAL},
 		"login":     {dispFunc: xmppConfigKWDF_login, dispFlags: di.CKW_GLOBAL},
 		"password":  {dispFunc: xmppConfigKWDF_password, dispFlags: di.CKW_GLOBAL},
@@ -26,8 +23,7 @@ func xmppLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 	}
 	if (isGlobal) {
 		err = di.ValidateConfig(`
-			{ 	"module!": "string", 
-				"hooks!": [], 
+			{ 	
 				"server": 		"string", 
 				"login": 		"string", 
 				"password": 	"string", 
@@ -81,15 +77,6 @@ func xmppLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 	return ret, nil
 }
 
-func xmppConfigKWDF_module(v interface{}, xcp XmppConfigPtr) error {
-	if v.(string) != "xmpp" {
-		return fmt.Errorf("module should be 'xmpp' instead of %s", v.(string))
-	}
-	return nil
-}
-func xmppConfigKWDF_hooks(v interface{}, xcp XmppConfigPtr) error {
-	return di_modplug.ValidateHooks(v.([]interface{}), "xmpp")
-}
 func xmppConfigKWDF_server(v interface{}, xcp XmppConfigPtr) error {
 	xcp.server = v.(string)
 	return nil
