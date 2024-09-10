@@ -1,0 +1,27 @@
+{
+  "plugins": 
+    {
+      "redis_in": {
+        "module": "redis",
+        "type": "in",
+        "uri":  "redis://<redis-server>:6379/"
+      },
+      "http_out": {
+        "module":   "http", 
+        "type":     "out",
+        "uri":      "https://<ntfy-server>/",
+        "template": "http_out_ntfy"  
+      }
+    },
+  "channels": 
+    {
+      "root": {
+        "plugins": [ "core", "redis_in", "http_out_ntfy" ],
+        "redis_in": { "list": "alerts" }
+       }    
+    },
+    "templates": {
+      "default": "{{ if (eq .status \"firing\") }}❌{{else}}✅{{end}}{{if (eq .labels.severity \"critical\")}}🔴{{else if (eq .labels.severity \"warning\") }}❗{{else}}🔷{{end}}{{.annotations.summary}}:{{.annotations.description}}\n{{with .labels}}Hosts: {{.hosts}}\nServices: {{.services}}\nProjects: {{.projects}}{{end}}",
+      "http_out_ntfy": "POST /{{.config.topic}} HTTP/1.1\nHost: ntfy.dev-my.games\n\n{{ if (eq .status \"firing\") }}❌{{else}}✅{{end}}{{if (eq .labels.severity \"critical\")}}🔴{{else if (eq .labels.severity \"warning\") }}❗{{else}}🔷{{end}}{{.annotations.summary}}:{{.annotations.description}}\n{{with .labels}}Hosts: {{.hosts}}\nServices: {{.services}}\nProjects: {{.projects}}{{end}}"
+   }
+}

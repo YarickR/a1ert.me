@@ -8,40 +8,30 @@ import (
 )
 
 func httpConfigKWDF_uri(v interface{}, hcp HttpConfigPtr) error {
-	switch v := v.(type) {
-	case string:
-		var m bool
-		if m, _ = regexp.Match("https?://.*(:[0-9]+)?/?.*", []byte(v)); m { // host and port
-			hcp.uri = v
-			return nil
-		}
-		return fmt.Errorf("%s does not look like http uri (does not match 'https?://.*(:[0-9]+)?/?.*')", v)
-	default:
-		return errors.New("'uri' should be string 'https?://.*(:[0-9]+)?/?.*")
+	var m bool
+	if m, _ = regexp.Match("https?://.*(:[0-9]+)?/?.*", []byte(v.(string))); m { // host and port
+		hcp.uri = v.(string)
+		return nil
 	}
+	return fmt.Errorf("%s does not look like http uri (does not match 'https?://.*(:[0-9]+)?/?.*')", v)
 }
 func httpConfigKWDF_listen(v interface{}, hcp HttpConfigPtr) error {
-	switch v := v.(type) {
-	case string:
-		var m bool
-		if m, _ = regexp.Match(".*:[0-9]{1,5}$", []byte(v)); m {
-			hcp.listen = v
-			return nil
-		}
-		return fmt.Errorf("invalid host:port specification for 'listen': %s ", v)
-	default:
-		return errors.New("'listen' should be string 'hostname:port'")
+	var m bool
+	if m, _ = regexp.Match(".*:[0-9]{1,5}$", []byte(v.(string))); m {
+		hcp.listen = v.(string)
+		return nil
 	}
+	return fmt.Errorf("invalid host:port specification for 'listen': %s ", v)
 }
 
 func httpConfigKWDF_topic(v interface{}, hcp HttpConfigPtr) error {
-	switch v := v.(type) {
-	case string:
-		hcp.topic = v
-		return nil
-	default:
-		return errors.New("'topic' must be string")
-	}
+	hcp.topic = v.(string)
+	return nil
+}
+
+func httpConfigKWDF_template(v interface{}, hcp HttpConfigPtr) error {
+	hcp.template = v.(string)
+	return nil
 }
 
 func httpLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginConfig, error) {
@@ -52,9 +42,10 @@ func httpLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 	var kwdfm map[string]HttpConfigKWD = map[string]HttpConfigKWD{
 		"uri":    {dispFunc: httpConfigKWDF_uri, dispFlags: di.CKW_GLOBAL},
 		"listen": {dispFunc: httpConfigKWDF_listen, dispFlags: di.CKW_GLOBAL},
-		"topic":  {dispFunc: httpConfigKWDF_topic, dispFlags: di.CKW_CHANNEL},
+		"topic":  	{dispFunc: httpConfigKWDF_topic, dispFlags: di.CKW_CHANNEL},
+		"template":	{dispFunc: httpConfigKWDF_template, dispFlags: di.CKW_CHANNEL|di.CKW_CHANNEL},
 	}
-	err = di.ValidateConfig(` { "module!": "string", "type!": "string", "uri": "string", "listen": "string", "topic": "string"}`, config, path)
+	err = di.ValidateConfig(` { "uri": "string", "listen": "string", "topic": "string", "template": "string"}`, config, path)
 	if err != nil {
 		return ret, err
 	}

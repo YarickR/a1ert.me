@@ -26,12 +26,15 @@ func ModInit() (di.ModHookTable, error) {
 	mLog.Debug().Msg("ModInit")
 	return di.ModHookTable{
 		LoadConfigHook:   	httpLoadConfig,
-		ReceiveMsgHook: 	httpRecvMsg,
+//		ReceiveMsgHook: 	httpRecvMsg,
+		ReceiveMsgHook: 	nil,
 		SendMsgHook:    	httpSendMsg,
-		ProcessMsgHook: 	httpProcessMsg,
+//		ProcessMsgHook: 	httpProcessMsg,
+		ProcessMsgHook: 	nil,
 	}, nil
 }
 
+/*
 func httpRecvMsg(chplct di.ChanPlugCtxPtr) (di.DagMsgPtr, error)  {
 	var (
 		ret error
@@ -40,6 +43,7 @@ func httpRecvMsg(chplct di.ChanPlugCtxPtr) (di.DagMsgPtr, error)  {
     dams = &di.DagMsg{ Data: nil, Channel: nil }
 	return dams, ret
 }
+*/
 func httpSendMsg(dams di.DagMsgPtr, chplct di.ChanPlugCtxPtr) error {
 	var (
 		ret error
@@ -47,6 +51,7 @@ func httpSendMsg(dams di.DagMsgPtr, chplct di.ChanPlugCtxPtr) error {
 	return ret
 }
 
+/*
 func httpProcessMsg(dams di.DagMsgPtr, chplct di.ChanPlugCtxPtr) (di.DagMsgPtr, error) {
 	var (
 		ret error
@@ -55,3 +60,4 @@ func httpProcessMsg(dams di.DagMsgPtr, chplct di.ChanPlugCtxPtr) (di.DagMsgPtr, 
     odams = &di.DagMsg{ Data: dams.Data, Channel: dams.Channel }
 	return odams, ret
 }
+*/

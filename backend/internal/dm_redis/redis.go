@@ -31,41 +31,55 @@ func ModInit() (di.ModHookTable, error) {
 	}, nil
 }
 
+func redisGetList(chplct di.ChanPlugCtxPtr) ( string, error ) {
+	var ( 
+		ret string
+	)
+	ret = chplct.Plugin.Config.(RedisConfig).list
+	if (chplct.Config != nil && (chplct.Config.(RedisConfig).list != "")) {
+		ret = chplct.Config.(RedisConfig).list
+	}
+	if (ret == "") {
+		return "", fmt.Errorf("Missing list name for plugin '%s'", chplct.Plugin.Name)
+	}
+	return ret, nil
+}
+
+func redisGetConn(chplct di.ChanPlugCtxPtr) ( redis.Conn, error ) {
+	var (
+		cpc RedisCPC
+		uri string
+		err error
+	)
+    cpc = chplct.Ctx.(RedisCPC)
+    if (cpc.conn == nil) {
+    	uri = chplct.Plugin.Config.(RedisConfig).uri
+    	cpc.conn, err = redis.DialURL(uri)
+    	if (err != nil) {
+    		return nil, err
+    	}
+    	chplct.Ctx = cpc
+    }
+    return cpc.conn, nil
+}
+
 func redisRecvMsg(chplct di.ChanPlugCtxPtr) (di.DagMsgPtr, error)  {
 	var (
 		ret error
 		dams di.DagMsgPtr
-		cpc RedisCPC
-		gc, cc RedisConfig // global config , channel config
-    	uri, list string
+		rc redis.Conn
+    	list string
     	inMsg interface{}
     )
     dams = &di.DagMsg{ Data: nil, Channel: nil }
-    gc = chplct.Plugin.Config.(RedisConfig)
-    cc = chplct.Config.(RedisConfig)
-    list = ""
-    if (chplct.Config != nil) {
-    	list = cc.list 
-    } 
-    if (list == "") {
-    	list = gc.list
+    list, ret = redisGetList(chplct)
+    if (ret == nil) {
+    	rc, ret = redisGetConn(chplct)
     }
-    if (list == "") {
-    	ret = fmt.Errorf("Missing list name for plugin '%s'", chplct.Plugin.Name)
-    	mLog.Error().Err(ret)
-    	return nil, ret
+    if (ret != nil) {
+    	return nil, ret	    	
     }
-    cpc = chplct.Ctx.(RedisCPC)
-    if (cpc.conn == nil) {
-    	uri = chplct.Plugin.Config.(RedisConfig).uri
-    	cpc.conn, ret = redis.DialURL(uri)
-    	if (ret != nil) {
-    		mLog.Error().Err(ret)
-    		return nil, ret	
-    	}
-    	chplct.Ctx = cpc
-    }
-    inMsg, ret = cpc.conn.Do("BLPOP", list)
+    inMsg, ret = rc.Do("BLPOP", list)
     if (ret != nil) {
     	return nil, ret
     }
@@ -80,7 +94,21 @@ func redisRecvMsg(chplct di.ChanPlugCtxPtr) (di.DagMsgPtr, error)  {
 func redisSendMsg(dams di.DagMsgPtr, chplct di.ChanPlugCtxPtr) error {
 	var (
 		ret error
-	)
+		rc redis.Conn
+    	list string
+    	outData []byte
+    )
+    list, ret = redisGetList(chplct)
+    if (ret == nil) {
+    	rc, ret = redisGetConn(chplct)
+    }
+    if (ret != nil) {
+    	return ret	    	
+    }
+    outData, ret = json.Marshal(dams.Data)
+    if (ret == nil) {
+		_, ret = rc.Do("RPUSH", list, outData)
+	}
 	return ret
 }
 /*

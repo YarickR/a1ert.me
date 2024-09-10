@@ -10,4 +10,10 @@ type HttpConfig struct {
 	uri    string
 	listen string
 	topic  string
+	template string
+}
+
+type HttpCPCPtr *HttpCPC
+type HttpCPC struct {
+
 }
