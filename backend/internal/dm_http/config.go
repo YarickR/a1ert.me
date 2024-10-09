@@ -7,10 +7,10 @@ import (
 	"regexp"
 )
 
-func httpConfigKWDF_uri(v interface{}, hcp HttpConfigPtr) error {
+func httpConfigKWDF_server(v interface{}, hcp HttpConfigPtr) error {
 	var m bool
 	if m, _ = regexp.Match("https?://.*(:[0-9]+)?/?.*", []byte(v.(string))); m { // host and port
-		hcp.uri = v.(string)
+		hcp.server = v.(string)
 		return nil
 	}
 	return fmt.Errorf("%s does not look like http uri (does not match 'https?://.*(:[0-9]+)?/?.*')", v)
@@ -24,13 +24,23 @@ func httpConfigKWDF_listen(v interface{}, hcp HttpConfigPtr) error {
 	return fmt.Errorf("invalid host:port specification for 'listen': %s ", v)
 }
 
-func httpConfigKWDF_topic(v interface{}, hcp HttpConfigPtr) error {
-	hcp.topic = v.(string)
+func httpConfigKWDF_method(v interface{}, hcp HttpConfigPtr) error {
+	hcp.method = v.(string)
 	return nil
 }
 
-func httpConfigKWDF_template(v interface{}, hcp HttpConfigPtr) error {
-	hcp.template = v.(string)
+func httpConfigKWDF_path(v interface{}, hcp HttpConfigPtr) error {
+	hcp.path = v.(string)
+	return nil
+}
+
+func httpConfigKWDF_hdrtmpl(v interface{}, hcp HttpConfigPtr) error {
+	hcp.hdrtmpl = v.(string)
+	return nil
+}
+
+func httpConfigKWDF_bodytmpl(v interface{}, hcp HttpConfigPtr) error {
+	hcp.bodytmpl = v.(string)
 	return nil
 }
 
@@ -40,12 +50,21 @@ func httpLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 	var k string
 	var v interface{}
 	var kwdfm map[string]HttpConfigKWD = map[string]HttpConfigKWD{
-		"uri":    {dispFunc: httpConfigKWDF_uri, dispFlags: di.CKW_GLOBAL},
-		"listen": {dispFunc: httpConfigKWDF_listen, dispFlags: di.CKW_GLOBAL},
-		"topic":  	{dispFunc: httpConfigKWDF_topic, dispFlags: di.CKW_CHANNEL},
-		"template":	{dispFunc: httpConfigKWDF_template, dispFlags: di.CKW_CHANNEL|di.CKW_CHANNEL},
+		"server":   {dispFunc: httpConfigKWDF_server, dispFlags: di.CKW_GLOBAL | di.CKW_CHANNEL},
+		"path":     {dispFunc: httpConfigKWDF_path, dispFlags: di.CKW_GLOBAL | di.CKW_CHANNEL},
+		"method":   {dispFunc: httpConfigKWDF_method, dispFlags: di.CKW_GLOBAL | di.CKW_CHANNEL},
+		"listen":   {dispFunc: httpConfigKWDF_listen, dispFlags: di.CKW_GLOBAL},
+		"hdrtmpl":  {dispFunc: httpConfigKWDF_hdrtmpl, dispFlags: di.CKW_GLOBAL | di.CKW_CHANNEL},
+		"bodytmpl": {dispFunc: httpConfigKWDF_bodytmpl, dispFlags: di.CKW_GLOBAL | di.CKW_CHANNEL},
 	}
-	err = di.ValidateConfig(` { "uri": "string", "listen": "string", "topic": "string", "template": "string"}`, config, path)
+	err = di.ValidateConfig(` { 
+				"server": "string", 
+				"path": "string", 
+				"listen": "string",  
+				"method": "string", 
+				"hdrtmpl": "string", 
+				"bodytmpl": "string"
+			}`, config, path)
 	if err != nil {
 		return ret, err
 	}
@@ -63,10 +82,19 @@ func httpLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 		}
 	}
 	if isGlobal {
-		if (ret.uri == "") && (ret.listen == "") {
-			err = errors.New("missing either 'uri' or 'listen' keyword")
-			mLog.Error().Err(err).Send()
-			return ret, err
+		mConfig = ret
+	} else {
+		// Let's check if we have at least server and method
+		t := di.MergeStructs([]string{"server", "path", "method", "listen", "hdrtmpl", "bodytmpl"},
+			interface{}(mConfig),
+			interface{}(ret))
+		ret = t.(HttpConfig)
+		if mConfig.listen == "" {
+			if (ret.server == "") || (ret.method == "") {
+				err = errors.New("Missing 'server', 'listen' or 'method' keyword")
+				mLog.Error().Err(err).Send()
+				return ret, err
+			}
 		}
 	}
 	mLog.Debug().Msgf("Loaded config: %+v", ret)

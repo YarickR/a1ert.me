@@ -1,7 +1,8 @@
 package di
 type DagMsg struct {
-    Data    map[string]interface{}
-    Channel ChannelPtr
+    Id      uint64
+    Data    map[string]interface{} // actual message 
+    Channel ChannelPtr             // channel to associate message with 
 }
 type DagMsgPtr *DagMsg
 
@@ -66,7 +67,7 @@ type Channel struct {
 type RulePtr *Rule
 type Rule struct {
     RuleId       uint32 
-    SrcChId      string
+    SrcChName    string
     RuleStr      string 
     CondLink     string 
     Root         RulePart

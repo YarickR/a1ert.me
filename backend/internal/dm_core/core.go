@@ -4,7 +4,6 @@ import (
 	"dagproc/internal/di"
 	"errors"
 	"fmt"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -23,28 +22,28 @@ func ModInit() (di.ModHookTable, error) {
 	mLog = log.With().Str("module", "core").Caller().Logger()
 	mLog.Debug().Msg("ModInit")
 	return di.ModHookTable{
-		LoadConfigHook:   coreLoadConfig,
-//		ReceiveEventHook: nil,
-//		SendEventHook:    nil,
-//		ProcessEventHook: coreProcessEvent,
+		LoadConfigHook: coreLoadConfig,
+		//		ReceiveEventHook: nil,
+		//		SendEventHook:    nil,
+		//		ProcessEventHook: coreProcessEvent,
 	}, nil
 }
 
 func coreLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginConfig, error) {
 	// No config for the core right now
-	if (isGlobal) {
+	if isGlobal {
 		// We don't expect any global core config now
 		return make(map[string]interface{}), nil
 	}
-	// This is per channel config, so we need to parse channel definition passed in "config" as CFConfig 
-	// first we parse rules 
+	// This is per channel config, so we need to parse channel definition passed in "config" as CFConfig
+	// first we parse rules
 	var (
-		ok bool
+		ok  bool
 		ret []di.RulePtr
 		rli int
-		nr di.RulePtr
-		rl []interface{} // rulelist, list of rules for the channel
-		r interface{} // one rule 
+		nr  di.RulePtr
+		rl  []interface{} // rulelist, list of rules for the channel
+		r   interface{}   // one rule
 		err error
 	)
 	err = di.ValidateConfig(` { "rules": [] } `, config, path)
@@ -56,23 +55,23 @@ func coreLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 	rli = 0
 	for _, r = range rl {
 		err = di.ValidateConfig(`{  "id": 0, "src!": "string", "cond!": "string" }`, r, fmt.Sprintf("%s.%d", path, rli))
-		if (err != nil) {
+		if err != nil {
 			return nil, err
 		}
 		nr = new(di.Rule)
-		nr.SrcChId = r.(map[string]interface{})["src"].(string)
+		nr.SrcChName = r.(map[string]interface{})["src"].(string)
 		nr.RuleStr = r.(map[string]interface{})["cond"].(string)
 		_, ok = r.(map[string]interface{})["id"]
 		if ok {
 			nr.RuleId = uint32(r.(map[string]interface{})["id"].(float64))
 		}
 		ret[rli] = nr
-		rli++ 
+		rli++
 	}
 	return ret, nil
 }
 
-func ProcessEvent(ev di.DagMsgPtr) error  {
+func ProcessEvent(ev di.DagMsgPtr) error {
 	mLog.Debug().Msg("coreProcessEvent")
 	return nil
 }
@@ -113,17 +112,17 @@ func ChannelGetBool(arg di.RulePartArg, event map[string]interface{}) bool {
 		return false
 	}
 	switch argVal.(type) {
-		case bool:
-			return argVal.(bool)
-		case string:
-			var argStr string
-			argStr = argVal.(string)
-			if (argStr == "true") || (argStr == "1") || (argStr == "True") || (argStr == "TRUE") {
-				return true
-			}
-			return false
-		case float64:
-			return argVal.(bool)
+	case bool:
+		return argVal.(bool)
+	case string:
+		var argStr string
+		argStr = argVal.(string)
+		if (argStr == "true") || (argStr == "1") || (argStr == "True") || (argStr == "TRUE") {
+			return true
+		}
+		return false
+	case float64:
+		return argVal.(bool)
 	}
 	mLog.Printf("Cannot convert arg %+v to boolean, returning true", argVal)
 	return true
@@ -679,7 +678,7 @@ func channelParseRules(chDef *di.Channel) error {
 					}
 				} else {
 					err = fmt.Errorf("%s: unknown function", argStr)
-					mLog.Error().Msgf("Error '%w' parsing rule %s", err, chRule.RuleStr)
+					mLog.Error().Err(err).Msgf("Error parsing rule %s", chRule.RuleStr)
 				}
 				newRuleParserState = di.RuleParserLookingForArg
 				partBufIdx = 0
@@ -744,14 +743,14 @@ func channelParseSet(setStr string) []di.RulePartArg {
 				/* this is a number */
 				var num float64
 				num, err = strconv.ParseFloat(argStr, 64)
-				ret = append(ret, di.RulePartArg {
-                                        ArgType: di.RulePartArgType(currRuleParserState),
-                                        ArgValue: num})
+				ret = append(ret, di.RulePartArg{
+					ArgType:  di.RulePartArgType(currRuleParserState),
+					ArgValue: num})
 			} else {
 				/* string goes unmodified */
 				ret = append(ret, di.RulePartArg{
-                                        ArgType:    di.RulePartArgType(currRuleParserState),
-                                        ArgValue:   argStr})
+					ArgType:  di.RulePartArgType(currRuleParserState),
+					ArgValue: argStr})
 			}
 			newRuleParserState = di.RuleParserLookingForArg
 			partBufIdx = 0
@@ -764,131 +763,31 @@ func channelParseSet(setStr string) []di.RulePartArg {
 	return ret
 }
 
-func channelAddSinkId(srcChDef di.ChannelPtr, sinkId uint32) error {
-	var err error
-
-	mLog.Fatal().Msgf("FIXME")
-	os.Exit(1)
-	/*
-	   if srcChDef.Sinks == nil {
-	       srcChDef.Sinks = make([]di.ChannelPtr, 0, 2)
-	   }
-	   if (srcChDef.Id == sinkId) {
-	       log.Printf("Channel %d can't be a sink for itself", srcChDef.Id)
-	   } else {
-	       srcChDef.Sinks = append(srcChDef.Sinks , sinkId)
-	   }*/
-	return err
-}
-
-func channelParseSrcChIds(srcChIds interface{}) []uint32 {
-	mLog.Fatal().Msgf("FIXME")
-	os.Exit(1)
-	/*
-	   var ret []uint32;
-	   switch  srcChIds.(type) {
-	       case float64: // single number
-	           ret = make([]uint32, 0, 1)
-	           ret[0] = srcChIds.(uint32)
-	       case []interface{}:
-	           ret = make([]uint32, 0, len(srcChIds.([]interface{})))
-	           for _, chId := range srcChIds.([]interface{}) {
-	               if (chId.(uint32) != 0) {
-	                   ret = append(ret, chId.(uint32))
-	               } else {
-	                   log.Printf("Invalid source channel id %v", chId);
-	               }
-	           }
-	       default:
-	           log.Printf("Invalid source channel ids %v", srcChIds);
-	   }
-	   return ret
-	*/
-	return nil
-}
-
-func channelPipeSrcsToSinks(channelDefs []di.ChannelPtr, lastChannelId uint32) {
-	mLog.Fatal().Msgf("FIXME")
-	os.Exit(1)
-	/*
-	   var chDef di.ChannelPtr;
-	   var chRule di.RulePtr
-	   for _, chDef = range channelDefs {
-	       for _, chRule = range chDef.Rules {
-	           if (chRule.Root.Function != nil) { // Rule was successfully parsed
-	               var srcChIds []uint32
-	               srcChIds = channelParseSrcChIds(chRule.SrcChId);
-	               for _, srcChId := range(srcChIds) {
-	                   if ((srcChId <= lastChannelId) && (channelDefs[srcChId] != nil)) {
-	                       channelAddSinkId(channelDefs[srcChId], chDef.Id)// almost placeholder at this point
-	                                                                       // will check for acyclicity later
-	                   } else {
-	                       log.Printf("Unknown channel id %d", srcChId)
-	                   }
-	               }
-	           }
-	       }
-	   }
-	*/
-}
-
-func channelMatchEvent(channel di.ChannelPtr, srcChId uint32, event map[string]interface{}) bool {
-	mLog.Fatal().Msgf("FIXME")
-	os.Exit(1)
-	/*
-	   if (channel.Id == 0) {
-	       return true // special case
-	   }
-	   var chRule di.RulePtr
-	   var ret bool
-	   ret = false
-	   for _, chRule = range channel.Rules {
-	       if (chRule.SrcChId == srcChId) {
-	           var rootRule di.RulePartArg
-	           rootRule = di.RulePartArg{ArgType: di.PartArgTypeFunc, ArgValue: chRule.Root}
-	           ret = ChannelGetBool(rootRule, event)
-	           if ret {
-	               break
-	           }
-	       }
-	   }
-	   return ret
-	*/
-	return false
-}
-
-func channelRunTheGauntlet(channelDefs []di.ChannelPtr, initialChId uint32, srcChId uint32,
-	event map[string]interface{}, groupsToDeliver map[string]string, totalMatches uint32) uint32 { // Everything is a pointer, God bless Go magic
-	mLog.Fatal().Msgf("FIXME")
-	os.Exit(1)
-	/*
-	   var channel di.ChannelPtr
-	   var match bool
-	   var err error
-	   channel = channelDefs[initialChId]
-	   match = channelMatchEvent(channel, srcChId, event)
-	   if (match == true) {
-	       totalMatches++
-	       if (len(channel.Group) > 0) {
-	           var tpOutput bytes.Buffer;
-	           var tp *template.Template;
-	           if (channel.MsgTemplate != nil) {
-	               tp = channel.MsgTemplate;
-	           } else {
-	               tp = channelDefs[0].MsgTemplate;
-	           };
-	           err = tp.Execute(&tpOutput, event)
-	           if (err != nil) {
-	               log.Printf("Error %s rendering template", err)
-	           }
-	           groupsToDeliver[channel.Group] = tpOutput.String()
-	       }
-	       var sinkId uint32
-	       for _, sinkId = range channel.Sinks {
-	           totalMatches += channelRunTheGauntlet(channelDefs, sinkId, initialChId, event, groupsToDeliver, totalMatches)
-	       }
-	   }
-	   return totalMatches
-	*/
-	return 0
+func ChannelMatchAndFlush(this di.ChannelPtr, srcCh di.ChannelPtr, msg di.DagMsgPtr, in []di.DagMsgPtr) []di.DagMsgPtr {
+	var (
+		match bool
+		cR    di.RulePtr
+		sC    di.ChannelPtr
+	)
+	match = true
+	if this.Name != srcCh.Name {
+		match = false
+		for _, cR = range this.Rules {
+			if cR.SrcChName == srcCh.Name {
+				var rootRule di.RulePartArg
+				rootRule = di.RulePartArg{ArgType: di.PartArgTypeFunc, ArgValue: cR.Root}
+				match = ChannelGetBool(rootRule, msg.Data)
+				if match {
+					break
+				}
+			}
+		}
+	}
+	if match {
+		in = append(in, &di.DagMsg{Id: msg.Id, Data: msg.Data, Channel: this})
+		for _, sC = range this.Sinks {
+			in = ChannelMatchAndFlush(sC, this, msg, in)
+		}
+	}
+	return in
 }

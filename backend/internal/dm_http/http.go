@@ -14,6 +14,7 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	// "net/http"
 )
 
 var (
@@ -25,29 +26,30 @@ func ModInit() (di.ModHookTable, error) {
 	mLog = log.With().Str("module", "http").Caller().Logger()
 	mLog.Debug().Msg("ModInit")
 	return di.ModHookTable{
-		LoadConfigHook:   	httpLoadConfig,
-//		ReceiveMsgHook: 	httpRecvMsg,
-		ReceiveMsgHook: 	nil,
-		SendMsgHook:    	httpSendMsg,
-//		ProcessMsgHook: 	httpProcessMsg,
-		ProcessMsgHook: 	nil,
+		LoadConfigHook: httpLoadConfig,
+		//		ReceiveMsgHook: 	httpRecvMsg,
+		ReceiveMsgHook: nil,
+		SendMsgHook:    httpSendMsg,
+		//		ProcessMsgHook: 	httpProcessMsg,
+		ProcessMsgHook: nil,
 	}, nil
 }
 
 /*
-func httpRecvMsg(chplct di.ChanPlugCtxPtr) (di.DagMsgPtr, error)  {
-	var (
-		ret error
-		dams di.DagMsgPtr
-    )
-    dams = &di.DagMsg{ Data: nil, Channel: nil }
-	return dams, ret
-}
+	func httpRecvMsg(chplct di.ChanPlugCtxPtr) (di.DagMsgPtr, error)  {
+		var (
+			ret error
+			dams di.DagMsgPtr
+	    )
+	    dams = &di.DagMsg{ Data: nil, Channel: nil }
+		return dams, ret
+	}
 */
 func httpSendMsg(dams di.DagMsgPtr, chplct di.ChanPlugCtxPtr) error {
 	var (
 		ret error
 	)
+
 	return ret
 }
 

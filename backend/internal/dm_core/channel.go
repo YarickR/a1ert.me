@@ -137,11 +137,11 @@ func connectSrcsAndSinks(chM map[string]di.ChannelPtr, ch string) error {
 	)
 	chP = chM[ch]
 	for k, rP = range chP.Rules {
-		srcChP, ok = chM[rP.SrcChId]
+		srcChP, ok = chM[rP.SrcChName]
 		if ok {
 			srcChP.Sinks = append(srcChP.Sinks, chP)
 		} else {
-			ret = fmt.Errorf("Channel %s Rule %d links to unknown channel %s", ch, k, rP.SrcChId)
+			ret = fmt.Errorf("Channel %s Rule %d links to unknown channel %s", ch, k, rP.SrcChName)
 			break
 		}
 	}
@@ -188,4 +188,11 @@ func ChannelGetKeyValue(event map[string]interface{}, key string) interface{} {
 		}
 	}
 	return cursor
+}
+
+func ChannelMatchAndPropagage(srcCh di.ChannelPtr, currCh di.ChannelPtr, msg map[string]interface{} , ret []di.DagMsgPtr, totalMatches *int) error {
+	var (
+		err error
+	)
+	return err
 }

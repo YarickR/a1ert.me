@@ -7,13 +7,10 @@ type HttpConfigKWD struct {
 }
 type HttpConfigPtr *HttpConfig
 type HttpConfig struct {
-	uri    string
-	listen string
-	topic  string
-	template string
-}
-
-type HttpCPCPtr *HttpCPC
-type HttpCPC struct {
-
+	server   string
+	path     string
+	listen   string
+	method   string
+	hdrtmpl  string
+	bodytmpl string
 }
