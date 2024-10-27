@@ -179,9 +179,38 @@ func validateConfigNode(t interface{}, c interface{}, path string) error {
 	return ret
 }
 
-func MergeStructs(fields []string, src interface{}, dst interface{}) interface{} {
+func (cv *CoVa[T]) Assign(v T) {
+	cv.value = v
+	cv.defined = true
+}
+func (cv *CoVa[T]) Value() T {
+	return cv.value
+}
+func (cv *CoVa[T]) Defined() bool {
+	return cv.defined
+}
+
+func MergeCoVas(src interface{}, dst interface{}) interface{} {
+	var (
+		st, dt reflect.Type
+		sf     reflect.StructField
+	)
+	st = reflect.TypeOf(src)
+	dt = reflect.TypeOf(dst)
+	if (st.Kind() != reflect.Struct) || (dt.Kind() != reflect.Struct) {
+		return nil
+	}
+	for _, sf = range reflect.VisibleFields(st) {
+
+	}
+	sv = reflect.ValueOf(src)
+	dv = reflect.ValueOf(dst)
+	nf = sv.NumField()
+	for cf = 0; cf < nf; cf = cf + 1 {
+		ssf = sv.Field(cf)
+	}
+	s := reflect.ValueOf(src)
 	for _, f := range fields {
-		s := reflect.ValueOf(src)
 		sf := s.FieldByName(f)
 		d := reflect.ValueOf(dst)
 		if sf.Len() > 0 {

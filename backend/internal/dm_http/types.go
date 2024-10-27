@@ -1,5 +1,7 @@
 package dm_http
 
+import "dagproc/internal/di"
+
 type HttpConfigKWDF func(v interface{}, hcp HttpConfigPtr) error // kw == keyword, df == dispatcher func
 type HttpConfigKWD struct {
 	dispFunc  HttpConfigKWDF
@@ -7,10 +9,10 @@ type HttpConfigKWD struct {
 }
 type HttpConfigPtr *HttpConfig
 type HttpConfig struct {
-	server   string
-	path     string
-	listen   string
-	method   string
-	hdrtmpl  string
-	bodytmpl string
+	server   di.CoVa[string]
+	path     di.CoVa[string]
+	listen   di.CoVa[string]
+	method   di.CoVa[string]
+	hdrtmpl  di.CoVa[string]
+	bodytmpl di.CoVa[string]
 }

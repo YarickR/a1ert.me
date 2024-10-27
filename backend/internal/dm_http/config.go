@@ -10,7 +10,7 @@ import (
 func httpConfigKWDF_server(v interface{}, hcp HttpConfigPtr) error {
 	var m bool
 	if m, _ = regexp.Match("https?://.*(:[0-9]+)?/?.*", []byte(v.(string))); m { // host and port
-		hcp.server = v.(string)
+		hcp.server.Assign(v.(string))
 		return nil
 	}
 	return fmt.Errorf("%s does not look like http uri (does not match 'https?://.*(:[0-9]+)?/?.*')", v)
@@ -18,29 +18,29 @@ func httpConfigKWDF_server(v interface{}, hcp HttpConfigPtr) error {
 func httpConfigKWDF_listen(v interface{}, hcp HttpConfigPtr) error {
 	var m bool
 	if m, _ = regexp.Match(".*:[0-9]{1,5}$", []byte(v.(string))); m {
-		hcp.listen = v.(string)
+		hcp.listen.Assign(v.(string))
 		return nil
 	}
 	return fmt.Errorf("invalid host:port specification for 'listen': %s ", v)
 }
 
 func httpConfigKWDF_method(v interface{}, hcp HttpConfigPtr) error {
-	hcp.method = v.(string)
+	hcp.method.Assign(v.(string))
 	return nil
 }
 
 func httpConfigKWDF_path(v interface{}, hcp HttpConfigPtr) error {
-	hcp.path = v.(string)
+	hcp.path.Assign(v.(string))
 	return nil
 }
 
 func httpConfigKWDF_hdrtmpl(v interface{}, hcp HttpConfigPtr) error {
-	hcp.hdrtmpl = v.(string)
+	hcp.hdrtmpl.Assign(v.(string))
 	return nil
 }
 
 func httpConfigKWDF_bodytmpl(v interface{}, hcp HttpConfigPtr) error {
-	hcp.bodytmpl = v.(string)
+	hcp.bodytmpl.Assign(v.(string))
 	return nil
 }
 
@@ -49,6 +49,7 @@ func httpLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 	var ret HttpConfig
 	var k string
 	var v interface{}
+	var perChannelKwds []string
 	var kwdfm map[string]HttpConfigKWD = map[string]HttpConfigKWD{
 		"server":   {dispFunc: httpConfigKWDF_server, dispFlags: di.CKW_GLOBAL | di.CKW_CHANNEL},
 		"path":     {dispFunc: httpConfigKWDF_path, dispFlags: di.CKW_GLOBAL | di.CKW_CHANNEL},
@@ -85,13 +86,11 @@ func httpLoadConfig(config interface{}, isGlobal bool, path string) (di.PluginCo
 		mConfig = ret
 	} else {
 		// Let's check if we have at least server and method
-		t := di.MergeStructs([]string{"server", "path", "method", "listen", "hdrtmpl", "bodytmpl"},
-			interface{}(mConfig),
-			interface{}(ret))
+		t := di.MergeCoVas(mConfig, ret)
 		ret = t.(HttpConfig)
-		if mConfig.listen == "" {
-			if (ret.server == "") || (ret.method == "") {
-				err = errors.New("Missing 'server', 'listen' or 'method' keyword")
+		if !mConfig.listen.Defined() {
+			if !ret.server.Defined() || !ret.method.Defined() {
+				err = errors.New("missing 'server', 'listen' or 'method' keyword")
 				mLog.Error().Err(err).Send()
 				return ret, err
 			}
